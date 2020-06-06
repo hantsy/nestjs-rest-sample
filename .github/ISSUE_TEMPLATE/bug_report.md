@@ -9,8 +9,8 @@ assignees: 'hantsy'
 
 **Development Environment:**
  - OS: [e.g. Windows 10, Linux]
- - Java version:[8, 11]
- - Build tools:[Gradle, Maven]
+ - NodeJS version:[8, 11]
+ - Package manager tools:[npm, yarn]
 
 **Describe the bug**
 A clear and concise description of what the bug is.
