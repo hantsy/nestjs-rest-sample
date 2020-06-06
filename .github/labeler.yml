@@ -1,0 +1,7 @@
+# Add 'test' label
+test:
+  - **/*.spec.*
+
+# Add 'e2e' label
+e2e:
+  - **/*.e2e-spec.*
