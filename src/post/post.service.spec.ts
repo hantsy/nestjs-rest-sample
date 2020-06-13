@@ -41,20 +41,20 @@ describe('PostService', () => {
   });
 
   it('getPostById with existing id should return 1 post', done => {
-    service
-      .findById(1)
-      .pipe(take(3), toArray())
-      .subscribe({
-        next: data => expect(data.length).toBe(1),
-        error: error => console.log(error),
-        complete: done(),
-      });
+    service.findById(1).subscribe({
+      next: data => {
+        expect(data.id).toBe(1);
+        expect(data.title).toEqual('Generate a NestJS project');
+      },
+      error: error => console.log(error),
+      complete: done(),
+    });
   });
 
   it('getPostById with none existing id should return empty', done => {
     service
       .findById(10001)
-      .pipe(take(3), toArray())
+      .pipe(toArray())
       .subscribe({
         next: data => expect(data.length).toBe(0),
         error: error => console.log(error),
@@ -109,7 +109,7 @@ describe('PostService', () => {
     });
   });
 
-  it('deleteById with existing id should return true', done => {
+  it('deleteById with none existing id should return false', done => {
     service.deleteById(10001).subscribe({
       next: data => expect(data).toBeFalsy,
       error: error => console.log(error),
@@ -154,14 +154,22 @@ describe('PostService(test for empty())', () => {
     });
   });
 
-  it('getPostById with none existing id should return empty', done => {
+  it('test complete for empty():getPostById with none existing id', done => {
+    let called = false;
     service.findById(10001).subscribe({
       next: data => {
-        console.log('complete:' + typeof data);
-        expect(data).toBeNaN();
+        console.log(data);
+        called = true;
       },
-      error: error => console.log(error),
-      complete: done,
+      error: error => {
+        console.log(error);
+        called = true;
+      },
+      complete: () => {
+        console.log("calling complete");
+        expect(called).toBeFalsy();
+        done();
+      },
     });
   });
 });
