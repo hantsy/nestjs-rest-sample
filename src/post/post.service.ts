@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Post } from './post.interface';
-import { of, from, Observable, empty } from 'rxjs';
+import { of, from, Observable, empty, EMPTY } from 'rxjs';
 
 @Injectable()
 export class PostService {
@@ -12,13 +12,13 @@ export class PostService {
       createdAt: new Date(),
     },
     {
-      id: 1,
+      id: 2,
       title: 'Create CRUD RESTful APIs',
       content: 'content',
       createdAt: new Date(),
     },
     {
-      id: 1,
+      id: 3,
       title: 'Connect to MongoDB',
       content: 'content',
       createdAt: new Date(),
@@ -34,11 +34,11 @@ export class PostService {
   }
 
   findById(id: number): Observable<Post> {
-    const found = this.posts.filter(post => post.id === id);
-    if (found.length > 0) {
-      return of(found[0]);
+    const found = this.posts.find(post => post.id === id);
+    if (found) {
+      return of(found);
     }
-    return empty();
+    return EMPTY;
   }
 
   save(data: Post): Observable<Post> {
@@ -62,7 +62,11 @@ export class PostService {
   deleteById(id: number): Observable<boolean> {
     const idx: number = this.posts.findIndex(post => post.id === id);
     if (idx >= 0) {
-      this.posts.splice(idx);
+      // this.posts.splice(idx, 1);
+      this.posts = [
+        ...this.posts.slice(0, idx),
+        ...this.posts.slice(idx + 1),
+      ];
       return of(true);
     }
     return of(false);
