@@ -5,6 +5,7 @@ A NestJS RESTful APIs sample project.
 ## Docs
 
 * [Building RESTful APIs with NestJS](./docs/guide.md)
+* [Connecting to MongoDB](./docs/mongo.md)
 
 ## Build
 
@@ -45,3 +46,5 @@ $ npm run test:cov
 ## Reference
 
 * [The official Nestjs documentation](https://docs.nestjs.com/first-steps)
+* [Unit testing NestJS applications with Jest](https://blog.logrocket.com/unit-testing-nestjs-applications-with-jest/)
+* [ts-mockito: Mocking library for TypeScript inspired by http://mockito.org/](https://github.com/NagRock/ts-mockito)

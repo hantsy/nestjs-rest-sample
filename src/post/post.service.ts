@@ -1,74 +1,53 @@
 import { Injectable } from '@nestjs/common';
-import { Post } from './post.interface';
-import { of, from, Observable, empty, EMPTY } from 'rxjs';
+import { Post } from './post.model';
+import { from, Observable } from 'rxjs';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { CreatePostDto } from './create-post.dto';
+import { UpdatePostDto } from './update-post.dto';
 
 @Injectable()
 export class PostService {
-  private posts: Post[] = [
-    {
-      id: 1,
-      title: 'Generate a NestJS project',
-      content: 'content',
-      createdAt: new Date(),
-    },
-    {
-      id: 2,
-      title: 'Create CRUD RESTful APIs',
-      content: 'content',
-      createdAt: new Date(),
-    },
-    {
-      id: 3,
-      title: 'Connect to MongoDB',
-      content: 'content',
-      createdAt: new Date(),
-    },
-  ];
+  constructor(@InjectModel('posts') private postModel: Model<Post>) {}
 
-  findAll(keyword?: string): Observable<Post> {
+  findAll(keyword?: string, skip = 0, limit = 10): Observable<Post[]> {
     if (keyword) {
-      return from(this.posts.filter(post => post.title.indexOf(keyword) >= 0));
+      return from(
+        this.postModel
+          .find({ title: { $regex: '.*' + keyword + '.*' } })
+          .skip(skip)
+          .limit(limit)
+          .exec(),
+      );
+    } else {
+      return from(
+        this.postModel
+          .find({})
+          .skip(skip)
+          .limit(limit)
+          .exec(),
+      );
     }
-
-    return from(this.posts);
   }
 
-  findById(id: number): Observable<Post> {
-    const found = this.posts.find(post => post.id === id);
-    if (found) {
-      return of(found);
-    }
-    return EMPTY;
+  findById(id: string): Observable<Post> {
+    return from(this.postModel.findOne({ _id: id }).exec());
   }
 
-  save(data: Post): Observable<Post> {
-    const post = { ...data, id: this.posts.length + 1, createdAt: new Date() };
-    this.posts = [...this.posts, post];
-    return from(this.posts);
+  save(data: CreatePostDto): Observable<Post> {
+    const createPost = this.postModel.create({ ...data });
+    return from(createPost);
   }
 
-  update(id: number, data: Post): Observable<Post> {
-    this.posts = this.posts.map(post => {
-      if (id === post.id) {
-        post.title = data.title;
-        post.content = data.content;
-        post.updatedAt = new Date();
-      }
-      return post;
-    });
-    return from(this.posts);
+  update(id: string, data: UpdatePostDto): Observable<Post> {
+    return from(this.postModel.findOneAndUpdate({ _id: id }, data).exec());
   }
 
-  deleteById(id: number): Observable<boolean> {
-    const idx: number = this.posts.findIndex(post => post.id === id);
-    if (idx >= 0) {
-      // this.posts.splice(idx, 1);
-      this.posts = [
-        ...this.posts.slice(0, idx),
-        ...this.posts.slice(idx + 1),
-      ];
-      return of(true);
-    }
-    return of(false);
+  deleteById(id: string): Observable<Post> {
+    return from(this.postModel.findOneAndDelete({ _id: id }).exec());
+  }
+
+  deleteAll(): Observable<any> {
+    return from(this.postModel.deleteMany({}).exec());
   }
 }
