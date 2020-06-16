@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PostService } from './post.service';
 import { getModelToken } from '@nestjs/mongoose';
 import { Post } from './post.model';
-import { Model } from 'mongoose';
+import { Model, FilterQuery } from 'mongoose';
 
 describe('PostService', () => {
   let service: PostService;
@@ -69,6 +69,20 @@ describe('PostService', () => {
     const data = await service.findAll().toPromise();
     expect(data.length).toBe(3);
     expect(model.find).toHaveBeenCalled();
+
+    jest.spyOn(model, 'find').mockImplementation((conditions: FilterQuery<Post>, callback?: (err: any, res: Post[]) => void) => {
+      return {
+        skip: jest.fn().mockReturnValue({
+          limit: jest.fn().mockReturnValue({
+            exec: jest.fn().mockResolvedValueOnce([posts[0]]),
+          }),
+        }),
+      } as any;
+    });
+
+    const result = await service.findAll('Generate', 0, 10).toPromise();
+    expect(result.length).toBe(1);
+    expect(model.find).lastCalledWith({ title: { $regex: '.*' + 'Generate' + '.*' } });
   });
 
   it('findById with an existing id should return one post', done => {
