@@ -38,7 +38,7 @@ describe('PostService', () => {
     expect(service).toBeDefined();
   });
 
-  it('getAllPosts should return 3 posts', async () => {
+  it('findAll should return all posts', async () => {
     const posts = [
       {
         _id: '5ee49c3115a4e75254bb732e',
@@ -68,7 +68,7 @@ describe('PostService', () => {
     expect(data.length).toBe(3);
   });
 
-  it('getPostById with existing id should return 1 post', done => {
+  it('findById with an existing id should return one post', done => {
     const found = {
       _id: '5ee49c3115a4e75254bb732e',
       title: 'Generate a NestJS project',
