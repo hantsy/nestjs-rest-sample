@@ -3,7 +3,7 @@ import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { CreatePostDto } from './create-post.dto';
 
 @Injectable()
-export class DataInitializerService implements OnModuleInit, OnModuleDestroy {
+export class PostDataInitializerService implements OnModuleInit, OnModuleDestroy {
   private data: CreatePostDto[] = [
     {
       title: 'Generate a NestJS project',
@@ -21,15 +21,16 @@ export class DataInitializerService implements OnModuleInit, OnModuleDestroy {
 
   constructor(private postService: PostService) {}
   onModuleInit(): void {
+    console.log('(PostModule) is initialized...');
     this.data.forEach(d => {
       this.postService.save(d).subscribe(saved => console.log(saved));
     });
   }
   onModuleDestroy(): void {
-    console.log('module is be destroying...');
+    console.log('(PostModule) is being destroyed...');
     this.postService
       .deleteAll()
-      .subscribe(del => console.log(`deleted ${del} records.`));
+      .subscribe(del => console.log(`deleted ${del.deletedCount} rows`));
   }
   // onApplicationBootstrap(): void {
   //   this.data.forEach(d => {

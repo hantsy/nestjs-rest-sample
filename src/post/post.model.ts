@@ -14,5 +14,9 @@ export class Post extends Document {
 
   @Prop()
   updatedAt?: Date;
+
+  // createdBy?: User;
+
+  // updatedBy?: User;
 }
 export const PostSchema = SchemaFactory.createForClass(Post);
