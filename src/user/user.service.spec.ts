@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserService } from './user.service';
-import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User } from './user.model';
+import { USER_MODEL } from '../database/database.constants';
+import { User } from '../database/user.model';
+import { UserService } from './user.service';
 
 describe('UserService', () => {
   let service: UserService;
@@ -13,7 +13,7 @@ describe('UserService', () => {
       providers: [
         UserService,
         {
-          provide: getModelToken('users'),
+          provide: USER_MODEL,
           useValue: {
             findOne: jest.fn(),
           },
@@ -22,7 +22,7 @@ describe('UserService', () => {
     }).compile();
 
     service = module.get<UserService>(UserService);
-    model = module.get<Model<User>>(getModelToken('users'));
+    model = module.get<Model<User>>(USER_MODEL);
   });
 
   it('should be defined', () => {

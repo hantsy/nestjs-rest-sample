@@ -1,8 +1,10 @@
+import { REQUEST } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
+import { FilterQuery, Model } from 'mongoose';
+import { COMMENT_MODEL, POST_MODEL } from '../database/database.constants';
+import { Post } from '../database/post.model';
 import { PostService } from './post.service';
-import { getModelToken } from '@nestjs/mongoose';
-import { Post } from './post.model';
-import { Model, FilterQuery } from 'mongoose';
+
 
 describe('PostService', () => {
   let service: PostService;
@@ -13,7 +15,7 @@ describe('PostService', () => {
       providers: [
         PostService,
         {
-          provide: getModelToken('posts'),
+          provide: POST_MODEL,
           useValue: {
             new: jest.fn(),
             constructor: jest.fn(),
@@ -29,11 +31,32 @@ describe('PostService', () => {
             findOneAndDelete: jest.fn(),
           },
         },
+        {
+          provide: COMMENT_MODEL,
+          useValue: {
+            new: jest.fn(),
+            constructor: jest.fn(),
+            find: jest.fn(),
+            findOne: jest.fn(),
+            update: jest.fn(),
+            create: jest.fn(),
+            remove: jest.fn(),
+            exec: jest.fn(),
+          },
+        },
+        {
+          provide: REQUEST,
+          useValue: {
+            user: {
+              _id: 'dummnyId',
+            },
+          },
+        },
       ],
     }).compile();
 
-    service = module.get<PostService>(PostService);
-    model = module.get<Model<Post>>(getModelToken('posts'));
+    service = await module.resolve<PostService>(PostService);
+    model = module.get<Model<Post>>(POST_MODEL);
   });
 
   it('should be defined', () => {
@@ -70,19 +93,28 @@ describe('PostService', () => {
     expect(data.length).toBe(3);
     expect(model.find).toHaveBeenCalled();
 
-    jest.spyOn(model, 'find').mockImplementation((conditions: FilterQuery<Post>, callback?: (err: any, res: Post[]) => void) => {
-      return {
-        skip: jest.fn().mockReturnValue({
-          limit: jest.fn().mockReturnValue({
-            exec: jest.fn().mockResolvedValueOnce([posts[0]]),
-          }),
-        }),
-      } as any;
-    });
+    jest
+      .spyOn(model, 'find')
+      .mockImplementation(
+        (
+          conditions: FilterQuery<Post>,
+          callback?: (err: any, res: Post[]) => void,
+        ) => {
+          return {
+            skip: jest.fn().mockReturnValue({
+              limit: jest.fn().mockReturnValue({
+                exec: jest.fn().mockResolvedValueOnce([posts[0]]),
+              }),
+            }),
+          } as any;
+        },
+      );
 
     const result = await service.findAll('Generate', 0, 10).toPromise();
     expect(result.length).toBe(1);
-    expect(model.find).lastCalledWith({ title: { $regex: '.*' + 'Generate' + '.*' } });
+    expect(model.find).lastCalledWith({
+      title: { $regex: '.*' + 'Generate' + '.*' },
+    });
   });
 
   it('findById with an existing id should return one post', done => {
@@ -121,7 +153,12 @@ describe('PostService', () => {
 
     const data = await service.save(toCreated).toPromise();
     expect(data._id).toBe('5ee49c3115a4e75254bb732e');
-    expect(model.create).toBeCalledWith(toCreated);
+    expect(model.create).toBeCalledWith({
+      ...toCreated,
+      createdBy: {
+        _id: 'dummnyId',
+      },
+    });
     expect(model.create).toBeCalledTimes(1);
   });
 

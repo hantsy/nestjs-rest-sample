@@ -2,7 +2,9 @@ import { of, Observable } from 'rxjs';
 import { CreatePostDto } from './create-post.dto';
 import { UpdatePostDto } from './update-post.dto';
 import { PostService } from './post.service';
-import { Post } from './post.model';
+import { Post } from '../database/post.model';
+import { CreateCommentDto } from './create-comment.dto';
+import { Comment } from '../database/comment.model';
 
 // To unite the method signature of the mocked PostServiceStub and PostService,
 // use `Pick<T, key of T>` instead of writing an extra interface.
@@ -51,5 +53,17 @@ export class PostServiceStub implements Pick<PostService, keyof PostService>{
 
   deleteAll(): Observable<any> {
     throw new Error("Method not implemented.");
+  }
+
+  createCommentFor(
+    id: string,
+    data: CreateCommentDto,
+  ): Observable<Comment> {
+    throw new Error('Method not implemented.');
+  }
+  commentsOf(
+    id: string,
+  ): Observable<Comment[]> {
+    throw new Error('Method not implemented.');
   }
 }

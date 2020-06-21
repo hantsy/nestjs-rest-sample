@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
-import { map } from 'rxjs/operators';
-import { Observable, of, from } from 'rxjs';
-import { User } from 'src/user/user.model';
+import { from, Observable, EMPTY, of } from 'rxjs';
+import { map, flatMap } from 'rxjs/operators';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthService {
@@ -14,20 +13,34 @@ export class AuthService {
 
   validateUser(username: string, pass: string): Observable<any> {
     return this.userService.findByUsername(username).pipe(
-      map(user => {
+      flatMap(user => {
+        //console.log('userService.findByUsername::' + JSON.stringify(user));
         if (user && user.password === pass) {
-          const { password, ...result } = user;
-          return result;
+          const { _id, username, email, roles } = user;
+          return of({ _id, username, email, roles });
         }
-        return null;
+        return EMPTY;
       }),
     );
   }
 
-  login(user: Partial<User>): Observable<any> {
-    const payload = { sub: user.username, email: user.email };
+  // If `LocalStrateg#validateUser` return a `Observable`, the `request.user` is
+  // bound to a `Observable<User>`, not a `User`.
+  //
+  // I would like use the current `Promise` for this case.
+  //
+  login(user: any): Observable<any> {
+    console.log(user);
+    const payload = {
+      upn: user.username, //upn is defined in Microprofile JWT spec, a human readable principal name.
+      sub: user._id,
+      email: user.email,
+      roles: user.roles,
+    };
     return from(this.jwtService.signAsync(payload)).pipe(
-      map(access_token => { access_token }),
+      map(access_token => {
+        return { access_token };
+      }),
     );
   }
 }

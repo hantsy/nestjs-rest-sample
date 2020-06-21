@@ -1,9 +1,18 @@
-import { PostService } from './post.service';
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
+import { Model } from 'mongoose';
+import { Post } from 'src/database/post.model';
+import { Comment } from '../database/comment.model';
+import { COMMENT_MODEL, POST_MODEL } from '../database/database.constants';
 import { CreatePostDto } from './create-post.dto';
 
 @Injectable()
-export class PostDataInitializerService implements OnModuleInit, OnModuleDestroy {
+export class PostDataInitializerService
+  implements OnModuleInit, OnModuleDestroy {
   private data: CreatePostDto[] = [
     {
       title: 'Generate a NestJS project',
@@ -19,26 +28,37 @@ export class PostDataInitializerService implements OnModuleInit, OnModuleDestroy
     },
   ];
 
-  constructor(private postService: PostService) {}
+  constructor(
+    @Inject(POST_MODEL) private postModel: Model<Post>,
+    @Inject(COMMENT_MODEL) private commentModel: Model<Comment>,
+  ) {}
   onModuleInit(): void {
     console.log('(PostModule) is initialized...');
     this.data.forEach(d => {
-      this.postService.save(d).subscribe(saved => console.log(saved));
+      this.postModel.create(d).then(saved => console.log(saved));
     });
+
+    this.postModel
+      .create({
+        title: 'Model relations in Mongoose',
+        content: 'content of Model relations in Mongoose',
+      })
+      .then(post =>
+        this.commentModel.create({
+          post: { _id: post._id },
+          content: 'comment of Model relations in Mongoose',
+        }),
+      )
+      .then(saved => console.log(saved));
   }
+
   onModuleDestroy(): void {
     console.log('(PostModule) is being destroyed...');
-    this.postService
-      .deleteAll()
-      .subscribe(del => console.log(`deleted ${del.deletedCount} rows`));
+    this.postModel
+      .deleteMany({})
+      .then(del => console.log(`deleted ${del.deletedCount} rows of posts`));
+    this.commentModel
+      .deleteMany({})
+      .then(del => console.log(`deleted ${del.deletedCount} rows of comments`));
   }
-  // onApplicationBootstrap(): void {
-  //   this.data.forEach(d => {
-  //     this.save(d).subscribe(saved => console.log(saved));
-  //   });
-  // }
-  // onApplicationShutdown(signal?: string): void {
-  //   console.log(signal);
-  //   this.postModel.deleteMany({}).exec();
-  // }
 }
