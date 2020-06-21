@@ -1,9 +1,9 @@
-import { Strategy } from 'passport-local';
-import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { PassportStrategy } from '@nestjs/passport';
+import { Strategy } from 'passport-local';
 import { Observable } from 'rxjs';
-import { throwIfEmpty } from 'rxjs/operators';
+import { map, throwIfEmpty } from 'rxjs/operators';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -14,9 +14,31 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  validate(username: string, password: string): Observable<any> {
-    return this.authService
+  // When using Observable as return type, the exeption in the pipeline is ignored.
+  // In our case, the `UnauthorizedException` is **NOT** caught and handled as expected.
+  // The flow is NOT prevented by the exception and continue to send a `Observable` to
+  // the next step aka calling `this.authService.login` in `AppController#login` method.
+  // Then the jwt token is generated in any case(eg. wrong username or wrong password),
+  // the authenticatoin worflow does not work as expected.
+  //
+  // The solution is customizing `PassportSerializer`.
+  // Example: https://github.com/jmcdo29/zeldaPlay/blob/master/apps/api/src/app/auth/session.serializer.ts
+  //
+  // validate(username: string, password: string): Observable<any> {
+  //   return this.authService
+  //     .validateUser(username, password)
+  //     .pipe(throwIfEmpty(() => new UnauthorizedException()));
+  // }
+
+  async validate(username: string, password: string): Promise<any> {
+    const user = await this.authService
       .validateUser(username, password)
-      .pipe(throwIfEmpty(() => new UnauthorizedException()));
+      .toPromise();
+
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    return user;
   }
 }

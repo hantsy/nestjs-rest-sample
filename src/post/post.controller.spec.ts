@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Observable, of } from 'rxjs';
+import { anyNumber, anyString, instance, mock, verify, when } from 'ts-mockito';
+import { Post } from '../database/post.model';
+import { CreatePostDto } from './create-post.dto';
 import { PostController } from './post.controller';
 import { PostService } from './post.service';
-import { CreatePostDto } from './create-post.dto';
-import { UpdatePostDto } from './update-post.dto';
-import { of, Observable } from 'rxjs';
-import { mock, verify, instance, anyString, anyNumber, when } from 'ts-mockito';
-import { Post } from './post.model';
 import { PostServiceStub } from './post.service.stub';
+import { UpdatePostDto } from './update-post.dto';
 
 describe('Post Controller', () => {
   describe('Replace PostService in provider(useClass: PostServiceStub)', () => {
@@ -23,7 +23,7 @@ describe('Post Controller', () => {
         controllers: [PostController],
       }).compile();
 
-      controller = module.get<PostController>(PostController);
+      controller = await module.resolve<PostController>(PostController);
     });
 
     it('should be defined', () => {
@@ -94,7 +94,7 @@ describe('Post Controller', () => {
         controllers: [PostController],
       }).compile();
 
-      controller = module.get<PostController>(PostController);
+      controller = await module.resolve<PostController>(PostController);
     });
 
     it('should get all posts(useValue: fake object)', async () => {
@@ -113,6 +113,7 @@ describe('Post Controller', () => {
           {
             provide: PostService,
             useValue: {
+              constructor: jest.fn(),
               findAll: jest
                 .fn()
                 .mockImplementation(
@@ -131,7 +132,7 @@ describe('Post Controller', () => {
         controllers: [PostController],
       }).compile();
 
-      controller = module.get<PostController>(PostController);
+      controller = await module.resolve<PostController>(PostController);
       postService = module.get<PostService>(PostService);
     });
 
