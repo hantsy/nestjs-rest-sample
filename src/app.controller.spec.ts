@@ -14,7 +14,7 @@ describe('AppController', () => {
           provide: AuthService,
           useValue: {
             constructor: jest.fn(),
-            login: jest.fn()
+            login: jest.fn(),
           },
         },
       ],

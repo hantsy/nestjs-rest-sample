@@ -1,12 +1,20 @@
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import {
+  Inject,
+  Injectable,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
 import { Model } from 'mongoose';
-import { User } from './user.model';
+import { RoleType } from '../database/role-type.enum';
+import { USER_MODEL } from '../database/database.constants';
+import { User } from '../database/user.model';
 
 @Injectable()
 export class UserDataInitializerService
   implements OnModuleInit, OnModuleDestroy {
-  constructor(@InjectModel('users') private userModel: Model<User>) {}
+  constructor(@Inject(USER_MODEL) private userModel: Model<User>) {
+    //console.log(`userModel in UserDataInitializerService:${userModel}`);
+  }
   onModuleInit(): void {
     console.log('(UserModule) is initialized...');
     this.userModel
@@ -14,6 +22,7 @@ export class UserDataInitializerService
         username: 'hantsy',
         password: 'password',
         email: 'hantsy@example.com',
+        roles: [RoleType.USER],
       })
       .then(data => console.log(data));
   }
