@@ -61,7 +61,7 @@
     "ts-mockito": "^2.6.1",
     "ts-node": "^8.6.2",
     "tsconfig-paths": "^3.9.0",
-    "typescript": "^3.7.4"
+    "typescript": "^3.9.5"
   },
   "jest": {
     "moduleFileExtensions": [
