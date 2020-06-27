@@ -1,5 +1,8 @@
 # NestJS Sample
 
+![Compile and build](https://github.com/hantsy/nestjs-sample/workflows/Build/badge.svg)
+![Build Docker Image](https://github.com/hantsy/nestjs-sample/workflows/Dockerize/badge.svg)
+
 A NestJS RESTful APIs sample project.
 
 ## Docs
@@ -54,5 +57,3 @@ $ npm run test:cov
 * [Clock-in/out System Series](https://carloscaballero.io/part-2-clock-in-out-system-basic-backend/)
 
 * [Modern Full-Stack Development with Nest.js, React, TypeScript, and MongoDB: Part 1](https://auth0.com/blog/modern-full-stack-development-with-nestjs-react-typescript-and-mongodb-part-1/), [Part 2](https://auth0.com/blog/modern-full-stack-development-with-nestjs-react-typescript-and-mongodb-part-2/)
-
-  
