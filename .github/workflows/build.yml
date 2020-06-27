@@ -36,4 +36,9 @@ jobs:
 
       # install dependencies and build the project
       - run: npm install
-      - run: npm test
+      - run: npm run test:cov
+      - name: Upload testing reports
+        run: |
+          bash <(curl -s https://codecov.io/bash)
+        env:
+          CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}    
