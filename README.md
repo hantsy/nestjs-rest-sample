@@ -2,6 +2,7 @@
 
 ![Compile and build](https://github.com/hantsy/nestjs-sample/workflows/Build/badge.svg)
 ![Build Docker Image](https://github.com/hantsy/nestjs-sample/workflows/Dockerize/badge.svg)
+[![codecov](https://codecov.io/gh/hantsy/nestjs-sample/branch/master/graph/badge.svg)](https://codecov.io/gh/hantsy/nestjs-sample)
 
 A NestJS RESTful APIs sample project.
 
