@@ -2,12 +2,12 @@ import {
   Inject,
   Injectable,
   OnModuleDestroy,
-  OnModuleInit,
+  OnModuleInit
 } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { Post } from 'src/database/post.model';
 import { Comment } from '../database/comment.model';
 import { COMMENT_MODEL, POST_MODEL } from '../database/database.constants';
+import { Post } from '../database/post.model';
 import { CreatePostDto } from './create-post.dto';
 
 @Injectable()

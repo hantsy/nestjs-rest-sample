@@ -35,8 +35,8 @@ describe('Post Controller', () => {
       expect(posts.length).toBe(3);
     });
 
-    it('GET on /posts/:id should return one post ', done => {
-      controller.getPostById('1').subscribe(data => {
+    it('GET on /posts/:id should return one post ', (done) => {
+      controller.getPostById('1').subscribe((data) => {
         expect(data._id).toEqual('1');
         done();
       });
@@ -51,23 +51,40 @@ describe('Post Controller', () => {
       expect(saved.title).toEqual('test title');
     });
 
-    it('PUT on /posts/:id should update the existing post', done => {
+    it('PUT on /posts/:id should update the existing post', (done) => {
       const post: UpdatePostDto = {
         title: 'test title',
         content: 'test content',
       };
-      controller.updatePost('1', post).subscribe(data => {
+      controller.updatePost('1', post).subscribe((data) => {
         expect(data.title).toEqual('test title');
         expect(data.content).toEqual('test content');
         done();
       });
     });
 
-    it('DELETE on /posts/:id should delete post', done => {
-      controller.deletePostById('1').subscribe(data => {
+    it('DELETE on /posts/:id should delete post', (done) => {
+      controller.deletePostById('1').subscribe((data) => {
         expect(data).toBeTruthy();
         done();
       });
+    });
+
+    it('POST on /posts/:id/comments', async () => {
+      const result = await controller
+        .createCommentForPost('testpost', { content: 'testcomment' })
+        .toPromise();
+
+        expect(result.content).toBe('testcomment');
+        expect(result.post._id).toBe('testpost');
+    });
+
+    it('GET on /posts/:id/comments', async () => {
+      const result = await controller
+        .getAllCommentsOfPost('testpost')
+        .toPromise();
+
+        expect(result.length).toBe(1);
     });
   });
 

@@ -3,12 +3,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { FilterQuery, Model } from 'mongoose';
 import { COMMENT_MODEL, POST_MODEL } from '../database/database.constants';
 import { Post } from '../database/post.model';
+import { Comment } from '../database/comment.model';
 import { PostService } from './post.service';
-
 
 describe('PostService', () => {
   let service: PostService;
   let model: Model<Post>;
+  let commentModel: Model<Comment>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -48,7 +49,7 @@ describe('PostService', () => {
           provide: REQUEST,
           useValue: {
             user: {
-              _id: 'dummnyId',
+              id: 'dummyId',
             },
           },
         },
@@ -57,6 +58,7 @@ describe('PostService', () => {
 
     service = await module.resolve<PostService>(PostService);
     model = module.get<Model<Post>>(POST_MODEL);
+    commentModel = module.get<Model<Comment>>(COMMENT_MODEL);
   });
 
   it('should be defined', () => {
@@ -117,7 +119,7 @@ describe('PostService', () => {
     });
   });
 
-  it('findById with an existing id should return one post', done => {
+  it('findById with an existing id should return one post', (done) => {
     const found = {
       _id: '5ee49c3115a4e75254bb732e',
       title: 'Generate a NestJS project',
@@ -129,11 +131,11 @@ describe('PostService', () => {
     } as any);
 
     service.findById('1').subscribe({
-      next: data => {
+      next: (data) => {
         expect(data._id).toBe('5ee49c3115a4e75254bb732e');
         expect(data.title).toEqual('Generate a NestJS project');
       },
-      error: error => console.log(error),
+      error: (error) => console.log(error),
       complete: done(),
     });
   });
@@ -156,13 +158,13 @@ describe('PostService', () => {
     expect(model.create).toBeCalledWith({
       ...toCreated,
       createdBy: {
-        _id: 'dummnyId',
+        _id: 'dummyId',
       },
     });
     expect(model.create).toBeCalledTimes(1);
   });
 
-  it('should update post', done => {
+  it('should update post', (done) => {
     const toUpdated = {
       _id: '5ee49c3115a4e75254bb732e',
       title: 'test title',
@@ -174,15 +176,15 @@ describe('PostService', () => {
     } as any);
 
     service.update('5ee49c3115a4e75254bb732e', toUpdated).subscribe({
-      next: data => {
+      next: (data) => {
         expect(data._id).toBe('5ee49c3115a4e75254bb732e');
       },
-      error: error => console.log(error),
+      error: (error) => console.log(error),
       complete: done(),
     });
   });
 
-  it('should delete post', done => {
+  it('should delete post', (done) => {
     const toDeleted = {
       _id: '5ee49c3115a4e75254bb732e',
       title: 'test title',
@@ -193,13 +195,13 @@ describe('PostService', () => {
     } as any);
 
     service.deleteById('anystring').subscribe({
-      next: data => expect(data._id).toEqual('5ee49c3115a4e75254bb732e'),
-      error: error => console.log(error),
+      next: (data) => expect(data._id).toEqual('5ee49c3115a4e75254bb732e'),
+      error: (error) => console.log(error),
       complete: done(),
     });
   });
 
-  it('should delete all post', done => {
+  it('should delete all post', (done) => {
     jest.spyOn(model, 'deleteMany').mockReturnValue({
       exec: jest.fn().mockResolvedValueOnce({
         deletedCount: 1,
@@ -207,9 +209,57 @@ describe('PostService', () => {
     } as any);
 
     service.deleteAll().subscribe({
-      next: data => expect(data).toBeTruthy,
-      error: error => console.log(error),
+      next: (data) => expect(data).toBeTruthy,
+      error: (error) => console.log(error),
       complete: done(),
     });
+  });
+
+  it('should create comment ', async () => {
+    const comment = { content: 'test' };
+    jest.spyOn(commentModel, 'create').mockResolvedValue({
+      ...comment,
+      post: { _id: 'test' },
+    } as any);
+
+    const result = await service.createCommentFor('test', comment).toPromise();
+    expect(result.content).toEqual('test');
+    expect(commentModel.create).toBeCalledWith({
+      ...comment,
+      post: { _id: 'test' },
+      createdBy: { _id: 'dummyId' },
+    });
+  });
+
+  it('should get comments of post ', async () => {
+    jest
+      .spyOn(commentModel, 'find')
+      .mockImplementation(
+        (
+          conditions: FilterQuery<Comment>,
+          callback?: (err: any, res: Comment[]) => void,
+        ) => {
+          return {
+            select: jest
+              .fn()
+              .mockReturnValue({
+                exec: jest
+                  .fn()
+                  .mockResolvedValue([
+                    {
+                      _id: 'test',
+                      content: 'content',
+                      post: { _id: '_test_id' },
+                    }
+                  ] as any),
+              }),
+          } as any;
+        },
+      );
+
+    const result = await service.commentsOf('test').toPromise();
+    expect(result.length).toBe(1);
+    expect(result[0].content).toEqual('content');
+    expect(commentModel.find).toBeCalledWith({ post: { _id: 'test' } });
   });
 });

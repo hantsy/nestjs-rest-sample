@@ -9,15 +9,20 @@ import {
   COMMENT_MODEL,
 } from './database.constants';
 import { CommentSchema } from './comment.model';
+import mongodbConfig from '../config/mongodb.config';
+import { ConfigType } from '@nestjs/config';
 
 export const databaseProviders = [
   {
     provide: DATABASE_CONNECTION,
-    useFactory: (): Promise<typeof mongoose> =>
-      connect('mongodb://localhost/blog', {
+    useFactory: (
+      dbConfig: ConfigType<typeof mongodbConfig>,
+    ): Promise<typeof mongoose> =>
+      connect(dbConfig.uri, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       }),
+    inject: [mongodbConfig.KEY],
   },
   {
     provide: POST_MODEL,
