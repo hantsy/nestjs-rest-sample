@@ -1,27 +1,29 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { jwtConstants } from './auth.constants';
+import jwtConfig from '../config/jwt.config';
+import { ConfigType } from '@nestjs/config';
+import { JwtPayload } from './jwt-payload.interface';
+import { UserPrincipal } from './user-principal.interface';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(@Inject(jwtConfig.KEY) config: ConfigType<typeof jwtConfig>) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: jwtConstants.secret,
+      secretOrKey: config.secretKey,
     });
   }
 
   //payload is the decoded jwt clmais.
-  validate(payload: any): any {
+  validate(payload: JwtPayload): UserPrincipal {
     //console.log('jwt payload:' + JSON.stringify(payload));
     return {
       username: payload.upn,
       email: payload.email,
-      _id: payload.sub,
+      id: payload.sub,
       roles: payload.roles,
     };
-
   }
 }

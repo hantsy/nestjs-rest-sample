@@ -6,6 +6,9 @@ async function bootstrap() {
 
   // enable shutdown hooks explicitly.
   app.enableShutdownHooks();
+
+  app.enableCors();
+  //app.useLogger();
   await app.listen(3000);
 }
 bootstrap();

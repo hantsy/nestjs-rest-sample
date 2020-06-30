@@ -2,7 +2,7 @@ import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Model } from 'mongoose';
 import { from, Observable } from 'rxjs';
-import { AuthenticatedRequest } from 'src/auth/authenticated-request.interface';
+import { AuthenticatedRequest } from '../auth/authenticated-request.interface';
 import { Comment } from '../database/comment.model';
 import { COMMENT_MODEL, POST_MODEL } from '../database/database.constants';
 import { Post } from '../database/post.model';
@@ -47,7 +47,7 @@ export class PostService {
     //console.log('req.user:'+JSON.stringify(this.req.user));
     const createPost = this.postModel.create({
       ...data,
-      createdBy: { _id: this.req.user._id },
+      createdBy: { _id: this.req.user.id },
     });
     return from(createPost);
   }
@@ -57,7 +57,7 @@ export class PostService {
       this.postModel
         .findOneAndUpdate(
           { _id: id },
-          { ...data, updatedBy: { _id: this.req.user._id } },
+          { ...data, updatedBy: { _id: this.req.user.id } },
         )
         .exec(),
     );
@@ -76,7 +76,7 @@ export class PostService {
     const createdComment = this.commentModel.create({
       post: { _id: id },
       ...data,
-      createdBy: { _id: this.req.user._id },
+      createdBy: { _id: this.req.user.id },
     });
     return from(createdComment);
   }
