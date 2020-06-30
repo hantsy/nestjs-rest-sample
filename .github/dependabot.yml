@@ -13,4 +13,4 @@ updates:
     - "hantsy"
   labels:
     - "dependencies"
-    - "changelog"
+    - "npm"
