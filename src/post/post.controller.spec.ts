@@ -7,6 +7,8 @@ import { PostController } from './post.controller';
 import { PostService } from './post.service';
 import { PostServiceStub } from './post.service.stub';
 import { UpdatePostDto } from './update-post.dto';
+import { createMock } from '@golevelup/nestjs-testing';
+import { Response } from 'express';
 
 describe('Post Controller', () => {
   describe('Replace PostService in provider(useClass: PostServiceStub)', () => {
@@ -47,8 +49,23 @@ describe('Post Controller', () => {
         title: 'test title',
         content: 'test content',
       };
-      const saved = await controller.createPost(post).toPromise();
-      expect(saved.title).toEqual('test title');
+      const saved = await controller
+        .createPost(
+          post,
+          createMock<Response>({
+            location: jest.fn().mockReturnValue({
+              status: jest.fn().mockReturnValue({
+                send: jest.fn().mockReturnValue({
+                  headers: { location: '/posts/post_id' },
+                  status: 201,
+                }),
+              }),
+            }),
+          }),
+        )
+        .toPromise();
+      // console.log(saved);
+      expect(saved.status).toBe(201);
     });
 
     it('PUT on /posts/:id should update the existing post', (done) => {
@@ -56,27 +73,61 @@ describe('Post Controller', () => {
         title: 'test title',
         content: 'test content',
       };
-      controller.updatePost('1', post).subscribe((data) => {
-        expect(data.title).toEqual('test title');
-        expect(data.content).toEqual('test content');
-        done();
-      });
+      controller
+        .updatePost(
+          '1',
+          post,
+          createMock<Response>({
+            status: jest.fn().mockReturnValue({
+              send: jest.fn().mockReturnValue({
+                status: 204,
+              }),
+            }),
+          }),
+        )
+        .subscribe((data) => {
+          expect(data.status).toBe(204);
+          done();
+        });
     });
 
     it('DELETE on /posts/:id should delete post', (done) => {
-      controller.deletePostById('1').subscribe((data) => {
-        expect(data).toBeTruthy();
-        done();
-      });
+      controller
+        .deletePostById(
+          '1',
+          createMock<Response>({
+            status: jest.fn().mockReturnValue({
+              send: jest.fn().mockReturnValue({
+                status: 204,
+              }),
+            }),
+          }),
+        )
+        .subscribe((data) => {
+          expect(data).toBeTruthy();
+          done();
+        });
     });
 
     it('POST on /posts/:id/comments', async () => {
       const result = await controller
-        .createCommentForPost('testpost', { content: 'testcomment' })
+        .createCommentForPost(
+          'testpost',
+          { content: 'testcomment' },
+          createMock<Response>({
+            location: jest.fn().mockReturnValue({
+              status: jest.fn().mockReturnValue({
+                send: jest.fn().mockReturnValue({
+                  headers: { location: '/posts/post_id/comments/comment_id' },
+                  status: 201,
+                }),
+              }),
+            }),
+          }),
+        )
         .toPromise();
 
-        expect(result.content).toBe('testcomment');
-        expect(result.post._id).toBe('testpost');
+      expect(result.status).toBe(201);
     });
 
     it('GET on /posts/:id/comments', async () => {
@@ -84,7 +135,7 @@ describe('Post Controller', () => {
         .getAllCommentsOfPost('testpost')
         .toPromise();
 
-        expect(result.length).toBe(1);
+      expect(result.length).toBe(1);
     });
   });
 
