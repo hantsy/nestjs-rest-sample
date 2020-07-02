@@ -1,7 +1,7 @@
-import { Inject, Injectable, Scope } from '@nestjs/common';
+import { Inject, Injectable, Scope, NotFoundException } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Model } from 'mongoose';
-import { from, Observable } from 'rxjs';
+import { from, Observable, EMPTY, of } from 'rxjs';
 import { AuthenticatedRequest } from '../auth/authenticated-request.interface';
 import { Comment } from '../database/comment.model';
 import { COMMENT_MODEL, POST_MODEL } from '../database/database.constants';
@@ -9,7 +9,7 @@ import { Post } from '../database/post.model';
 import { CreateCommentDto } from './create-comment.dto';
 import { CreatePostDto } from './create-post.dto';
 import { UpdatePostDto } from './update-post.dto';
-
+import { throwIfEmpty, flatMap, filter, map, switchMap } from 'rxjs/operators';
 
 @Injectable({ scope: Scope.REQUEST })
 export class PostService {
@@ -29,18 +29,15 @@ export class PostService {
           .exec(),
       );
     } else {
-      return from(
-        this.postModel
-          .find({})
-          .skip(skip)
-          .limit(limit)
-          .exec(),
-      );
+      return from(this.postModel.find({}).skip(skip).limit(limit).exec());
     }
   }
 
   findById(id: string): Observable<Post> {
-    return from(this.postModel.findOne({ _id: id }).exec());
+    return from(this.postModel.findOne({ _id: id }).exec()).pipe(
+      flatMap((p) => (p ? of(p) : EMPTY)),
+      throwIfEmpty(() => new NotFoundException(`post:$id was not found`)),
+    );
   }
 
   save(data: CreatePostDto): Observable<Post> {
@@ -58,13 +55,39 @@ export class PostService {
         .findOneAndUpdate(
           { _id: id },
           { ...data, updatedBy: { _id: this.req.user.id } },
+          { new: true },
         )
         .exec(),
+    ).pipe(
+      flatMap((p) => (p ? of(p) : EMPTY)),
+      throwIfEmpty(() => new NotFoundException(`post:$id was not found`)),
     );
+    // const filter = { _id: id };
+    // const update = { ...data, updatedBy: { _id: this.req.user.id } };
+    // return from(this.postModel.findOne(filter).exec()).pipe(
+    //   flatMap((post) => (post ? of(post) : EMPTY)),
+    //   throwIfEmpty(() => new NotFoundException(`post:$id was not found`)),
+    //   switchMap((p, i) => {
+    //     return from(this.postModel.updateOne(filter, update).exec());
+    //   }),
+    //   map((res) => res.nModified),
+    // );
   }
 
   deleteById(id: string): Observable<Post> {
-    return from(this.postModel.findOneAndDelete({ _id: id }).exec());
+    return from(this.postModel.findOneAndDelete({ _id: id }).exec()).pipe(
+      flatMap((p) => (p ? of(p) : EMPTY)),
+      throwIfEmpty(() => new NotFoundException(`post:$id was not found`)),
+    );
+    // const filter = { _id: id };
+    // return from(this.postModel.findOne(filter).exec()).pipe(
+    //   flatMap((post) => (post ? of(post) : EMPTY)),
+    //   throwIfEmpty(() => new NotFoundException(`post:$id was not found`)),
+    //   switchMap((p, i) => {
+    //     return from(this.postModel.deleteOne(filter).exec());
+    //   }),
+    //   map((res) => res.deletedCount),
+    // );
   }
 
   deleteAll(): Observable<any> {

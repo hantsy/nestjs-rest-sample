@@ -7,7 +7,7 @@ import { PostController } from './post.controller';
 import { PostService } from './post.service';
 import { PostServiceStub } from './post.service.stub';
 import { UpdatePostDto } from './update-post.dto';
-import { createMock } from '@golevelup/nestjs-testing';
+import { createMock } from '@golevelup/ts-jest';
 import { Response } from 'express';
 
 describe('Post Controller', () => {

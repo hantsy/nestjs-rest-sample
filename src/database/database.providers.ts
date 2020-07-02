@@ -21,6 +21,8 @@ export const databaseProviders = [
       connect(dbConfig.uri, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        //see: https://mongoosejs.com/docs/deprecations.html#findandmodify
+        useFindAndModify: false
       }),
     inject: [mongodbConfig.KEY],
   },

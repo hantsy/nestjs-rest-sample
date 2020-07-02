@@ -26,6 +26,7 @@ import { CreatePostDto } from './create-post.dto';
 import { PostService } from './post.service';
 import { UpdatePostDto } from './update-post.dto';
 import { map } from 'rxjs/operators';
+import { ParseObjectIdPipe } from './parse-object-id.pipe';
 
 @Controller({ path: 'posts', scope: Scope.REQUEST })
 export class PostController {
@@ -41,7 +42,7 @@ export class PostController {
   }
 
   @Get(':id')
-  getPostById(@Param('id') id: string): Observable<BlogPost> {
+  getPostById(@Param('id', ParseObjectIdPipe) id: string): Observable<BlogPost> {
     return this.postService.findById(id);
   }
 
@@ -66,7 +67,7 @@ export class PostController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @HasRoles(RoleType.USER, RoleType.ADMIN)
   updatePost(
-    @Param('id') id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @Body() post: UpdatePostDto,
     @Res() res: Response,
   ): Observable<Response> {
@@ -81,7 +82,7 @@ export class PostController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @HasRoles(RoleType.ADMIN)
   deletePostById(
-    @Param('id') id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @Res() res: Response,
   ): Observable<Response> {
     return this.postService.deleteById(id).pipe(
@@ -95,7 +96,7 @@ export class PostController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @HasRoles(RoleType.USER)
   createCommentForPost(
-    @Param('id') id: string,
+    @Param('id', ParseObjectIdPipe) id: string,
     @Body() data: CreateCommentDto,
     @Res() res: Response,
   ): Observable<Response> {
@@ -110,7 +111,7 @@ export class PostController {
   }
 
   @Get(':id/comments')
-  getAllCommentsOfPost(@Param('id') id: string): Observable<Comment[]> {
+  getAllCommentsOfPost(@Param('id', ParseObjectIdPipe) id: string): Observable<Comment[]> {
     return this.postService.commentsOf(id);
   }
 }
