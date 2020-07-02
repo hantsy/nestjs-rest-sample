@@ -1,5 +1,5 @@
-import { createMock } from '@golevelup/nestjs-testing';
-import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { createMock } from '@golevelup/ts-jest';
+import { ExecutionContext } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
@@ -44,7 +44,7 @@ describe('LocalAuthGuard', () => {
     try {
       guard.handleRequest(undefined, undefined, undefined);
     } catch (e) {
-     // console.log(e);
+      // console.log(e);
       expect(e).toBeDefined();
     }
   });
