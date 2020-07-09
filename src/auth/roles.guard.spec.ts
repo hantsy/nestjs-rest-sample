@@ -3,16 +3,8 @@ import { ExecutionContext } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  anyFunction,
-  anyString,
-  instance,
-  mock,
-  verify,
-  when,
-  reset,
-} from 'ts-mockito';
-import { mock as jestMock, any, mockClear, mockDeep } from 'jest-mock-extended';
+import { mock as jestMock, mockClear } from 'jest-mock-extended';
+import { instance, mock, reset, verify, when } from 'ts-mockito';
 import { RoleType } from '../database/role-type.enum';
 import { HAS_ROLES_KEY } from './auth.constants';
 import { AuthenticatedRequest } from './authenticated-request.interface';
