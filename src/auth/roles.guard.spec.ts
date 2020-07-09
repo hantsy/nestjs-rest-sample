@@ -18,7 +18,7 @@ import { HAS_ROLES_KEY } from './auth.constants';
 import { AuthenticatedRequest } from './authenticated-request.interface';
 import { RolesGuard } from './roles.guard';
 
-xdescribe('RolesGuard', () => {
+describe('RolesGuard', () => {
   let guard: RolesGuard;
   let reflector: Reflector;
   beforeEach(async () => {
