@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { of } from 'rxjs';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { Response } from 'express'
+import { createMock } from '@golevelup/ts-jest';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -29,8 +31,23 @@ describe('AuthController', () => {
       jest.spyOn(authService, 'login').mockImplementation((user: any) => {
         return of({ access_token: 'jwttoken' });
       });
-      const token = await controller.login({} as any).toPromise();
-      expect(token.access_token).toEqual('jwttoken');
+
+
+      const token = await controller.login({} as any,
+        createMock<Response>({
+          header: jest.fn().mockReturnValue({
+
+            json: jest.fn().mockReturnValue({
+
+              send: jest.fn().mockReturnValue({
+                header: { authorization: 'Bearer test' },
+              }),
+
+            }),
+          }),
+        })
+      ).toPromise();
+      expect(token).toBeTruthy();
       expect(authService.login).toBeCalled();
     });
   });

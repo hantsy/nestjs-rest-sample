@@ -74,7 +74,7 @@ describe('API endpoints testing (e2e)', () => {
 
       expect(res.status).toBe(201);
       jwttoken = res.body.access_token;
-      //console.log(jwttoken);
+      //console.log(JSON.stringify(res));
     });
 
     it('/posts (GET)', async () => {

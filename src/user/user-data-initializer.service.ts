@@ -1,8 +1,7 @@
 import {
   Inject,
   Injectable,
-  OnModuleDestroy,
-  OnModuleInit,
+  OnModuleInit
 } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { USER_MODEL } from '../database/database.constants';
@@ -11,11 +10,12 @@ import { User } from '../database/user.model';
 
 @Injectable()
 export class UserDataInitializerService
-  implements OnModuleInit, OnModuleDestroy {
-  constructor(@Inject(USER_MODEL) private userModel: Model<User>) {}
+  implements OnModuleInit {
+  constructor(@Inject(USER_MODEL) private userModel: Model<User>) { }
 
-  onModuleInit(): void {
+  async onModuleInit(): Promise<void> {
     console.log('(UserModule) is initialized...');
+    await this.userModel.deleteMany({});
     const user = {
       username: 'hantsy',
       password: 'password',
@@ -29,15 +29,7 @@ export class UserDataInitializerService
       email: 'admin@example.com',
       roles: [RoleType.ADMIN],
     };
-
-    [user, admin].map((u) =>
-      this.userModel.create(u).then((data) => console.log(data)),
-    );
+    await this.userModel.insertMany([user, admin]);
   }
 
-  onModuleDestroy(): void {
-    this.userModel.deleteMany({}).then((del) => {
-      console.log(`deleted ${del.deletedCount} rows`);
-    });
-  }
 }
