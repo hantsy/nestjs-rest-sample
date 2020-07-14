@@ -3,6 +3,7 @@ import { of } from 'rxjs';
 import { RoleType } from '../database/role-type.enum';
 import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.strategy';
+import { mock } from 'jest-mock-extended';
 
 describe('LocalStrategy', () => {
   let strategy: LocalStrategy;
@@ -16,7 +17,7 @@ describe('LocalStrategy', () => {
           useValue: {
             constructor: jest.fn(),
             login: jest.fn(),
-            validateUser:jest.fn()
+            validateUser: jest.fn()
           },
         },
       ],
@@ -43,4 +44,28 @@ describe('LocalStrategy', () => {
       expect(authService.validateUser).toBeCalledWith('test', 'pass');
     });
   });
+});
+
+describe('LocalStrategy(call supper)', () => {
+  let local;
+  let parentMock;
+
+  beforeEach(() => {
+    local = Object.getPrototypeOf(LocalStrategy);
+    parentMock = jest.fn();
+    Object.setPrototypeOf(LocalStrategy, parentMock);
+  });
+
+  afterEach(() => {
+    Object.setPrototypeOf(LocalStrategy, local);
+  });
+
+  it('call super', () => {
+    new LocalStrategy(mock<AuthService>());
+    expect(parentMock.mock.calls.length).toBe(1);
+    expect(parentMock).toBeCalledWith({
+      usernameField: 'username',
+      passwordField: 'password',
+    });
+  })
 });
