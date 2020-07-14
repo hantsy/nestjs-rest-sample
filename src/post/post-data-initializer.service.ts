@@ -1,8 +1,7 @@
 import {
   Inject,
   Injectable,
-  OnModuleDestroy,
-  OnModuleInit,
+  OnModuleInit
 } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { Comment } from '../database/comment.model';
@@ -12,7 +11,7 @@ import { CreatePostDto } from './create-post.dto';
 
 @Injectable()
 export class PostDataInitializerService
-  implements OnModuleInit, OnModuleDestroy {
+  implements OnModuleInit {
   private data: CreatePostDto[] = [
     {
       title: 'Generate a NestJS project',
@@ -31,22 +30,12 @@ export class PostDataInitializerService
   constructor(
     @Inject(POST_MODEL) private postModel: Model<Post>,
     @Inject(COMMENT_MODEL) private commentModel: Model<Comment>,
-  ) {}
+  ) { }
 
-  onModuleInit(): void {
+  async onModuleInit(): Promise<void> {
     console.log('(PostModule) is initialized...');
-    this.postModel.insertMany(this.data).then((r) => console.log(r));
-    // Promise.all(this.data.map((d) => this.postModel.create(d))).then((saved) =>
-    //   console.log(saved),
-    // );
-  }
-
-  onModuleDestroy(): void {
-    Promise.all([
-      this.postModel.deleteMany({}),
-      this.commentModel.deleteMany({}),
-    ]).then((data) => {
-      console.log(data);
-    });
+    await this.postModel.deleteMany({});
+    await this.commentModel.deleteMany({});
+    await this.postModel.insertMany(this.data).then((r) => console.log(r));
   }
 }
