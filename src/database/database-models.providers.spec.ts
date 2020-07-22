@@ -1,18 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import * as mongoose from 'mongoose';
-import { Model } from 'mongoose';
+import { Connection, Model } from 'mongoose';
 import { Comment } from './comment.model';
 import {
   COMMENT_MODEL,
   DATABASE_CONNECTION,
   POST_MODEL,
-  USER_MODEL,
+  USER_MODEL
 } from './database.constants';
-import { databaseProviders } from './database.providers';
+import { databaseModelsProviders } from './database-models.providers';
 import { Post } from './post.model';
 import { User } from './user.model';
 
-describe('DatabaseProviders', () => {
+
+describe('DatabaseModelsProviders', () => {
   let conn: any;
   let userModel: any;
   let postModel: any;
@@ -20,15 +20,20 @@ describe('DatabaseProviders', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [...databaseProviders],
+      providers: [...databaseModelsProviders,
+
+      {
+        provide: DATABASE_CONNECTION,
+        useValue: {
+          model: jest.fn().mockReturnValue({} as Model<User | Post | Comment>),
+        },
+      },
+      ],
+
     })
-      .overrideProvider(DATABASE_CONNECTION)
-      .useValue({
-        model: jest.fn().mockReturnValue({} as Model<User | Post | Comment>),
-      })
       .compile();
 
-    conn = module.get<typeof mongoose>(DATABASE_CONNECTION);
+    conn = module.get<Connection>(DATABASE_CONNECTION);
     userModel = module.get<Model<User>>(USER_MODEL);
     postModel = module.get<Model<Post>>(POST_MODEL);
     commentModel = module.get<Model<Comment>>(COMMENT_MODEL);
