@@ -1,9 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { of } from 'rxjs';
+import { of, EMPTY } from 'rxjs';
 import { RoleType } from '../database/role-type.enum';
 import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.strategy';
 import { mock } from 'jest-mock-extended';
+import { UnauthorizedException } from '@nestjs/common';
 
 describe('LocalStrategy', () => {
   let strategy: LocalStrategy;
@@ -41,6 +42,22 @@ describe('LocalStrategy', () => {
         });
       const user = await strategy.validate('test', 'pass');
       expect(user.username).toEqual('test');
+      expect(authService.validateUser).toBeCalledWith('test', 'pass');
+    });
+
+    it('should throw UnauthorizedException  if user is not valid ', async () => {
+      jest
+        .spyOn(authService, 'validateUser')
+        .mockImplementation((user: any, pass: any) => {
+          return EMPTY;
+        });
+
+      try {
+        const user = await strategy.validate('test', 'pass');
+      } catch (e) {
+        //console.log(e)
+        expect(e).toBeDefined()
+      }
       expect(authService.validateUser).toBeCalledWith('test', 'pass');
     });
   });

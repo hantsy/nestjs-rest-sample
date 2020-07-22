@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
-import { databaseProviders } from './database.providers';
 import { ConfigModule } from '@nestjs/config';
 import mongodbConfig from '../config/mongodb.config';
+import { databaseConnectionProviders } from './database-connection.providers';
+import { databaseModelsProviders } from './database-models.providers';
 
 @Module({
   imports: [ConfigModule.forFeature(mongodbConfig)],
-  providers: [...databaseProviders],
-  exports: [...databaseProviders],
+  providers: [...databaseConnectionProviders, ...databaseModelsProviders],
+  exports: [...databaseConnectionProviders, ...databaseModelsProviders],
 })
-export class DatabaseModule {}
+export class DatabaseModule { }
