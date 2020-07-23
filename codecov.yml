@@ -1,5 +1,2 @@
 ignore:
   - "**/*stub.ts"
-  - "**/*dto.ts"
-  - "**/*interface.ts"
-  - "**/*model.ts"

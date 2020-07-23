@@ -80,6 +80,7 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "coverageDirectory": "../coverage",
+    "coveragePathIgnorePatterns" :["/node_modules/",".*(stub.ts)$"],
     "testEnvironment": "node",
     "preset": "ts-jest"
   },
