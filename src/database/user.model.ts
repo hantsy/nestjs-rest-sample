@@ -9,7 +9,7 @@ export interface User extends Document {
   readonly roles?: RoleType[];
 }
 
-const UserSchema = new Schema(
+export const UserSchema = new Schema(
   {
     username: SchemaTypes.String,
     password: SchemaTypes.String,
@@ -22,11 +22,22 @@ const UserSchema = new Schema(
     //   createdAt: { type: SchemaTypes.Date, required: false },
     //   updatedAt: { type: SchemaTypes.Date, required: false },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    toJSON: {
+      virtuals: true
+    }
+  },
 );
 
-UserSchema.virtual('name').get(function() {
+UserSchema.virtual('name').get(function () {
   return `${this.firstName} ${this.lastName}`;
+});
+
+UserSchema.virtual('posts', {
+  ref: 'Post',
+  localField: '_id',
+  foreignField: 'createdBy',
 });
 
 export const userModelFn = (conn: Connection) =>

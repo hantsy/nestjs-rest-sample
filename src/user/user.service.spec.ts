@@ -46,7 +46,50 @@ describe('UserService', () => {
       username: 'hantsy',
       email: 'hantsy@example.com',
     });
-    expect(model.findOne).lastCalledWith({username: 'hantsy'});
+    expect(model.findOne).lastCalledWith({ username: 'hantsy' });
+    expect(model.findOne).toBeCalledTimes(1);
+  });
+
+  it('findById', async () => {
+    jest
+      .spyOn(model, 'findOne')
+      .mockImplementation((conditions: any, projection: any, options: any) => {
+        return {
+          exec: jest.fn().mockResolvedValue({
+            username: 'hantsy',
+            email: 'hantsy@example.com',
+          } as User),
+        } as any;
+      });
+
+    const foundUser = await service.findById('hantsy').toPromise();
+    expect(foundUser).toEqual({
+      username: 'hantsy',
+      email: 'hantsy@example.com',
+    });
+    expect(model.findOne).lastCalledWith({ _id: 'hantsy' });
+    expect(model.findOne).toBeCalledTimes(1);
+  });
+
+  it('findById withPosts=true', async () => {
+    jest
+      .spyOn(model, 'findOne')
+      .mockImplementation((conditions: any, projection: any, options: any) => {
+        return {
+          populate: jest.fn().mockReturnThis(),
+          exec: jest.fn().mockResolvedValue({
+            username: 'hantsy',
+            email: 'hantsy@example.com',
+          } as User),
+        } as any;
+      });
+
+    const foundUser = await service.findById('hantsy', true).toPromise();
+    expect(foundUser).toEqual({
+      username: 'hantsy',
+      email: 'hantsy@example.com',
+    });
+    expect(model.findOne).lastCalledWith({ _id: 'hantsy' });
     expect(model.findOne).toBeCalledTimes(1);
   });
 });

@@ -59,3 +59,5 @@ $ npm run test:cov
 * [Clock-in/out System Series](https://carloscaballero.io/part-2-clock-in-out-system-basic-backend/)
 
 * [Modern Full-Stack Development with Nest.js, React, TypeScript, and MongoDB: Part 1](https://auth0.com/blog/modern-full-stack-development-with-nestjs-react-typescript-and-mongodb-part-1/), [Part 2](https://auth0.com/blog/modern-full-stack-development-with-nestjs-react-typescript-and-mongodb-part-2/)
+
+* [Code with Hugo - Jest Full and Partial Mock/Spy of CommonJS and ES6 Module Imports](https://codewithhugo.com/jest-mock-spy-module-import/)

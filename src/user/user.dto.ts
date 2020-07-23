@@ -5,6 +5,7 @@ export class UserDto {
   readonly username: string;
   readonly email: string;
   readonly password: string;
+  readonly name?: string;
   readonly firstName?: string;
   readonly lastName?: string;
   readonly roles?: RoleType[];
