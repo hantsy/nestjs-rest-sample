@@ -1,6 +1,7 @@
-import { Connection, Document, Schema, SchemaTypes } from 'mongoose';
+import { Connection, Document, Schema, SchemaTypes, Model } from 'mongoose';
 import { RoleType } from './role-type.enum';
-export interface User extends Document {
+interface User extends Document {
+
   readonly username: string;
   readonly email: string;
   readonly password: string;
@@ -9,7 +10,9 @@ export interface User extends Document {
   readonly roles?: RoleType[];
 }
 
-export const UserSchema = new Schema(
+type UserModel = Model<User>;
+
+const UserSchema = new Schema(
   {
     username: SchemaTypes.String,
     password: SchemaTypes.String,
@@ -19,6 +22,7 @@ export const UserSchema = new Schema(
     roles: [
       { type: SchemaTypes.String, enum: ['ADMIN', 'USER'], required: false },
     ],
+    // use timestamps option to generate it automaticially.
     //   createdAt: { type: SchemaTypes.Date, required: false },
     //   updatedAt: { type: SchemaTypes.Date, required: false },
   },
@@ -40,5 +44,7 @@ UserSchema.virtual('posts', {
   foreignField: 'createdBy',
 });
 
-export const userModelFn = (conn: Connection) =>
-  conn.model<User>('User', UserSchema, 'users');
+const userModelFn: (conn: Connection) => UserModel = (conn: Connection) =>
+  conn.model<User, UserModel>('User', UserSchema, 'users');
+
+export { User, UserModel, UserSchema, userModelFn }
