@@ -71,6 +71,23 @@ describe('UserService', () => {
     expect(model.findOne).toBeCalledTimes(1);
   });
 
+  it('findById with a null result', async () => {
+    jest
+      .spyOn(model, 'findOne')
+      .mockImplementation((conditions: any, projection: any, options: any) => {
+        return {
+          exec: jest.fn().mockResolvedValue(null) as any,
+        } as any;
+      });
+
+    try {
+      const foundUser = await service.findById('hantsy').toPromise();
+    } catch (e) {
+      expect(e).toBeDefined();
+    }
+  });
+
+
   it('findById withPosts=true', async () => {
     jest
       .spyOn(model, 'findOne')
