@@ -27,6 +27,7 @@
     "@nestjs/jwt": "^7.0.0",
     "@nestjs/passport": "^7.1.0",
     "@nestjs/platform-express": "^7.0.0",
+    "bcrypt": "^5.0.0",
     "class-transformer": "^0.2.3",
     "class-validator": "^0.12.2",
     "mongoose": "^5.9.20",
@@ -44,6 +45,7 @@
     "@nestjs/cli": "^7.4.1",
     "@nestjs/schematics": "^7.0.0",
     "@nestjs/testing": "^7.0.0",
+    "@types/bcrypt": "^3.0.0",
     "@types/express": "^4.17.3",
     "@types/jest": "26.0.5",
     "@types/mongoose": "^5.7.29",
@@ -80,7 +82,10 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "coverageDirectory": "../coverage",
-    "coveragePathIgnorePatterns" :["/node_modules/",".*(stub.ts)$"],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      ".*(stub.ts)$"
+    ],
     "testEnvironment": "node",
     "preset": "ts-jest"
   },

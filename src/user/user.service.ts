@@ -22,7 +22,7 @@ export class UserService {
     }
     return from(userQuery.exec()).pipe(
       flatMap((p) => (p ? of(p) : EMPTY)),
-      throwIfEmpty(() => new NotFoundException(`user:$id was not found`)),
+      throwIfEmpty(() => new NotFoundException(`user:${id} was not found`)),
     );
   }
 }

@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { from, Observable, EMPTY, of } from 'rxjs';
-import { map, flatMap } from 'rxjs/operators';
+import { map, flatMap, switchMap, throwIfEmpty } from 'rxjs/operators';
 import { UserService } from '../user/user.service';
 import { UserPrincipal } from './user-principal.interface';
 import { JwtPayload } from './jwt-payload.interface';
@@ -12,18 +12,31 @@ export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   validateUser(username: string, pass: string): Observable<UserPrincipal> {
     return this.userService.findByUsername(username).pipe(
+      //if user is not found, convert it into an EMPTY.
+      flatMap((p) => (p ? of(p) : EMPTY)),
+
+      // Using a general message in the authentication progress is more reasonable.
+      // Concise info could be considered for security.
+      // Detailed info will be helpful for crackers.
+      // throwIfEmpty(() => new NotFoundException(`username:${username} was not found`)),
+      throwIfEmpty(() => new UnauthorizedException(`username or password is not matched`)),
+
       flatMap((user) => {
-        //console.log('userService.findByUsername::' + JSON.stringify(user));
-        if (user && user.password === pass) {
-          const { _id, username, email, roles } = user;
-          return of({ id: _id, username, email, roles });
-        }
-        return EMPTY;
-      }),
+        const { _id, password, username, email, roles } = user;
+        return user.comparePassword(pass).pipe(map(m => {
+          if (m) {
+            return { id: _id, username, email, roles } as UserPrincipal;
+          }else {
+            // The same reason above.
+            //throw new UnauthorizedException('password was not matched.')
+            throw new UnauthorizedException('username or password is not matched')
+          }
+        }))
+      })
     );
   }
 

@@ -9,7 +9,10 @@ jest.mock('mongoose', () => ({
     Schema: jest.fn().mockImplementation(
         (def: any, options: any) => ({
             constructor: jest.fn(),
-            virtual: virtualMock
+            virtual: virtualMock,
+            pre: jest.fn(),
+            methods: { comparePassword: jest.fn() },
+            comparePassword:jest.fn()
         })
     ),
     SchemaTypes: jest.fn().mockImplementation(() => ({
@@ -17,9 +20,8 @@ jest.mock('mongoose', () => ({
     }))
 }))
 
-import { UserSchema } from "./user.model";
-import * as mongoose from "mongoose";
 import { anyFunction } from "jest-mock-extended";
+import { UserSchema } from "./user.model";
 
 describe('UserSchema', () => {
 

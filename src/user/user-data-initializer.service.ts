@@ -29,7 +29,14 @@ export class UserDataInitializerService
       email: 'admin@example.com',
       roles: [RoleType.ADMIN],
     };
-    await this.userModel.insertMany([user, admin]);
+    await Promise.all(
+      [
+        this.userModel.create(user),
+        this.userModel.create(admin)
+      ]
+    ).then(
+      data => console.log(data)
+    );
   }
 
 }
