@@ -2,7 +2,7 @@ import { ConfigType } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { mock } from 'jest-mock-extended';
 import jwtConfig from '../config/jwt.config';
-import { RoleType } from '../database/role-type.enum';
+import { RoleType } from '../common/enum/role-type.enum';
 import { JwtStrategy } from './jwt.strategy';
 
 describe('JwtStrategy', () => {

@@ -16,17 +16,17 @@ import {
 import { Response } from 'express';
 import { Observable } from 'rxjs';
 import { HasRoles } from '../auth/has-roles.decorator';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Comment } from '../database/comment.model';
 import { Post as BlogPost } from '../database/post.model';
-import { RoleType } from '../database/role-type.enum';
+import { RoleType } from '../common/enum/role-type.enum';
 import { CreateCommentDto } from './create-comment.dto';
 import { CreatePostDto } from './create-post.dto';
 import { PostService } from './post.service';
 import { UpdatePostDto } from './update-post.dto';
 import { map } from 'rxjs/operators';
-import { ParseObjectIdPipe } from './parse-object-id.pipe';
+import { ParseObjectIdPipe } from '../common/pipe/parse-object-id.pipe';
 
 @Controller({ path: 'posts', scope: Scope.REQUEST })
 export class PostController {

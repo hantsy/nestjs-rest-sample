@@ -1,10 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { of, EMPTY } from 'rxjs';
-import { RoleType } from '../database/role-type.enum';
+import { mock } from 'jest-mock-extended';
+import { EMPTY, of } from 'rxjs';
+import { RoleType } from '../common/enum/role-type.enum';
 import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.strategy';
-import { mock } from 'jest-mock-extended';
-import { UnauthorizedException } from '@nestjs/common';
 
 describe('LocalStrategy', () => {
   let strategy: LocalStrategy;

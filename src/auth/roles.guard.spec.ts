@@ -5,7 +5,7 @@ import { Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { mock as jestMock, mockClear } from 'jest-mock-extended';
 import { instance, mock, reset, verify, when } from 'ts-mockito';
-import { RoleType } from '../database/role-type.enum';
+import { RoleType } from '../common/enum/role-type.enum';
 import { HAS_ROLES_KEY } from './auth.constants';
 import { AuthenticatedRequest } from './authenticated-request.interface';
 import { RolesGuard } from './roles.guard';

@@ -1,8 +1,8 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import * as mongoose from 'mongoose';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
-import * as mongoose from 'mongoose';
 
 describe('API endpoints testing (e2e)', () => {
   let app: INestApplication;

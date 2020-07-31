@@ -1,5 +1,5 @@
 import { Connection, Document, Schema, SchemaTypes, Model } from 'mongoose';
-import { RoleType } from './role-type.enum';
+import { RoleType } from '../common/enum/role-type.enum';
 interface User extends Document {
 
   readonly username: string;

@@ -2,7 +2,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { of } from 'rxjs';
 import { toArray } from 'rxjs/operators';
-import { RoleType } from '../database/role-type.enum';
+import { RoleType } from '../common/enum/role-type.enum';
 import { User } from '../database/user.model';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';

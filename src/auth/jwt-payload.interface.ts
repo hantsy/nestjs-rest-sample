@@ -1,4 +1,4 @@
-import { RoleType } from "../database/role-type.enum";
+import { RoleType } from "../common/enum/role-type.enum";
 
 export interface JwtPayload {
     readonly upn: string;
