@@ -9,28 +9,28 @@ import {
   Post,
   Put,
   Query,
-  Scope,
-  UseGuards,
   Res,
+  Scope,
+  UseGuards
 } from '@nestjs/common';
 import { Response } from 'express';
 import { Observable } from 'rxjs';
-import { HasRoles } from '../auth/has-roles.decorator';
-import { JwtAuthGuard } from '../common/guard/jwt-auth.guard';
-import { RolesGuard } from '../auth/roles.guard';
+import { map } from 'rxjs/operators';
+import { RoleType } from '../auth/enum/role-type.enum';
+import { HasRoles } from '../auth/guard/has-roles.decorator';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { RolesGuard } from '../auth/guard/roles.guard';
+import { ParseObjectIdPipe } from '../common/pipe/parse-object-id.pipe';
 import { Comment } from '../database/comment.model';
 import { Post as BlogPost } from '../database/post.model';
-import { RoleType } from '../common/enum/role-type.enum';
 import { CreateCommentDto } from './create-comment.dto';
 import { CreatePostDto } from './create-post.dto';
 import { PostService } from './post.service';
 import { UpdatePostDto } from './update-post.dto';
-import { map } from 'rxjs/operators';
-import { ParseObjectIdPipe } from '../common/pipe/parse-object-id.pipe';
 
 @Controller({ path: 'posts', scope: Scope.REQUEST })
 export class PostController {
-  constructor(private postService: PostService) {}
+  constructor(private postService: PostService) { }
 
   @Get('')
   getAllPosts(

@@ -2,7 +2,7 @@ import {
   ArgumentMetadata,
   BadRequestException,
   Injectable,
-  PipeTransform,
+  PipeTransform
 } from '@nestjs/common';
 import * as mongoose from 'mongoose';
 

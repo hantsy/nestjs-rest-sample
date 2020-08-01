@@ -3,9 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import { from, Observable, EMPTY, of } from 'rxjs';
 import { map, flatMap, switchMap, throwIfEmpty } from 'rxjs/operators';
 import { UserService } from '../user/user.service';
-import { UserPrincipal } from './user-principal.interface';
-import { JwtPayload } from './jwt-payload.interface';
-import { AccessToken } from './access-token.interface';
+import { UserPrincipal } from './interface/user-principal.interface';
+import { JwtPayload } from './interface/jwt-payload.interface';
+import { AccessToken } from './interface/access-token.interface';
 
 @Injectable()
 export class AuthService {

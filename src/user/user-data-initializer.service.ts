@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { USER_MODEL } from '../database/database.constants';
-import { RoleType } from '../common/enum/role-type.enum';
+import { RoleType } from '../auth/enum/role-type.enum';
 import { User } from '../database/user.model';
 
 @Injectable()

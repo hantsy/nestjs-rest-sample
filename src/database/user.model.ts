@@ -1,7 +1,7 @@
 import { compare, hash } from 'bcrypt';
 import { Connection, Document, Model, Schema, SchemaTypes } from 'mongoose';
 import { from, Observable } from "rxjs";
-import { RoleType } from '../common/enum/role-type.enum';
+import { RoleType } from '../auth/enum/role-type.enum';
 interface User extends Document {
   comparePassword(password: string): Observable<boolean>;
   readonly username: string;
