@@ -1,7 +1,6 @@
-import { genSalt, compare, hash} from 'bcrypt';
-import { NextFunction } from 'express';
+import { compare, hash } from 'bcrypt';
 import { Connection, Document, Model, Schema, SchemaTypes } from 'mongoose';
-import { Observable, of, from } from "rxjs";
+import { from, Observable } from "rxjs";
 import { RoleType } from '../common/enum/role-type.enum';
 interface User extends Document {
   comparePassword(password: string): Observable<boolean>;
@@ -39,35 +38,31 @@ const UserSchema = new Schema(
 
 // see: https://wanago.io/2020/05/25/api-nestjs-authenticating-users-bcrypt-passport-jwt-cookies/
 // and https://stackoverflow.com/questions/48023018/nodejs-bcrypt-async-mongoose-login
-UserSchema.pre<User>('save', function (next: NextFunction) {
-  const user = this as User;
+async function preSaveHook(next) {
 
-  if (this.isModified('password') || this.isNew) {
-    genSalt(10, (err: any, salt: any) => {
-      if (err) {
-        return next(err);
-      }
+  // Only run this function if password was modified
+  if (!this.isModified('password')) return next();
 
-      hash(user.password, salt, (err, hash) => {
-        if (err) {
-          return next(err);
-        }
-        user.set('password', hash);
-        next();
-      });
-    });
-  } else {
-    next();
-  }
-});
+  // Hash the password
+  const password = await hash(this.password, 12);
+  this.set('password', password);
 
-UserSchema.methods.comparePassword = function (password:string): Observable<boolean> {
+  next();
+}
+
+UserSchema.pre<User>('save', preSaveHook);
+
+function comparePasswordMethod(password: string): Observable<boolean> {
   return from(compare(password, this.password));
-};
+}
 
-UserSchema.virtual('name').get(function () {
+UserSchema.methods.comparePassword = comparePasswordMethod;
+
+function nameGetHook() {
   return `${this.firstName} ${this.lastName}`;
-});
+}
+
+UserSchema.virtual('name').get(nameGetHook);
 
 UserSchema.virtual('posts', {
   ref: 'Post',
@@ -78,4 +73,4 @@ UserSchema.virtual('posts', {
 const userModelFn: (conn: Connection) => UserModel = (conn: Connection) =>
   conn.model<User, UserModel>('User', UserSchema, 'users');
 
-export { User, UserModel, UserSchema, userModelFn };
+export { User, UserModel, UserSchema, preSaveHook, nameGetHook, comparePasswordMethod, userModelFn };
