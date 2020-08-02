@@ -27,6 +27,7 @@
     "@nestjs/jwt": "^7.0.0",
     "@nestjs/passport": "^7.1.0",
     "@nestjs/platform-express": "^7.0.0",
+    "@sendgrid/mail": "^7.2.2",
     "bcrypt": "^5.0.0",
     "class-transformer": "^0.3.1",
     "class-validator": "^0.12.2",
@@ -39,7 +40,7 @@
     "rxjs": "^6.5.4"
   },
   "devDependencies": {
-    "@commitlint/cli": "^9.0.1",
+    "@commitlint/cli": "^9.1.2",
     "@commitlint/config-conventional": "^9.0.1",
     "@golevelup/ts-jest": "^0.3.0",
     "@nestjs/cli": "^7.4.1",

@@ -1,10 +1,8 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { Model } from 'mongoose';
-import { from, Observable, EMPTY, of } from 'rxjs';
+import { EMPTY, from, Observable, of } from 'rxjs';
+import { flatMap, throwIfEmpty } from 'rxjs/operators';
 import { USER_MODEL } from '../database/database.constants';
 import { User, UserModel } from '../database/user.model';
-import { Post } from '../database/post.model';
-import { flatMap, throwIfEmpty } from 'rxjs/operators';
 
 
 @Injectable()
