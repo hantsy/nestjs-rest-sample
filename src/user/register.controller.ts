@@ -28,7 +28,7 @@ export class RegisterController {
                                 throw new ConflictException(`email:${email} is existed`)
                             }
                             else {
-                                return this.userService.save(registerDto).pipe(
+                                return this.userService.register(registerDto).pipe(
                                     map(user =>
                                         res.location('/users/' + user.id)
                                             .status(201)

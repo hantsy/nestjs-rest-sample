@@ -1,18 +1,17 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { EMPTY, from, Observable, of } from 'rxjs';
-import { flatMap, throwIfEmpty } from 'rxjs/operators';
+import { EMPTY, from, Observable, of, throwError } from 'rxjs';
+import { flatMap, tap, throwIfEmpty, catchError } from 'rxjs/operators';
+import { RoleType } from '../auth/enum/role-type.enum';
 import { USER_MODEL } from '../database/database.constants';
 import { User, UserModel } from '../database/user.model';
+import { SendgridService } from '../sendgrid/sendgrid.service';
 import { RegisterDto } from './register.dto';
-import { RoleType } from '../auth/enum/role-type.enum';
-// import { SendgridService } from 'sendgrid/sendgrid.service';
-
 
 @Injectable()
 export class UserService {
   constructor(
     @Inject(USER_MODEL) private userModel: UserModel,
-   // private sendgridService: SendgridService
+    private sendgridService: SendgridService
   ) { }
 
   findByUsername(username: string): Observable<User> {
@@ -27,7 +26,7 @@ export class UserService {
     return from(this.userModel.exists({ email }));
   }
 
-  save(data: RegisterDto): Observable<User> {
+  register(data: RegisterDto): Observable<User> {
 
     // Simply here we can send a verification email to the new registered user
     // by calling SendGrid directly.
@@ -65,7 +64,26 @@ export class UserService {
       ...data,
       roles: [RoleType.USER]
     });
+
     return from(created);
+
+    // const msg = {
+    //   from: 'hantsy@gmail.com', // Use the email address or domain you verified above
+    //   subject: 'Welcome to Nestjs Sample',
+    //   templateId: "d-cc6080999ac04a558d632acf2d5d0b7a",
+    //   personalizations: [
+    //     {
+    //       to: data.email,
+    //       dynamicTemplateData: { name: data.firstName + ' ' + data.lastName },
+    //     }
+    //   ]
+
+    // };
+    // return this.sendgridService.send(msg).pipe(
+    //   catchError(err=>of(`sending email failed:${err}`)),
+    //   tap(data => console.log(data)),
+    //   flatMap(data => from(created)),
+    // );
   }
 
   findById(id: string, withPosts = false): Observable<User> {

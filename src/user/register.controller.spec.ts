@@ -16,7 +16,7 @@ describe('Register Controller', () => {
         {
           provide: UserService,
           useValue: {
-            save: jest.fn(),
+            register: jest.fn(),
             existsByUsername: jest.fn(),
             existsByEmail: jest.fn()
           },
@@ -36,7 +36,7 @@ describe('Register Controller', () => {
     it('should throw ConflictException when username is existed ', async () => {
       const existsByUsernameSpy = jest.spyOn(service, 'existsByUsername').mockReturnValue(of(true));
       const existsByEmailSpy = jest.spyOn(service, 'existsByEmail').mockReturnValue(of(true));
-      const saveSpy = jest.spyOn(service, 'save').mockReturnValue(of({} as User));
+      const saveSpy = jest.spyOn(service, 'register').mockReturnValue(of({} as User));
 
       const responseMock = {
         location: jest.fn().mockReturnThis(),
@@ -56,7 +56,7 @@ describe('Register Controller', () => {
     it('should throw ConflictException when email is existed ', async () => {
       const existsByUsernameSpy = jest.spyOn(service, 'existsByUsername').mockReturnValue(of(false));
       const existsByEmailSpy = jest.spyOn(service, 'existsByEmail').mockReturnValue(of(true));
-      const saveSpy = jest.spyOn(service, 'save').mockReturnValue(of({} as User));
+      const saveSpy = jest.spyOn(service, 'register').mockReturnValue(of({} as User));
 
       const responseMock = {
         location: jest.fn().mockReturnThis(),
@@ -76,7 +76,7 @@ describe('Register Controller', () => {
     it('should save when username and email are available ', async () => {
       const existsByUsernameSpy = jest.spyOn(service, 'existsByUsername').mockReturnValue(of(false));
       const existsByEmailSpy = jest.spyOn(service, 'existsByEmail').mockReturnValue(of(false));
-      const saveSpy = jest.spyOn(service, 'save').mockReturnValue(of({ _id: '123' } as User));
+      const saveSpy = jest.spyOn(service, 'register').mockReturnValue(of({ _id: '123' } as User));
 
       const responseMock = {
         location: jest.fn().mockReturnThis(),

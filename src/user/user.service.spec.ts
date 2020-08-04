@@ -1,14 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Model } from 'mongoose';
+import { of } from 'rxjs';
+import { RoleType } from '../auth/enum/role-type.enum';
 import { USER_MODEL } from '../database/database.constants';
 import { User } from '../database/user.model';
+import { SendgridService } from '../sendgrid/sendgrid.service';
 import { UserService } from './user.service';
-import { Controller } from '@nestjs/common';
-import { RoleType } from '../auth/enum/role-type.enum';
 
 describe('UserService', () => {
   let service: UserService;
   let model: Model<User>;
+  let sendgrid: SendgridService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -22,10 +24,17 @@ describe('UserService', () => {
             create: jest.fn()
           },
         },
+        {
+          provide: SendgridService,
+          useValue: {
+            send: jest.fn()
+          }
+        }
       ],
     }).compile();
 
     service = module.get<UserService>(UserService);
+    sendgrid = module.get<SendgridService>(SendgridService);
     model = module.get<Model<User>>(USER_MODEL);
   });
 
@@ -37,19 +46,43 @@ describe('UserService', () => {
     const sampleData = {
       username: 'hantsy',
       email: 'hantsy@example.com',
-      fristName: 'hantsy',
+      firstName: 'hantsy',
       lastName: 'bai',
       password: 'mysecret'
     }
 
+    const msg = {
+      from: 'service@example.com', // Use the email address or domain you verified above
+      subject: 'Welcome to Nestjs Sample',
+      templateId: "welcome",
+      personalizations: [
+        {
+          to: 'hantsy@example.com',
+          dynamicTemplateData: { name: 'hantsy bai' },
+        }
+      ]
+
+    };
+
     const saveSpy = jest.spyOn(model, 'create').mockResolvedValue({
-      _id:'123',
+      _id: '123',
       ...sampleData
     } as any);
 
-    const result = await service.save(sampleData).toPromise();
+    const pipeMock = {
+      pipe: jest.fn()
+    }
+
+    const pipeSpy = jest.spyOn(pipeMock, 'pipe');
+
+    const sendSpy = jest.spyOn(sendgrid, 'send')
+      .mockImplementation((data: any) => { return of(pipeMock) });
+
+    const result = await service.register(sampleData).toPromise();
     expect(saveSpy).toBeCalledWith({ ...sampleData, roles: [RoleType.USER] });
     expect(result._id).toBeDefined();
+    //expect(sendSpy).toBeCalledWith(msg);
+    //expect(pipeSpy).toBeCalled();
   });
 
   it('findByUsername should return user', async () => {
