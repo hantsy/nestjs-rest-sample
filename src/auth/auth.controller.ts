@@ -1,10 +1,10 @@
-import { Controller, UseGuards, Post, Req, Res } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './local-auth.guard';
+import { Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Response } from 'express';
 import { Observable } from 'rxjs';
-import { Request, Response } from 'express';
-import { AuthenticatedRequest } from './authenticated-request.interface';
 import { map } from 'rxjs/operators';
+import { AuthService } from './auth.service';
+import { LocalAuthGuard } from './guard/local-auth.guard';
+import { AuthenticatedRequest } from './interface/authenticated-request.interface';
 
 @Controller('auth')
 export class AuthController {

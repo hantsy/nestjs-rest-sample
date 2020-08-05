@@ -2,7 +2,7 @@ import { Inject, Injectable, Scope, NotFoundException } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Model } from 'mongoose';
 import { from, Observable, EMPTY, of } from 'rxjs';
-import { AuthenticatedRequest } from '../auth/authenticated-request.interface';
+import { AuthenticatedRequest } from '../auth/interface/authenticated-request.interface';
 import { Comment } from '../database/comment.model';
 import { COMMENT_MODEL, POST_MODEL } from '../database/database.constants';
 import { Post } from '../database/post.model';

@@ -42,5 +42,6 @@ jobs:
       # install dependencies and build the project
       - name: Running e2e testing
         run: |
+          export SENDGRID_API_KEY=${{ secrets.SENDGRID_API_KEY }}
           npm install
           npm run test:e2e -- --runInBand --forceExit

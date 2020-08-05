@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { USER_MODEL } from '../database/database.constants';
-import { RoleType } from '../database/role-type.enum';
+import { RoleType } from '../auth/enum/role-type.enum';
 import { User } from '../database/user.model';
 
 @Injectable()
@@ -29,7 +29,14 @@ export class UserDataInitializerService
       email: 'admin@example.com',
       roles: [RoleType.ADMIN],
     };
-    await this.userModel.insertMany([user, admin]);
+    await Promise.all(
+      [
+        this.userModel.create(user),
+        this.userModel.create(admin)
+      ]
+    ).then(
+      data => console.log(data)
+    );
   }
 
 }

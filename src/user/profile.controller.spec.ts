@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProfileController } from './profile.controller';
-import { AuthenticatedRequest } from '../auth/authenticated-request.interface';
+import { AuthenticatedRequest } from '../auth/interface/authenticated-request.interface';
 
 describe('ProfileController', () => {
   let controller: ProfileController;

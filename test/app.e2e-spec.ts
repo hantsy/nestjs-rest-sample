@@ -1,8 +1,8 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import * as mongoose from 'mongoose';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
-import * as mongoose from 'mongoose';
 
 describe('API endpoints testing (e2e)', () => {
   let app: INestApplication;
@@ -20,6 +20,47 @@ describe('API endpoints testing (e2e)', () => {
 
   afterAll(async () => {
     await app.close();
+  });
+
+  describe('/register a new user', () => {
+    it('if username is existed', async () => {
+      const res = await request(app.getHttpServer())
+        .post('/register')
+        .send({
+          username: 'hantsy',
+          password: 'password',
+          email: 'hantsy@test.com',
+          firstName: 'Hantsy',
+          lastName: 'Bai'
+        });
+      expect(res.status).toBe(409);
+    });
+
+    it('if email is existed', async () => {
+      const res = await request(app.getHttpServer())
+        .post('/register')
+        .send({
+          username: 'hantsy1',
+          password: 'password',
+          email: 'hantsy@example.com',
+          firstName: 'Hantsy',
+          lastName: 'Bai'
+        });
+      expect(res.status).toBe(409);
+    });
+
+    it('successed', async () => {
+      const res = await request(app.getHttpServer())
+        .post('/register')
+        .send({
+          username: 'hantsy1',
+          password: 'password',
+          email: 'hantsy@gmail.com',
+          firstName: 'Hantsy',
+          lastName: 'Bai'
+        });
+      expect(res.status).toBe(201);
+    });
   });
 
   describe('if user is not logged in', () => {
@@ -88,6 +129,7 @@ describe('API endpoints testing (e2e)', () => {
         .post('/posts')
         .set('Authorization', 'Bearer ' + jwttoken)
         .send({});
+      console.log(res.status);
       expect(res.status).toBe(400);
     });
 

@@ -1,10 +1,11 @@
-import { RoleType } from '../database/role-type.enum';
+import { RoleType } from '../auth/enum/role-type.enum';
 
 export class UserDto {
   readonly id: string;
   readonly username: string;
   readonly email: string;
   readonly password: string;
+  readonly name?: string;
   readonly firstName?: string;
   readonly lastName?: string;
   readonly roles?: RoleType[];
