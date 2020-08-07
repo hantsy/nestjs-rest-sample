@@ -2,7 +2,7 @@
 
 In the last post , we created a RESTful API application for simple CRUD functionalities.  In this post, we will enrich it: 
 
-*  Add Mongo support 
+*  Add MongoDB support 
 * Change dummy data storage to use MongoDB
 * Clean the testing codes 
 

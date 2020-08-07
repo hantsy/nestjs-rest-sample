@@ -1,13 +1,13 @@
-# Protect your API resource with JWT Token
+# Protect your APIs with JWT Token
 
 In the last post, we connected to a Mongo server and use a real database to replace the dummy data storage. In this post, we will explore how to protect your APIs when exposing to a client application.
 
  When we come to the security of a web application,  technically it will include:
 
 * **Authentication** - The application will ask you to provide your principal and then it will identify who are you.
-* **Authorization**-  Based on your claims, check if you have permissions to perform some tasks.
+* **Authorization**-  Based on your claims, check if you have permissions to perform some operations.
 
-[Passportjs](http://www.passportjs.org/)  is one of the most popular authentication framework for [expressjs](https://expressjs.com/) platform. Nestjs has great integration with passportjs with `@nestjs/passportjs`.  We will follow the [Authentication](https://docs.nestjs.com/techniques/authentication) chapter of the official guide to add *local* and *jwt* strategies  to your application.
+[Passportjs](http://www.passportjs.org/)  is one of the most popular authentication frameworks on the [Expressjs](https://expressjs.com/) platform. Nestjs has great integration with passportjs with its `@nestjs/passportjs` module.  We will follow the [Authentication](https://docs.nestjs.com/techniques/authentication) chapter of the official guide to add *local* and *jwt* strategies  to the application we have done the previous posts.
 
 ## Prerequisites
 
@@ -26,7 +26,9 @@ Firstly generate a `AuthModule` and `AuthService` .
 nest g mo auth
 nest g s auth
 ```
-The authentication should work with users in the application. Create a standalone `UserModule` to handle user queries.
+The authentication should work with users in the application.
+
+Similarly, create a standalone `UserModule` to handle user queries.
 
 ```bash
 nest g mo user
@@ -58,7 +60,7 @@ export class User extends Document {
 
 export const UserSchema = SchemaFactory.createForClass(User);
 ```
-The `User` class is to wrap a document in Mongo,  and `UserSchema` is to describe `User` document.  
+The `User` class is to wrap a document in Mongoose,  and `UserSchema` is to describe `User` document.  
 
 Register `UserSchema` in `UserModule`, then you can  use `Model<User>` to perform some operations on `User` document.
 
@@ -73,7 +75,7 @@ Register `UserSchema` in `UserModule`, then you can  use `Model<User>` to perfor
 export class UserModule {}
 ```
 
-The *users* here is the token to identify different `Model` when injecting a `Model`.
+The *users* here is  used as the *token* to identify different `Model` when injecting a `Model`. When registering a `UserSchema` in mongoose, the name attribute in the above `MongooseModule.forFeature` is also the collection name of `User ` documents.
 
 Add a `findByUsername` method in `UserService`.
 
@@ -86,6 +88,19 @@ export class UserService {
     return from(this.userModel.findOne({ username }).exec());
   }
 }
+```
+
+In  the  `@Module` declaration of the `UserModule`, register `UserService` in `providers`,  and do not forget to add it into  `exports`, thus other modules can use this service when importing `UserModule`.
+
+```typescript
+//...other imports
+import { UserService } from './user.service';
+
+@Module({
+  providers: [UserService],
+  exports:[UserService]//exposing users to other modules...
+})
+export class UserModule {}
 ```
 
 Create a test case to test the `findByUsername` method.
@@ -138,7 +153,7 @@ describe('UserService', () => {
   });
 });
 ```
-In  the  `@Module` declaration of the `UserModule`, register `UserService` in `providers`,  and do not forget to add it into  `exports`, thus other can use this service when importing `UserModule`.
+`UserService` depends on a `Model<User>`, use a provider to mock it by jest mocking feature. Using `jest.spyOn`  method, you can stub the details of a methods, and  watch of the calling of this method.
 
 Let's move to `AuthModule`. 
 
@@ -174,9 +189,9 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 }
 ```
 
-In the constructor, use `super` to providing the essential options of the strategy you are using,  for a local strategy, it requires username and password fields.  
+In the constructor, use `super` to provide the essential options of the strategy you are using. For the local strategy, it requires username and password fields.  
 
-And the validate method it used to validate the authentication strategy against given  info, here it is the *username* and *password* provided from request.  
+And the validate method is used to validate the authentication info against given  info, here it is the *username* and *password* provided from request.  
 
 > More details about the configuration options and validation of local strategy, check [passport-local](http://www.passportjs.org/packages/passport-local/) project.
 
@@ -204,7 +219,7 @@ export class AuthService {
 }
 ```
 
-> In the real application, we could use a crypto util to hash password.
+> In the real application, we could use a crypto util to hash and compare the input password. We will discuss it in the further post.
 
 It invokes `findByUsername` in `UserService` from `UserModule`.  Imports `UserModule` in the declaration of `AuthModule`.
 
@@ -271,11 +286,11 @@ Let's summarize how local strategy works.
 
 1. When a user hits *auth/login* with `username` and `password`, `LocalAuthGuard` will be applied.
 2. `LocalAuthGuard` will trigger `LocalStrategy` , and invokes its `validate` method, and store the result back to `request.user`.
-3. Back the controller,  read user principal from `request`, generate a JWT access token and send back to client.
+3. Back the controller,  read user principal from `request`, generate a JWT token and send it back to the client.
 
 After logging in, the `access token` can be extracted and put into the HTTP header in the new request to access the protected resources.
 
-Let's have a look at how  jwt strategy works.
+Let's have a look at how  JWT strategy works.
 
 Firstly implement the `JwtStrategy`.
 
@@ -366,7 +381,9 @@ If you want to set a default strategy, change `PassportModule` in the declaratio
 export class AuthModule {}
 ```
 
-Like the data initializer for Post, add a service to insert sample data for users.
+There are several application lifecycle hooks provided in Nestjs at runtime. In your codes you can observe these lifecycle events and perform some specific tasks for your application.  
+
+For example, create  a data initializer for `Post` to insert sample data.
 
 ```typescript
 @Injectable()
@@ -392,9 +409,27 @@ export class UserDataInitializerService
 }
 ```
 
-Now run the application.
+> More info about the lifecycle hooks, check the [Lifecycle events](https://docs.nestjs.com/fundamentals/lifecycle-events) chapter of the official docs.
+
+## Run the application
+
+Open your terminal, run the application by executing the following command.
 
 ```bash
 npm run start
+```
+
+Login using the *username/password* pair.
+
+```bash
+>curl http://localhost:3000/auth/login -d "{\"username\":\"hantsy\", \"password\":\"password\"}" -H "Content-Type:application/json"
+>{"access_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cG4iOiJoYW50c3kiLCJzdWIiOiI1ZjJkMGU0ODZhOTZiZTEyMDBmZWZjZWMiLCJlbWFpbCI6ImhhbnRzeUBleGFtcGxlLmNvbSIsInJvbGVzIjpbIlVTRVIiXSwiaWF0IjoxNTk2Nzg4NDg5LCJleHAiOjE1OTY3OTIwODl9.4oYpKTikoTfeeaUBoEFr9d1LPcN1pYqHjWXRuZXOfek"}
+```
+
+Try to access the */profile* endpoint using this *access_token*.
+
+```bash
+>curl http://localhost:3000/profile -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cG4iOiJoYW50c3kiLCJzdWIiOiI1ZjJkMGU0ODZhOTZiZTEyMDBmZWZjZWMiLCJlbWFpbCI6ImhhbnRzeUBleGFtcGxlLmNvbSIsInJvbGVzIjpbIlVTRVIiXSwiaWF0IjoxNTk2Nzg4NDg5LCJleHAiOjE1OTY3OTIwODl9.4oYpKTikoTfeeaUBoEFr9d1LPcN1pYqHjWXRuZXOfek"
+{"username":"hantsy","email":"hantsy@example.com","id":"5f2d0e486a96be1200fefcec","roles":["USER"]}
 ```
 

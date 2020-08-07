@@ -390,7 +390,7 @@ export class PostService {
 }    
 ```
 
-As a convention in Nestjs, you have to make `PostController` `REQUEST` scoped.
+As a convention in Nestjs, you have to make `PostController` available in the `REQUEST` scoped.
 
 ```typescript
 @Controller({path:'posts', scope:Scope.REQUEST})
@@ -398,6 +398,100 @@ export class PostController {...}
 ```
 
 In the test codes, you have to `resolve` to replace `get` to get the instance from Nestjs test harness.
+
+```typescript
+describe('Post Controller', () => {
+  describe('Replace PostService in provider(useClass: PostServiceStub)', () => {
+    let controller: PostController;
+
+    beforeEach(async () => {
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          {
+            provide: PostService,
+            useClass: PostServiceStub,
+          },
+        ],
+        controllers: [PostController],
+      }).compile();
+
+      controller = await module.resolve<PostController>(PostController);// use resovle here....
+    });
+  ...
+```
+
+`PostService` also should be  changed to request scoped. 
+
+```typescript
+@Injectable({ scope: Scope.REQUEST })
+export class PostService {...}
+```
+
+In the `post.service.spec.ts` , you have to update the mocking progress.
+
+```typescript
+describe('PostService', () => {
+  let service: PostService;
+  let model: Model<Post>;
+  let commentModel: Model<Comment>;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        PostService,
+        {
+          provide: POST_MODEL,
+          useValue: {
+            new: jest.fn(),
+            constructor: jest.fn(),
+            find: jest.fn(),
+            findOne: jest.fn(),
+            update: jest.fn(),
+            create: jest.fn(),
+            remove: jest.fn(),
+            exec: jest.fn(),
+            deleteMany: jest.fn(),
+            deleteOne: jest.fn(),
+            updateOne: jest.fn(),
+            findOneAndUpdate: jest.fn(),
+            findOneAndDelete: jest.fn(),
+          },
+        },
+        {
+          provide: COMMENT_MODEL,
+          useValue: {
+            new: jest.fn(),
+            constructor: jest.fn(),
+            find: jest.fn(),
+            findOne: jest.fn(),
+            updateOne: jest.fn(),
+            deleteOne: jest.fn(),
+            update: jest.fn(),
+            create: jest.fn(),
+            remove: jest.fn(),
+            exec: jest.fn(),
+          },
+        },
+        {
+          provide: REQUEST,
+          useValue: {
+            user: {
+              id: 'dummyId',
+            },
+          },
+        },
+      ],
+    }).compile();
+
+    service = await module.resolve<PostService>(PostService);
+    model = module.get<Model<Post>>(POST_MODEL);
+    commentModel = module.get<Model<Comment>>(COMMENT_MODEL);
+  });
+    
+//...
+```
+
+
 
 ## Run the application
 
@@ -434,6 +528,6 @@ $ curl http://localhost:3000/posts/5ef0b7fe4d067321141845fc/comments
 After cleaning up the codes, we do not need the  `@nestjs/mongoose` dependency, let's remove it.
 
 ```bash
-npm r --save @nestjs/mongoose
+npm uninstall --save @nestjs/mongoose
 ```
 

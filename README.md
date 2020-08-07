@@ -9,8 +9,10 @@ A NestJS RESTful APIs sample project.
 
 ## Docs
 
-* [Building RESTful APIs with NestJS](./docs/guide.md)
+* [Getting Started](./docs/guide.md)
 * [Connecting to MongoDB](./docs/mongo.md)
+* [Protect your APIs with JWT Token](./docs/auth.md)
+* [Dealing with model relations](./docs/model.md)
 
 ## Build
 
