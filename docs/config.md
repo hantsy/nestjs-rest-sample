@@ -1,10 +1,12 @@
 # Externalizing the configuration
 
-Till now, all configurations in our application is working for the local development environment. In the development phase of a real world application,  we have to consider a easy approach to alter the configuration in the production environment without any code changes while the application is deployed  through a predefined continuous delivery pipeline. 
+Till now, all configurations in our application is working for the local development environment, but they are written in hard codes. 
 
-Nestjs provides excellent configuration support, thus you can read the config value from environment variables,  a *.env* file, etc. More info about the configuration, check  the [Configuration ](https://docs.nestjs.com/techniques/configuration) chapter from the Nestjs official docs.
+In the development and deployment stages of a real world application,  we have to consider a  flexible way to alter the configurations in the production environment without any code changes while the application is deployed continuously through a predefined delivery pipeline. 
 
-In this post, we will move out our hard-code configuration in the previous posts into a central place and organize them with the NestJS configuration feature.
+Nestjs provides excellent configuration support, thus your application can read the configuration values from environment variables,  a *.env* file, etc. More info about the configuration, check  the [Configuration ](https://docs.nestjs.com/techniques/configuration) chapter from the Nestjs official docs.
+
+In this post, we will move our hard-coded configuration we've used in the previous posts to a central place and organize them with the NestJS configuration facilities.
 
 First of all, install `@nestjs/config` package.
 
@@ -12,7 +14,7 @@ First of all, install `@nestjs/config` package.
 npm install @nestjs/config
 ```
 
-Simply, you can configure it by importing it into the top-level `AppModule`.
+Simply, import  `ConfigModule` in the top-level `AppModule`.
 
 ```typescript
 
@@ -25,7 +27,7 @@ import { ConfigModule } from '@nestjs/config';
 export class AppModule {}
 ```
 
-It registers a `ConfigService`  to read config properties by `get` method.
+It will register a `ConfigService`  for you to read configuration properties by calling its `get` method.
 
 ```typescript
 configService.get<string>('MONGO_URI')
@@ -33,13 +35,13 @@ configService.get<string>('MONGO_URI')
 
 Internally, Nestjs will scan `.env` file in the root folder. 
 
-For example, there is a `.env` file in the root folder.
+The following is a sample of the content of the `.env` file.
 
 ```env
 MONGO_URI=mongodb://localhost/blog
 ```
 
-If you want to read configuration from a environment-aware file, eg. `.dev.env` for development phase, then configure the location in `ConfigModule`.
+If you want to read configuration from an environment-aware file, eg. `.dev.env` for development phase, then configure the location in `ConfigModule`.
 
 ```typescript
 ConfigModule.forRoot({
@@ -47,9 +49,9 @@ ConfigModule.forRoot({
 });
 ```
 
-For the container deployment or cloud deployment, setup the configuration in the system's environment variables or  K8s *ConfigMap* is more popular. 
+For the container deployment or cloud deployment, setup configuration in a config server or as environment variables or  K8s *ConfigMap* is more popular. 
 
-Personally, I prefer use a default configuration in development phase, and use environmental variables to override it in the production.
+Personally, I prefer use a default hard-coded configuration in the development phase, and use environmental variables to override it in the production.
 
 Nestjs also support load custom configuration where it can read configurations from the environment variables freely.
 
@@ -93,7 +95,7 @@ import { databaseConnectionProviders } from './database-connection.providers';
 export class DatabaseModule { }
 ```
 
-> Nestjs ConfigModule also can load the configuration globally, but here, we do not expose the mongodb config to other modules.
+> You can also use Nestjs ConfigModule to load the configuration globally, but here we do not want to expose the mongodb config to other modules.
 
 And change the database connection providers like this.
 
@@ -118,7 +120,7 @@ export const databaseConnectionProviders = [
 ];
 ```
 
-By injecting a `mongodbConfig.KEY`, in the factory method, you can  read the configuration in a **type safe** way via `dbConfig.uri`.
+In the above codes, provide a  token  `mongodbConfig.KEY`, you can inject a config instance as type `ConfigType<typeof mongodbConfig>`  in the factory method, then you can read the configuration in a **type safe** way via `dbConfig.uri`.
 
 Similarly, create a configuration for the JWT authentication, move the existing JWT options into this configuration file.
 
@@ -197,5 +199,5 @@ services:
 	//...
 ```
 
-We will discuss deployment in the further posts.
+We will start a new topic of deployment in the further posts.
 
