@@ -1,7 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { EMPTY, from, Observable, of, throwError } from 'rxjs';
 import { flatMap, tap, throwIfEmpty, catchError } from 'rxjs/operators';
-import { RoleType } from '../auth/enum/role-type.enum';
+import { RoleType } from '../shared/enum/role-type.enum';
 import { USER_MODEL } from '../database/database.constants';
 import { User, UserModel } from '../database/user.model';
 import { SendgridService } from '../sendgrid/sendgrid.service';

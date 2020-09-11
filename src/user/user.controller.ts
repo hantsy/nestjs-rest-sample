@@ -1,7 +1,7 @@
 import { Controller, DefaultValuePipe, Get, Param, Query } from '@nestjs/common';
 import { User } from 'database/user.model';
 import { Observable } from 'rxjs';
-import { ParseObjectIdPipe } from '../common/pipe/parse-object-id.pipe';
+import { ParseObjectIdPipe } from '../shared/pipe/parse-object-id.pipe';
 import { UserService } from './user.service';
 
 @Controller({ path: "/users" })

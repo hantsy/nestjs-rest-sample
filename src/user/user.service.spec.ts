@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Model } from 'mongoose';
 import { of } from 'rxjs';
-import { RoleType } from '../auth/enum/role-type.enum';
+import { RoleType } from '../shared/enum/role-type.enum';
 import { USER_MODEL } from '../database/database.constants';
 import { User } from '../database/user.model';
 import { SendgridService } from '../sendgrid/sendgrid.service';

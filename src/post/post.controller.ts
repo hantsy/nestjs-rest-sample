@@ -16,11 +16,11 @@ import {
 import { Response } from 'express';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { RoleType } from '../auth/enum/role-type.enum';
+import { RoleType } from '../shared/enum/role-type.enum';
 import { HasRoles } from '../auth/guard/has-roles.decorator';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { RolesGuard } from '../auth/guard/roles.guard';
-import { ParseObjectIdPipe } from '../common/pipe/parse-object-id.pipe';
+import { ParseObjectIdPipe } from '../shared/pipe/parse-object-id.pipe';
 import { Comment } from '../database/comment.model';
 import { Post as BlogPost } from '../database/post.model';
 import { CreateCommentDto } from './create-comment.dto';

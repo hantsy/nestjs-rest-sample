@@ -1,4 +1,4 @@
-import { RoleType } from '../auth/enum/role-type.enum';
+import { RoleType } from '../shared/enum/role-type.enum';
 
 export class UserDto {
   readonly id: string;
