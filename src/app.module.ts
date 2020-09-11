@@ -7,6 +7,7 @@ import { DatabaseModule } from './database/database.module';
 import { PostModule } from './post/post.module';
 import { SendgridModule } from './sendgrid/sendgrid.module';
 import { UserModule } from './user/user.module';
+import { LoggerModule } from './logger/logger.module';
 
 @Module({
   imports: [
@@ -16,8 +17,10 @@ import { UserModule } from './user/user.module';
     AuthModule,
     UserModule,
     SendgridModule,
+    LoggerModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],
+  exports:[AppService]
 })
 export class AppModule { }
