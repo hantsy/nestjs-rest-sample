@@ -1,6 +1,6 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { EMPTY, from, Observable, of, throwError } from 'rxjs';
-import { flatMap, tap, throwIfEmpty, catchError } from 'rxjs/operators';
+import { mergeMap, tap, throwIfEmpty, catchError } from 'rxjs/operators';
 import { RoleType } from '../shared/enum/role-type.enum';
 import { USER_MODEL } from '../database/database.constants';
 import { User, UserModel } from '../database/user.model';
@@ -82,7 +82,7 @@ export class UserService {
     // return this.sendgridService.send(msg).pipe(
     //   catchError(err=>of(`sending email failed:${err}`)),
     //   tap(data => console.log(data)),
-    //   flatMap(data => from(created)),
+    //   mergeMap(data => from(created)),
     // );
   }
 
@@ -92,7 +92,7 @@ export class UserService {
       userQuery.populate("posts");
     }
     return from(userQuery.exec()).pipe(
-      flatMap((p) => (p ? of(p) : EMPTY)),
+      mergeMap((p) => (p ? of(p) : EMPTY)),
       throwIfEmpty(() => new NotFoundException(`user:${id} was not found`)),
     );
   }

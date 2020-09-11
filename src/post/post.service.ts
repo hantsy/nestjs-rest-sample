@@ -1,7 +1,8 @@
-import { Inject, Injectable, Scope, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Model } from 'mongoose';
-import { from, Observable, EMPTY, of } from 'rxjs';
+import { EMPTY, from, Observable, of } from 'rxjs';
+import { mergeMap, throwIfEmpty } from 'rxjs/operators';
 import { AuthenticatedRequest } from '../auth/interface/authenticated-request.interface';
 import { Comment } from '../database/comment.model';
 import { COMMENT_MODEL, POST_MODEL } from '../database/database.constants';
@@ -9,7 +10,6 @@ import { Post } from '../database/post.model';
 import { CreateCommentDto } from './create-comment.dto';
 import { CreatePostDto } from './create-post.dto';
 import { UpdatePostDto } from './update-post.dto';
-import { throwIfEmpty, flatMap, filter, map, switchMap } from 'rxjs/operators';
 
 @Injectable({ scope: Scope.REQUEST })
 export class PostService {
@@ -17,7 +17,7 @@ export class PostService {
     @Inject(POST_MODEL) private postModel: Model<Post>,
     @Inject(COMMENT_MODEL) private commentModel: Model<Comment>,
     @Inject(REQUEST) private req: AuthenticatedRequest,
-  ) {}
+  ) { }
 
   findAll(keyword?: string, skip = 0, limit = 10): Observable<Post[]> {
     if (keyword) {
@@ -35,7 +35,7 @@ export class PostService {
 
   findById(id: string): Observable<Post> {
     return from(this.postModel.findOne({ _id: id }).exec()).pipe(
-      flatMap((p) => (p ? of(p) : EMPTY)),
+      mergeMap((p) => (p ? of(p) : EMPTY)),
       throwIfEmpty(() => new NotFoundException(`post:$id was not found`)),
     );
   }
@@ -59,13 +59,13 @@ export class PostService {
         )
         .exec(),
     ).pipe(
-      flatMap((p) => (p ? of(p) : EMPTY)),
+      mergeMap((p) => (p ? of(p) : EMPTY)),
       throwIfEmpty(() => new NotFoundException(`post:$id was not found`)),
     );
     // const filter = { _id: id };
     // const update = { ...data, updatedBy: { _id: this.req.user.id } };
     // return from(this.postModel.findOne(filter).exec()).pipe(
-    //   flatMap((post) => (post ? of(post) : EMPTY)),
+    //   mergeMap((post) => (post ? of(post) : EMPTY)),
     //   throwIfEmpty(() => new NotFoundException(`post:$id was not found`)),
     //   switchMap((p, i) => {
     //     return from(this.postModel.updateOne(filter, update).exec());
@@ -76,12 +76,12 @@ export class PostService {
 
   deleteById(id: string): Observable<Post> {
     return from(this.postModel.findOneAndDelete({ _id: id }).exec()).pipe(
-      flatMap((p) => (p ? of(p) : EMPTY)),
+      mergeMap((p) => (p ? of(p) : EMPTY)),
       throwIfEmpty(() => new NotFoundException(`post:$id was not found`)),
     );
     // const filter = { _id: id };
     // return from(this.postModel.findOne(filter).exec()).pipe(
-    //   flatMap((post) => (post ? of(post) : EMPTY)),
+    //   mergeMap((post) => (post ? of(post) : EMPTY)),
     //   throwIfEmpty(() => new NotFoundException(`post:$id was not found`)),
     //   switchMap((p, i) => {
     //     return from(this.postModel.deleteOne(filter).exec());
