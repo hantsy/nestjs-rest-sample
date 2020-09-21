@@ -14,7 +14,8 @@ A NestJS RESTful APIs sample project.
 * [Protect your APIs with JWT Token](./docs/auth.md)
 * [Dealing with model relations](./docs/model.md)
 * [Externalizing the configuration](./docs/config.md)
-* [Registering a new user](./docs/user.md)
+* [Handling user registration](./docs/user.md)
+* [Testing Nestjs applications](./docs/testing.md)
 
 ## Build
 
