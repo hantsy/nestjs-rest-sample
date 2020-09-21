@@ -1,7 +1,7 @@
 import { Body, ConflictException, Controller, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { Observable } from 'rxjs';
-import { flatMap, map } from 'rxjs/operators';
+import { mergeMap, map } from 'rxjs/operators';
 import { RegisterDto } from './register.dto';
 import { UserService } from './user.service';
 
@@ -16,14 +16,14 @@ export class RegisterController {
         const username = registerDto.username;
 
         return this.userService.existsByUsername(username).pipe(
-            flatMap(exists => {
+            mergeMap(exists => {
                 if (exists) {
                     throw new ConflictException(`username:${username} is existed`)
                 }
                 else {
                     const email = registerDto.email;
                     return this.userService.existsByEmail(email).pipe(
-                        flatMap(exists => {
+                        mergeMap(exists => {
                             if (exists) {
                                 throw new ConflictException(`email:${email} is existed`)
                             }

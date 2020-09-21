@@ -1,11 +1,11 @@
-import { Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { from, Observable, EMPTY, of } from 'rxjs';
-import { map, flatMap, switchMap, throwIfEmpty } from 'rxjs/operators';
+import { EMPTY, from, Observable, of } from 'rxjs';
+import { mergeMap, map, throwIfEmpty } from 'rxjs/operators';
 import { UserService } from '../user/user.service';
-import { UserPrincipal } from './interface/user-principal.interface';
-import { JwtPayload } from './interface/jwt-payload.interface';
 import { AccessToken } from './interface/access-token.interface';
+import { JwtPayload } from './interface/jwt-payload.interface';
+import { UserPrincipal } from './interface/user-principal.interface';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +17,7 @@ export class AuthService {
   validateUser(username: string, pass: string): Observable<UserPrincipal> {
     return this.userService.findByUsername(username).pipe(
       //if user is not found, convert it into an EMPTY.
-      flatMap((p) => (p ? of(p) : EMPTY)),
+      mergeMap((p) => (p ? of(p) : EMPTY)),
 
       // Using a general message in the authentication progress is more reasonable.
       // Concise info could be considered for security.
@@ -25,7 +25,7 @@ export class AuthService {
       // throwIfEmpty(() => new NotFoundException(`username:${username} was not found`)),
       throwIfEmpty(() => new UnauthorizedException(`username or password is not matched`)),
 
-      flatMap((user) => {
+      mergeMap((user) => {
         const { _id, password, username, email, roles } = user;
         return user.comparePassword(pass).pipe(map(m => {
           if (m) {
