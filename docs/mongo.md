@@ -2,9 +2,9 @@
 
 In the last post , we created a RESTful API application for simple CRUD functionalities.  In this post, we will enrich it: 
 
-*  Add MongoDB support 
-* Change dummy data storage to use MongoDB
-* Clean the testing codes 
+*  Adding MongoDB support via Mongoose module
+* Changing dummy data storage to use MongoDB server
+* Cleaning up the testing codes 
 
 Let's go.
 
@@ -158,7 +158,7 @@ export class UpdatePostDto {
 }
 ```
 
-## Clean up PostController
+## Cleaning up PostController
 
 Clean the `post.controller.ts` correspondingly.
 
@@ -726,3 +726,6 @@ Ran all test suites.
 ```
 
 In this post, we connected to the real MongoDB instead of the dummy data storage, correspond to the changes , we have refactored all tests, and discuss some approaches to isolate the dependencies in tests.  But we have not test all functionalities in a real integrated environment,  Nestjs provides e2e testing skeleton, we will discuss it in a future post.
+
+Grab [the source codes from my github](https://github.com/hantsy/nestjs-sample), switch to branch [feat/model](https://github.com/hantsy/nestjs-sample/blob/feat/model).
+
