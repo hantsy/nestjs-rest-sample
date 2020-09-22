@@ -1,11 +1,11 @@
 # Protect your APIs with JWT Token
 
-In the last post, we connected to a Mongo server and use a real database to replace the dummy data storage. In this post, we will explore how to protect your APIs when exposing to a client application.
+In the last post, we connected to a Mongo server and used a real database to replace the dummy data storage. In this post, we will explore how to protect your APIs when exposing to a client application.
 
  When we come to the security of a web application,  technically it will include:
 
 * **Authentication** - The application will ask you to provide your principal and then it will identify who are you.
-* **Authorization**-  Based on your claims, check if you have permissions to perform some operations.
+* **Authorization ** -  Based on your claims, check if you have permissions to perform some operations.
 
 [Passportjs](http://www.passportjs.org/)  is one of the most popular authentication frameworks on the [Expressjs](https://expressjs.com/) platform. Nestjs has great integration with passportjs with its `@nestjs/passportjs` module.  We will follow the [Authentication](https://docs.nestjs.com/techniques/authentication) chapter of the official guide to add *local* and *jwt* strategies  to the application we have done the previous posts.
 
@@ -250,7 +250,7 @@ export class AppController {
 
 It simply calls another method `login` in `AuthService`. 
 
-```
+```typescript
 @Injectable()
 export class AuthService {
   constructor(
@@ -433,3 +433,4 @@ Try to access the */profile* endpoint using this *access_token*.
 {"username":"hantsy","email":"hantsy@example.com","id":"5f2d0e486a96be1200fefcec","roles":["USER"]}
 ```
 
+Grab [the source codes from my github](https://github.com/hantsy/nestjs-sample), switch to branch [feat/auth](https://github.com/hantsy/nestjs-sample/blob/feat/auth).
