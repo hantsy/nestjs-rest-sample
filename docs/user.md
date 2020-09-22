@@ -469,5 +469,5 @@ Ideally, a user registration progress should be split into two steps.
 * Validate the user input data from the registration form, and persist it into the MongoDB, then send a verification number to verify the registered phone number, email, etc.  In this stage, the user account will be suspended to verify.
 * The registered user receive the verification number or links in emails, provide it in the verification page or click the link in the email directly, and get verified. In this stage, the user account will be activated.
 
-
+Grab [the source codes from my github](https://github.com/hantsy/nestjs-sample), switch to branch [feat/user](https://github.com/hantsy/nestjs-sample/blob/feat/user).
 
