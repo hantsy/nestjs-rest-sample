@@ -8,6 +8,8 @@ Nestjs provides excellent configuration support, thus your application can read 
 
 In this post, we will move our hard-coded configuration we've used in the previous posts to a central place and organize them with the NestJS configuration facilities.
 
+## Introduce to ConfigModule
+
 First of all, install `@nestjs/config` package.
 
 ```bash
@@ -50,6 +52,8 @@ ConfigModule.forRoot({
 ```
 
 For the container deployment or cloud deployment, setup configuration in a config server or as environment variables or  K8s *ConfigMap* is more popular. 
+
+## Externalizing application configurations
 
 Personally, I prefer use a default hard-coded configuration in the development phase, and use environmental variables to override it in the production.
 
@@ -200,4 +204,40 @@ services:
 ```
 
 We will start a new topic of deployment in the further posts.
+
+
+
+## Testing configurations
+
+An example of `jwt-config.spec.ts`.
+
+```typescript
+import { ConfigModule, ConfigType } from '@nestjs/config';
+import { TestingModule, Test } from '@nestjs/testing';
+import jwtConfig from './jwt.config';
+
+describe('jwtConfig', () => {
+  let config: ConfigType<typeof jwtConfig>;
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      imports: [ConfigModule.forFeature(jwtConfig)],
+    }).compile();
+
+    config = module.get<ConfigType<typeof jwtConfig>>(jwtConfig.KEY);
+  });
+
+  it('should be defined', () => {
+    expect(jwtConfig).toBeDefined();
+  });
+
+  it('should contains expiresIn and secret key', async () => {
+    expect(config.expiresIn).toBe('3600s');
+    expect(config.secretKey).toBe('rzxlszyykpbgqcflzxsqcysyhljt');
+  });
+});
+```
+
+Grab [the source codes from my github](https://github.com/hantsy/nestjs-sample), switch to branch [feat/config](https://github.com/hantsy/nestjs-sample/blob/feat/config).
+
+
 
