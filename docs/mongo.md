@@ -727,5 +727,5 @@ Ran all test suites.
 
 In this post, we connected to the real MongoDB instead of the dummy data storage, correspond to the changes , we have refactored all tests, and discuss some approaches to isolate the dependencies in tests.  But we have not test all functionalities in a real integrated environment,  Nestjs provides e2e testing skeleton, we will discuss it in a future post.
 
-Grab [the source codes from my github](https://github.com/hantsy/nestjs-sample), switch to branch [feat/model](https://github.com/hantsy/nestjs-sample/blob/feat/model).
+Grab [the source codes from my github](https://github.com/hantsy/nestjs-sample), switch to branch [feat/mongo](https://github.com/hantsy/nestjs-sample/blob/feat/mongo).
 

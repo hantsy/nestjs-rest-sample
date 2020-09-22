@@ -2,7 +2,7 @@
 
 We have added authentication in our application in the last post,  you maybe have a question, can I  add some fields to `Post` document and remember the user who created it and the one who updated it at the last time.
 
-When I come to the `Post` model, and try to add fields to setup the auditors, I can not find a simple way to do this. After researching and consulting from the Nestjs channel in Discord, I was told that the `@Nestjs/mongoose` can not deal with the relations between Documents.
+When I come to the `Post` model, and try to add fields to setup the auditors, I can not find a simple way to do this. After researching and consulting from the Nestjs channel in Discord, I was told that the `@nestjs/mongoose` can not deal with the relations between Documents.
 
 There are some suggestions I got from the community.
 
@@ -531,3 +531,4 @@ After cleaning up the codes, we do not need the  `@nestjs/mongoose` dependency, 
 npm uninstall --save @nestjs/mongoose
 ```
 
+Grab [the source codes from my github](https://github.com/hantsy/nestjs-sample), switch to branch [feat/model](https://github.com/hantsy/nestjs-sample/blob/feat/model).
