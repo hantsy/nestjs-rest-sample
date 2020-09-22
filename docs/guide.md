@@ -10,11 +10,11 @@ As described in the [Nestjs](https://nestjs.com) website, Nestjs is *a progressi
 
 Nestjs combines the best programming practice and the cutting-edge techniques  from the NodeJS communities. 
 
-* A lot of NestJS concepts are heavily inspired by the effort of the popular frameworks in the world, esp.  [Angular](https://www.angular.io), [Spring WebMVC](http://www.spring.io).
+* A lot of NestJS concepts are heavily inspired by the effort of the popular frameworks in the world, esp.  [Angular](https://www.angular.io) .
 * Nestjs hides the complexities of web programming in NodeJS, it provides a common abstraction of the web request handling,  you are free to choose [Expressjs](https://expressjs.com/) or  [Fastify](https://www.fastify.io) as the background engine.
-* Nestjs provides a lot of third party project integration, from database operations, such as Mongoose, TypeORM, etc. to a Message Broker, such as Redis,   RabbitMQ, etc.
+* Nestjs provides a lot of third party project integrations, from database operations, such as Mongoose, TypeORM, etc. to Message Brokers, such as Redis,   RabbitMQ, etc.
 
-If you are new to Nestjs like me but  has some experience of  Angular or Spring WebMVC, bootstrap a Nestjs project is really a piece of cake. 
+If you are new to Nestjs like me but  has some experience of  [Angular](https://www.angular.io) , [TypeDI](https://github.com/typestack/typedi#usage-with-typescript) or [Spring WebMVC](http://www.spring.io), bootstraping a Nestjs project is really a piece of cake. 
 
 ## Generating a NestJS project
 
@@ -281,7 +281,7 @@ Time:        4.563 s, estimated 11 s
 Ran all test suites.
 ```
 
-It works. 
+Awesome, it works. 
 
 > If you want to track the changes of test codes and rerun the test cases automatically,  use `npm run test:watch` instead.
 
@@ -711,7 +711,7 @@ true
 [{"id":2,"title":"Create CRUD RESTful APIs","content":"content","createdAt":"2020-06-13T04:20:21.920Z"},{"id":3,"title":"Connect to MongoDB","content":"content","createdAt":"2020-06-13T04:20:21.920Z"},{"title":"new post","content":"content of my new post","id":4,"createdAt":"2020-06-13T04:20:52.526Z"}]
 ```
 
-In the further post, we will connect to a real database instead of the dummy data.
+In the further post, we will connect to a real database to replace the  dummy data service.
 
 Grab [the source codes from my github](https://github.com/hantsy/nestjs-sample).
 
