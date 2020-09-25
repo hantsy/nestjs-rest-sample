@@ -63,7 +63,7 @@
     "jest": "26.4.2",
     "jest-mock-extended": "^1.0.9",
     "prettier": "^2.0.5",
-    "supertest": "^4.0.2",
+    "supertest": "^5.0.0",
     "ts-jest": "26.4.0",
     "ts-loader": "^8.0.0",
     "ts-mockito": "^2.6.1",
