@@ -57,7 +57,7 @@
     "@types/supertest": "^2.0.10",
     "@typescript-eslint/eslint-plugin": "4.0.0",
     "@typescript-eslint/parser": "4.16.1",
-    "eslint": "7.20.0",
+    "eslint": "7.21.0",
     "eslint-config-prettier": "^8.0.0",
     "eslint-plugin-import": "^2.22.0",
     "husky": "^5.1.1",
