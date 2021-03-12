@@ -170,9 +170,9 @@ describe('PostService', () => {
     const toReturned = {
       _id: '5ee49c3115a4e75254bb732e',
       ...toCreated,
-    };
+    } as Post;
 
-    jest.spyOn(model, 'create').mockResolvedValue(toReturned as Post);
+    jest.spyOn(model, 'create').mockResolvedValue(toReturned);
 
     const data = await service.save(toCreated).toPromise();
     expect(data._id).toBe('5ee49c3115a4e75254bb732e');
