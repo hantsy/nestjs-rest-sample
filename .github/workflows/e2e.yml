@@ -33,7 +33,7 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
-
+      - run: npm install  --registry=https://registry.npmjs.org
       - name: Running mongodb service
         run: |
           docker-compose up -d mongodb
@@ -43,5 +43,4 @@ jobs:
       - name: Running e2e testing
         run: |
           export SENDGRID_API_KEY=${{ secrets.SENDGRID_API_KEY }}
-          npm install
           npm run test:e2e -- --runInBand --forceExit
