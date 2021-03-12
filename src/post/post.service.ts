@@ -42,7 +42,7 @@ export class PostService {
 
   save(data: CreatePostDto): Observable<Post> {
     //console.log('req.user:'+JSON.stringify(this.req.user));
-    const createPost = this.postModel.create({
+    const createPost: Promise<Post> = this.postModel.create({
       ...data,
       createdBy: { _id: this.req.user.id },
     });
@@ -96,7 +96,7 @@ export class PostService {
 
   //  actions for comments
   createCommentFor(id: string, data: CreateCommentDto): Observable<Comment> {
-    const createdComment = this.commentModel.create({
+    const createdComment: Promise<Comment> = this.commentModel.create({
       post: { _id: id },
       ...data,
       createdBy: { _id: this.req.user.id },

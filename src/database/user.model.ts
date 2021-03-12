@@ -71,6 +71,6 @@ UserSchema.virtual('posts', {
 });
 
 const userModelFn: (conn: Connection) => UserModel = (conn: Connection) =>
-  conn.model<User, UserModel>('User', UserSchema, 'users');
+  conn.model<User>('User', UserSchema, 'users');
 
 export { User, UserModel, UserSchema, preSaveHook, nameGetHook, comparePasswordMethod, userModelFn };

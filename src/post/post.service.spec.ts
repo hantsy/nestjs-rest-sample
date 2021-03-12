@@ -170,9 +170,9 @@ describe('PostService', () => {
     const toReturned = {
       _id: '5ee49c3115a4e75254bb732e',
       ...toCreated,
-    };
+    } as Post;
 
-    jest.spyOn(model, 'create').mockResolvedValue(toReturned as Post);
+    jest.spyOn(model, 'create').mockImplementation(() => Promise.resolve(toReturned));
 
     const data = await service.save(toCreated).toPromise();
     expect(data._id).toBe('5ee49c3115a4e75254bb732e');
@@ -278,10 +278,10 @@ describe('PostService', () => {
 
   it('should create comment ', async () => {
     const comment = { content: 'test' };
-    jest.spyOn(commentModel, 'create').mockResolvedValue({
+    jest.spyOn(commentModel, 'create').mockImplementation(() => Promise.resolve({
       ...comment,
       post: { _id: 'test' },
-    } as any);
+    } as any));
 
     const result = await service.createCommentFor('test', comment).toPromise();
     expect(result.content).toEqual('test');
