@@ -64,10 +64,10 @@ describe('UserService', () => {
 
     };
 
-    const saveSpy = jest.spyOn(model, 'create').mockResolvedValue({
+    const saveSpy = jest.spyOn(model, 'create').mockImplementation(() => Promise.resolve({
       _id: '123',
       ...sampleData
-    } as any);
+    } as any));
 
     const pipeMock = {
       pipe: jest.fn()
@@ -171,7 +171,7 @@ describe('UserService', () => {
   describe('existsByUsername', () => {
 
     it('should return true if exists ', async () => {
-      const existsSpy = jest.spyOn(model, 'exists').mockResolvedValue(true);
+      const existsSpy = jest.spyOn(model, 'exists').mockImplementation(() => Promise.resolve(true));
       const result = await service.existsByUsername('hantsy').toPromise();
 
       expect(existsSpy).toBeCalledWith({ username: 'hantsy' });
@@ -180,7 +180,7 @@ describe('UserService', () => {
     });
 
     it('should return false if not exists ', async () => {
-      const existsSpy = jest.spyOn(model, 'exists').mockResolvedValue(false);
+      const existsSpy = jest.spyOn(model, 'exists').mockImplementation(() => Promise.resolve(false));
       const result = await service.existsByUsername('hantsy').toPromise();
 
       expect(existsSpy).toBeCalledWith({ username: 'hantsy' });
@@ -192,7 +192,7 @@ describe('UserService', () => {
   describe('existsByEmail', () => {
 
     it('should return true if exists ', async () => {
-      const existsSpy = jest.spyOn(model, 'exists').mockResolvedValue(true);
+      const existsSpy = jest.spyOn(model, 'exists').mockImplementation(() => Promise.resolve(true));
       const result = await service.existsByEmail('hantsy@example.com').toPromise();
 
       expect(existsSpy).toBeCalledWith({ email: 'hantsy@example.com' });
@@ -201,7 +201,7 @@ describe('UserService', () => {
     });
 
     it('should return false if not exists ', async () => {
-      const existsSpy = jest.spyOn(model, 'exists').mockResolvedValue(false);
+      const existsSpy = jest.spyOn(model, 'exists').mockImplementation(() => Promise.resolve(false));
       const result = await service.existsByEmail('hantsy@example.com').toPromise();
 
       expect(existsSpy).toBeCalledWith({ email: 'hantsy@example.com' });
