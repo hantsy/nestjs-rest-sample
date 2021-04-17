@@ -1,5 +1,5 @@
 # Set nginx base image
-FROM node:14
+FROM node:15
 LABEL maintainer="Hantsy Bai"
 WORKDIR  /app
 COPY  ./dist ./dist
