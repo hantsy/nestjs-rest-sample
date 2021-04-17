@@ -29,7 +29,7 @@ jobs:
             ${{ runner.OS }}-
 
       # install dependencies and build the project
-      - run: npm install
+      - run: npx husky-init && npm install --registry=https://registry.npmjs.org
       - run: npm run build --if-present
 
       # build docker image.
