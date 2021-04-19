@@ -19,7 +19,7 @@ jobs:
           node-version: "15"
 
       - name: Cache Node.js modules
-        uses: actions/cache@v2.1.4
+        uses: actions/cache@v2.1.5
         with:
           # npm cache files are stored in `~/.npm` on Linux/macOS
           path: ~/.npm
