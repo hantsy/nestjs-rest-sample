@@ -50,7 +50,7 @@ jobs:
     if: github.base_ref == 'master' && github.actor == 'dependabot[bot]'
     steps:
       - name: Merge
-        uses: actions/github-script@v3.1
+        uses: actions/github-script@v4.0.2
         with:
           script: |
             github.pullRequests.merge({
