@@ -7,8 +7,10 @@ updates:
   - package-ecosystem: npm
     directory: "/"
     schedule:
-      interval: "daily"
-      time: "21:00"
+      interval: "weekly"
+#     schedule:
+#       interval: "daily"
+#       time: "21:00"
     open-pull-requests-limit: 10
     # Increase the version requirements
     # only when required
