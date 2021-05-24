@@ -1,5 +1,5 @@
 import { Connection } from 'mongoose';
-import { CommentSchema } from './comment.model';
+import { Comment, CommentSchema } from './comment.model';
 import {
   COMMENT_MODEL, DATABASE_CONNECTION,
   POST_MODEL,
@@ -18,7 +18,7 @@ export const databaseModelsProviders = [
   {
     provide: COMMENT_MODEL,
     useFactory: (connection: Connection) =>
-      connection.model<Post>('Comment', CommentSchema, 'comments'),
+      connection.model<Comment>('Comment', CommentSchema, 'comments'),
     inject: [DATABASE_CONNECTION],
   },
   {
