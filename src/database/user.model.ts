@@ -1,6 +1,6 @@
 import { compare, hash } from 'bcrypt';
 import { Connection, Document, Model, Schema, SchemaTypes } from 'mongoose';
-import { from, Observable } from "rxjs";
+import { from, Observable } from 'rxjs';
 import { RoleType } from '../shared/enum/role-type.enum';
 interface User extends Document {
   comparePassword(password: string): Observable<boolean>;
@@ -31,15 +31,14 @@ const UserSchema = new Schema(
   {
     timestamps: true,
     toJSON: {
-      virtuals: true
-    }
+      virtuals: true,
+    },
   },
 );
 
 // see: https://wanago.io/2020/05/25/api-nestjs-authenticating-users-bcrypt-passport-jwt-cookies/
 // and https://stackoverflow.com/questions/48023018/nodejs-bcrypt-async-mongoose-login
 async function preSaveHook(next) {
-
   // Only run this function if password was modified
   if (!this.isModified('password')) return next();
 
@@ -70,7 +69,15 @@ UserSchema.virtual('posts', {
   foreignField: 'createdBy',
 });
 
-const userModelFn: (conn: Connection) => UserModel = (conn: Connection) =>
+const createUserModel: (conn: Connection) => UserModel = (conn: Connection) =>
   conn.model<User>('User', UserSchema, 'users');
 
-export { User, UserModel, UserSchema, preSaveHook, nameGetHook, comparePasswordMethod, userModelFn };
+export {
+  User,
+  UserModel,
+  createUserModel,
+  UserSchema,
+  preSaveHook,
+  nameGetHook,
+  comparePasswordMethod,
+};

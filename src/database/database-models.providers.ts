@@ -1,29 +1,28 @@
 import { Connection } from 'mongoose';
-import { Comment, CommentSchema } from './comment.model';
+import { Comment, createCommentModel } from './comment.model';
 import {
-  COMMENT_MODEL, DATABASE_CONNECTION,
+  COMMENT_MODEL,
+  DATABASE_CONNECTION,
   POST_MODEL,
-  USER_MODEL
+  USER_MODEL,
 } from './database.constants';
-import { Post, PostSchema } from './post.model';
-import { userModelFn } from './user.model';
+import { Post, createPostModel } from './post.model';
+import { createUserModel } from './user.model';
 
 export const databaseModelsProviders = [
   {
     provide: POST_MODEL,
-    useFactory: (connection: Connection) =>
-      connection.model<Post>('Post', PostSchema, 'posts'),
+    useFactory: (connection: Connection) => createPostModel(connection),
     inject: [DATABASE_CONNECTION],
   },
   {
     provide: COMMENT_MODEL,
-    useFactory: (connection: Connection) =>
-      connection.model<Comment>('Comment', CommentSchema, 'comments'),
+    useFactory: (connection: Connection) => createCommentModel(connection),
     inject: [DATABASE_CONNECTION],
   },
   {
     provide: USER_MODEL,
-    useFactory: (connection: Connection) => userModelFn(connection),
+    useFactory: (connection: Connection) => createUserModel(connection),
     inject: [DATABASE_CONNECTION],
   },
 ];

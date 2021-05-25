@@ -1,4 +1,4 @@
-import { Document, Schema, SchemaTypes } from 'mongoose';
+import { Connection, Document, Model, Schema, SchemaTypes } from 'mongoose';
 import { User } from './user.model';
 
 interface Post extends Document {
@@ -7,6 +7,8 @@ interface Post extends Document {
   readonly createdBy?: Partial<User>;
   readonly updatedBy?: Partial<User>;
 }
+
+type PostModel = Model<Post>;
 
 const PostSchema = new Schema(
   {
@@ -18,4 +20,7 @@ const PostSchema = new Schema(
   { timestamps: true },
 );
 
-export { Post, PostSchema }
+const createPostModel: (conn: Connection) => PostModel = (conn: Connection) =>
+  conn.model<Post>('Post', PostSchema, 'posts');
+
+export { Post, PostModel, createPostModel };
