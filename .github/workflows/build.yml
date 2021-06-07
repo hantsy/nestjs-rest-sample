@@ -58,4 +58,4 @@ jobs:
               repo: context.payload.repository.name,
               pull_number: context.payload.pull_request.number
             })
-          github-token: ${{secrets.REPO_TOKEN}}
+          github-token: ${{secrets.GITHUB_TOKEN}}
