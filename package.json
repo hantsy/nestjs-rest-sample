@@ -59,7 +59,7 @@
     "eslint": "7.29.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-import": "^2.22.1",
-    "husky": "^6.0.0",
+    "husky": "^7.0.0",
     "jest": "^27.0.1",
     "jest-mock-extended": "^1.0.13",
     "prettier": "^2.2.1",
