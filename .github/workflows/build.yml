@@ -43,6 +43,7 @@ jobs:
         env:
           CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
   # see: https://www.edwardthomson.com/blog/github_actions_22_automerge_security_updates.html
+  # https://localheinz.com/blog/2020/06/15/merging-pull-requests-with-github-actions/
   automerge:
     name: Merge pull request
     runs-on: ubuntu-latest
