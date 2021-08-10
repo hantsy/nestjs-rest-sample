@@ -11,7 +11,7 @@ interface Comment extends Document {
 
 type CommentModel = Model<Comment>;
 
-const CommentSchema = new Schema(
+const CommentSchema = new Schema<Comment>(
   {
     content: SchemaTypes.String,
     post: { type: SchemaTypes.ObjectId, ref: 'Post', required: false },
