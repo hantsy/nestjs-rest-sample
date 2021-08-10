@@ -10,7 +10,7 @@ interface Post extends Document {
 
 type PostModel = Model<Post>;
 
-const PostSchema = new Schema(
+const PostSchema = new Schema<Post>(
   {
     title: SchemaTypes.String,
     content: SchemaTypes.String,
