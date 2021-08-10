@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Observable, of } from 'rxjs';
+import { lastValueFrom, Observable, of } from 'rxjs';
 import { anyNumber, anyString, instance, mock, verify, when } from 'ts-mockito';
 import { Post } from '../database/post.model';
 import { CreatePostDto } from './create-post.dto';
@@ -33,7 +33,7 @@ describe('Post Controller', () => {
     });
 
     it('GET on /posts should return all posts', async () => {
-      const posts = await controller.getAllPosts().toPromise();
+      const posts = await lastValueFrom(controller.getAllPosts());
       expect(posts.length).toBe(3);
     });
 
@@ -49,8 +49,8 @@ describe('Post Controller', () => {
         title: 'test title',
         content: 'test content',
       };
-      const saved = await controller
-        .createPost(
+      const saved = await lastValueFrom(
+        controller.createPost(
           post,
           createMock<Response>({
             location: jest.fn().mockReturnValue({
@@ -62,8 +62,8 @@ describe('Post Controller', () => {
               }),
             }),
           }),
-        )
-        .toPromise();
+        ),
+      );
       // console.log(saved);
       expect(saved.status).toBe(201);
     });
@@ -110,8 +110,8 @@ describe('Post Controller', () => {
     });
 
     it('POST on /posts/:id/comments', async () => {
-      const result = await controller
-        .createCommentForPost(
+      const result = await lastValueFrom(
+        controller.createCommentForPost(
           'testpost',
           { content: 'testcomment' },
           createMock<Response>({
@@ -124,16 +124,16 @@ describe('Post Controller', () => {
               }),
             }),
           }),
-        )
-        .toPromise();
+        ),
+      );
 
       expect(result.status).toBe(201);
     });
 
     it('GET on /posts/:id/comments', async () => {
-      const result = await controller
-        .getAllCommentsOfPost('testpost')
-        .toPromise();
+      const result = await lastValueFrom(
+        controller.getAllCommentsOfPost('testpost'),
+      );
 
       expect(result.length).toBe(1);
     });
@@ -166,7 +166,7 @@ describe('Post Controller', () => {
     });
 
     it('should get all posts(useValue: fake object)', async () => {
-      const result = await controller.getAllPosts().toPromise();
+      const result = await lastValueFrom(controller.getAllPosts());
       expect(result[0]._id).toEqual('testid');
     });
   });
@@ -205,7 +205,7 @@ describe('Post Controller', () => {
     });
 
     it('should get all posts(useValue: jest mocking)', async () => {
-      const result = await controller.getAllPosts('test', 10, 0).toPromise();
+      const result = await lastValueFrom(controller.getAllPosts('test', 10, 0));
       expect(result[0]._id).toEqual('testid');
       expect(postService.findAll).toBeCalled();
       expect(postService.findAll).lastCalledWith('test', 0, 10);
@@ -228,7 +228,7 @@ describe('Post Controller', () => {
           { _id: 'testid', title: 'test title', content: 'content' },
         ]) as Observable<Post[]>,
       );
-      const result = await controller.getAllPosts('', 10, 0).toPromise();
+      const result = await lastValueFrom(controller.getAllPosts('', 10, 0));
       expect(result.length).toEqual(1);
       expect(result[0].title).toBe('test title');
       verify(

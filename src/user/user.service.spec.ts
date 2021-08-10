@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Model } from 'mongoose';
-import { of } from 'rxjs';
+import { lastValueFrom, of } from 'rxjs';
 import { RoleType } from '../shared/enum/role-type.enum';
 import { USER_MODEL } from '../database/database.constants';
 import { User } from '../database/user.model';
@@ -21,15 +21,15 @@ describe('UserService', () => {
           useValue: {
             findOne: jest.fn(),
             exists: jest.fn(),
-            create: jest.fn()
+            create: jest.fn(),
           },
         },
         {
           provide: SendgridService,
           useValue: {
-            send: jest.fn()
-          }
-        }
+            send: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -48,37 +48,41 @@ describe('UserService', () => {
       email: 'hantsy@example.com',
       firstName: 'hantsy',
       lastName: 'bai',
-      password: 'mysecret'
-    }
+      password: 'mysecret',
+    };
 
     const msg = {
       from: 'service@example.com', // Use the email address or domain you verified above
       subject: 'Welcome to Nestjs Sample',
-      templateId: "welcome",
+      templateId: 'welcome',
       personalizations: [
         {
           to: 'hantsy@example.com',
           dynamicTemplateData: { name: 'hantsy bai' },
-        }
-      ]
-
+        },
+      ],
     };
 
-    const saveSpy = jest.spyOn(model, 'create').mockImplementation(() => Promise.resolve({
-      _id: '123',
-      ...sampleData
-    } as any));
+    const saveSpy = jest.spyOn(model, 'create').mockImplementation(() =>
+      Promise.resolve({
+        _id: '123',
+        ...sampleData,
+      } as any),
+    );
 
     const pipeMock = {
-      pipe: jest.fn()
-    }
+      pipe: jest.fn(),
+    };
 
     const pipeSpy = jest.spyOn(pipeMock, 'pipe');
 
-    const sendSpy = jest.spyOn(sendgrid, 'send')
-      .mockImplementation((data: any) => { return of(pipeMock) });
+    const sendSpy = jest
+      .spyOn(sendgrid, 'send')
+      .mockImplementation((data: any) => {
+        return of(pipeMock);
+      });
 
-    const result = await service.register(sampleData).toPromise();
+    const result = await lastValueFrom(service.register(sampleData));
     expect(saveSpy).toBeCalledWith({ ...sampleData, roles: [RoleType.USER] });
     expect(result._id).toBeDefined();
     //expect(sendSpy).toBeCalledWith(msg);
@@ -97,7 +101,7 @@ describe('UserService', () => {
         } as any;
       });
 
-    const foundUser = await service.findByUsername('hantsy').toPromise();
+    const foundUser = await lastValueFrom(service.findByUsername('hantsy'));
     expect(foundUser).toEqual({
       username: 'hantsy',
       email: 'hantsy@example.com',
@@ -110,16 +114,18 @@ describe('UserService', () => {
     it('return one result', async () => {
       jest
         .spyOn(model, 'findOne')
-        .mockImplementation((conditions: any, projection: any, options: any) => {
-          return {
-            exec: jest.fn().mockResolvedValue({
-              username: 'hantsy',
-              email: 'hantsy@example.com',
-            } as User),
-          } as any;
-        });
+        .mockImplementation(
+          (conditions: any, projection: any, options: any) => {
+            return {
+              exec: jest.fn().mockResolvedValue({
+                username: 'hantsy',
+                email: 'hantsy@example.com',
+              } as User),
+            } as any;
+          },
+        );
 
-      const foundUser = await service.findById('hantsy').toPromise();
+      const foundUser = await lastValueFrom(service.findById('hantsy'));
       expect(foundUser).toEqual({
         username: 'hantsy',
         email: 'hantsy@example.com',
@@ -131,34 +137,37 @@ describe('UserService', () => {
     it('return a null result', async () => {
       jest
         .spyOn(model, 'findOne')
-        .mockImplementation((conditions: any, projection: any, options: any) => {
-          return {
-            exec: jest.fn().mockResolvedValue(null) as any,
-          } as any;
-        });
+        .mockImplementation(
+          (conditions: any, projection: any, options: any) => {
+            return {
+              exec: jest.fn().mockResolvedValue(null) as any,
+            } as any;
+          },
+        );
 
       try {
-        const foundUser = await service.findById('hantsy').toPromise();
+        const foundUser = await lastValueFrom(service.findById('hantsy'));
       } catch (e) {
         expect(e).toBeDefined();
       }
     });
 
-
     it('parameter withPosts=true', async () => {
       jest
         .spyOn(model, 'findOne')
-        .mockImplementation((conditions: any, projection: any, options: any) => {
-          return {
-            populate: jest.fn().mockReturnThis(),
-            exec: jest.fn().mockResolvedValue({
-              username: 'hantsy',
-              email: 'hantsy@example.com',
-            } as User),
-          } as any;
-        });
+        .mockImplementation(
+          (conditions: any, projection: any, options: any) => {
+            return {
+              populate: jest.fn().mockReturnThis(),
+              exec: jest.fn().mockResolvedValue({
+                username: 'hantsy',
+                email: 'hantsy@example.com',
+              } as User),
+            } as any;
+          },
+        );
 
-      const foundUser = await service.findById('hantsy', true).toPromise();
+      const foundUser = await lastValueFrom(service.findById('hantsy', true));
       expect(foundUser).toEqual({
         username: 'hantsy',
         email: 'hantsy@example.com',
@@ -169,10 +178,11 @@ describe('UserService', () => {
   });
 
   describe('existsByUsername', () => {
-
     it('should return true if exists ', async () => {
-      const existsSpy = jest.spyOn(model, 'exists').mockImplementation(() => Promise.resolve(true));
-      const result = await service.existsByUsername('hantsy').toPromise();
+      const existsSpy = jest
+        .spyOn(model, 'exists')
+        .mockImplementation(() => Promise.resolve(true));
+      const result = await lastValueFrom(service.existsByUsername('hantsy'));
 
       expect(existsSpy).toBeCalledWith({ username: 'hantsy' });
       expect(existsSpy).toBeCalledTimes(1);
@@ -180,8 +190,10 @@ describe('UserService', () => {
     });
 
     it('should return false if not exists ', async () => {
-      const existsSpy = jest.spyOn(model, 'exists').mockImplementation(() => Promise.resolve(false));
-      const result = await service.existsByUsername('hantsy').toPromise();
+      const existsSpy = jest
+        .spyOn(model, 'exists')
+        .mockImplementation(() => Promise.resolve(false));
+      const result = await lastValueFrom(service.existsByUsername('hantsy'));
 
       expect(existsSpy).toBeCalledWith({ username: 'hantsy' });
       expect(existsSpy).toBeCalledTimes(1);
@@ -190,10 +202,13 @@ describe('UserService', () => {
   });
 
   describe('existsByEmail', () => {
-
     it('should return true if exists ', async () => {
-      const existsSpy = jest.spyOn(model, 'exists').mockImplementation(() => Promise.resolve(true));
-      const result = await service.existsByEmail('hantsy@example.com').toPromise();
+      const existsSpy = jest
+        .spyOn(model, 'exists')
+        .mockImplementation(() => Promise.resolve(true));
+      const result = await lastValueFrom(
+        service.existsByEmail('hantsy@example.com'),
+      );
 
       expect(existsSpy).toBeCalledWith({ email: 'hantsy@example.com' });
       expect(existsSpy).toBeCalledTimes(1);
@@ -201,8 +216,12 @@ describe('UserService', () => {
     });
 
     it('should return false if not exists ', async () => {
-      const existsSpy = jest.spyOn(model, 'exists').mockImplementation(() => Promise.resolve(false));
-      const result = await service.existsByEmail('hantsy@example.com').toPromise();
+      const existsSpy = jest
+        .spyOn(model, 'exists')
+        .mockImplementation(() => Promise.resolve(false));
+      const result = await lastValueFrom(
+        service.existsByEmail('hantsy@example.com'),
+      );
 
       expect(existsSpy).toBeCalledWith({ email: 'hantsy@example.com' });
       expect(existsSpy).toBeCalledTimes(1);

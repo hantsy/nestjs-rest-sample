@@ -1,6 +1,7 @@
 import { REQUEST } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { FilterQuery, Model } from 'mongoose';
+import { lastValueFrom } from 'rxjs';
 import { Comment } from '../database/comment.model';
 import { COMMENT_MODEL, POST_MODEL } from '../database/database.constants';
 import { Post } from '../database/post.model';
@@ -94,7 +95,7 @@ describe('PostService', () => {
       }),
     } as any);
 
-    const data = await service.findAll().toPromise();
+    const data = await lastValueFrom(service.findAll());
     expect(data.length).toBe(3);
     expect(model.find).toHaveBeenCalled();
 
@@ -115,7 +116,7 @@ describe('PostService', () => {
         },
       );
 
-    const result = await service.findAll('Generate', 0, 10).toPromise();
+    const result = await lastValueFrom(service.findAll('Generate', 0, 10));
     expect(result.length).toBe(1);
     expect(model.find).lastCalledWith({
       title: { $regex: '.*' + 'Generate' + '.*' },
@@ -172,9 +173,11 @@ describe('PostService', () => {
       ...toCreated,
     } as Post;
 
-    jest.spyOn(model, 'create').mockImplementation(() => Promise.resolve(toReturned));
+    jest
+      .spyOn(model, 'create')
+      .mockImplementation(() => Promise.resolve(toReturned));
 
-    const data = await service.save(toCreated).toPromise();
+    const data = await lastValueFrom(service.save(toCreated));
     expect(data._id).toBe('5ee49c3115a4e75254bb732e');
     expect(model.create).toBeCalledWith({
       ...toCreated,
@@ -278,12 +281,16 @@ describe('PostService', () => {
 
   it('should create comment ', async () => {
     const comment = { content: 'test' };
-    jest.spyOn(commentModel, 'create').mockImplementation(() => Promise.resolve({
-      ...comment,
-      post: { _id: 'test' },
-    } as any));
+    jest.spyOn(commentModel, 'create').mockImplementation(() =>
+      Promise.resolve({
+        ...comment,
+        post: { _id: 'test' },
+      } as any),
+    );
 
-    const result = await service.createCommentFor('test', comment).toPromise();
+    const result = await lastValueFrom(
+      service.createCommentFor('test', comment),
+    );
     expect(result.content).toEqual('test');
     expect(commentModel.create).toBeCalledWith({
       ...comment,
@@ -314,7 +321,7 @@ describe('PostService', () => {
         },
       );
 
-    const result = await service.commentsOf('test').toPromise();
+    const result = await lastValueFrom(service.commentsOf('test'));
     expect(result.length).toBe(1);
     expect(result[0].content).toEqual('content');
     expect(commentModel.find).toBeCalledWith({ post: { _id: 'test' } });

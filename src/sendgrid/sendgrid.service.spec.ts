@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MailService } from '@sendgrid/mail';
+import { lastValueFrom } from 'rxjs';
 import { SENDGRID_MAIL } from './sendgrid.constants';
 import { SendgridService } from './sendgrid.service';
 
@@ -14,9 +15,9 @@ describe('SendgridService', () => {
         {
           provide: SENDGRID_MAIL,
           useValue: {
-            send: jest.fn()
-          }
-        }
+            send: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -41,10 +42,11 @@ describe('SendgridService', () => {
       html: '<strong>and easy to do anywhere, even with Node.js</strong>',
     };
 
-    const sendSpy = jest.spyOn(mailService, 'send')
+    const sendSpy = jest
+      .spyOn(mailService, 'send')
       .mockResolvedValue({} as any);
 
-    await service.send(msg).toPromise();
+    await lastValueFrom(service.send(msg));
     expect(sendSpy).toBeCalledTimes(1);
     expect(sendSpy).toBeCalledWith(msg, false);
   });
