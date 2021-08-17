@@ -1,15 +1,16 @@
 name: Dockerize
 
-on:
-  push:
-    paths-ignore:
-      - "docs/**"
-    branches:
-      - master
+on: 
+  pull_request_target:
+  workflow_run:
+    workflows: ["build"]
+    types:
+      - completed
 
 jobs:
-  build:
+  on-success:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       - uses: actions/checkout@v2
