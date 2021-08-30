@@ -71,7 +71,7 @@ describe('API endpoints testing (e2e)', () => {
     });
 
     it('/posts (GET) if none existing should return 404', async () => {
-      const id = mongoose.Types.ObjectId();
+      const id = new mongoose.Types.ObjectId();
       const res = await request(app.getHttpServer()).get('/posts/' + id);
       expect(res.status).toBe(404);
     });
@@ -90,7 +90,7 @@ describe('API endpoints testing (e2e)', () => {
     });
 
     it('/posts (PUT) should return 401', async () => {
-      const id = mongoose.Types.ObjectId();
+      const id = new mongoose.Types.ObjectId();
       const res = await request(app.getHttpServer())
         .put('/posts/' + id)
         .send({ title: 'test title', content: 'test content' });
@@ -98,7 +98,7 @@ describe('API endpoints testing (e2e)', () => {
     });
 
     it('/posts (DELETE) should return 401', async () => {
-      const id = mongoose.Types.ObjectId();
+      const id = new mongoose.Types.ObjectId();
       const res = await request(app.getHttpServer())
         .delete('/posts/' + id)
         .send();
@@ -134,7 +134,7 @@ describe('API endpoints testing (e2e)', () => {
     });
 
     it('/posts (PUT) if none existing should return 404', async () => {
-      const id = mongoose.Types.ObjectId();
+      const id = new mongoose.Types.ObjectId();
       const res = await request(app.getHttpServer())
         .put('/posts/' + id)
         .set('Authorization', 'Bearer ' + jwttoken)
@@ -143,7 +143,7 @@ describe('API endpoints testing (e2e)', () => {
     });
 
     it('/posts (DELETE) if none existing should return 403', async () => {
-      const id = mongoose.Types.ObjectId();
+      const id = new mongoose.Types.ObjectId();
       const res = await request(app.getHttpServer())
         .delete('/posts/' + id)
         .set('Authorization', 'Bearer ' + jwttoken)
@@ -217,7 +217,7 @@ describe('API endpoints testing (e2e)', () => {
     });
 
     it('/posts (DELETE) if none existing should return 404', async () => {
-      const id = mongoose.Types.ObjectId();
+      const id = new mongoose.Types.ObjectId();
       const res = await request(app.getHttpServer())
         .delete('/posts/' + id)
         .set('Authorization', 'Bearer ' + jwttoken)

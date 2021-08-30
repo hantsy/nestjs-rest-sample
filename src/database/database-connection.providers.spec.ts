@@ -34,10 +34,10 @@ describe('DatabaseConnectionProviders', () => {
     //expect(conn).toBeDefined();
     //expect(createConnection).toHaveBeenCalledTimes(1); // it is 2 here. why?
     expect(createConnection).toHaveBeenCalledWith("mongodb://localhost/blog", {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+      // useNewUrlParser: true,
+      // useUnifiedTopology: true,
       //see: https://mongoosejs.com/docs/deprecations.html#findandmodify
-      useFindAndModify: false
+      // useFindAndModify: false
     });
   })
 

@@ -8,10 +8,10 @@ export const databaseConnectionProviders = [
     provide: DATABASE_CONNECTION,
     useFactory: (dbConfig: ConfigType<typeof mongodbConfig>): Connection => {
       const conn = createConnection(dbConfig.uri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
+        //useNewUrlParser: true,
+        //useUnifiedTopology: true,
         //see: https://mongoosejs.com/docs/deprecations.html#findandmodify
-        useFindAndModify: false,
+        //useFindAndModify: false,
       });
 
       // conn.on('disconnect', () => {
