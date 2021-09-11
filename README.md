@@ -5,7 +5,13 @@
 ![Run e2e testing](https://github.com/hantsy/nestjs-sample/workflows/e2e/badge.svg)
 [![codecov](https://codecov.io/gh/hantsy/nestjs-sample/branch/master/graph/badge.svg)](https://codecov.io/gh/hantsy/nestjs-sample)
 
-A NestJS RESTful APIs sample project.
+A NestJS RESTful APIs sample project, including:
+
+* Restful APIs satisfies Richardson Maturity Model(Level 2)
+* Custom Mongoose integration module instead of @nestjs/mongoose
+* Passport/Jwt auth with simple text secrets
+* Fully testing codes with Jest, jest-mock-extended, ts-mockit, @golevelup/ts-jest etc.
+* Github actions for continuous testing, code coverage report, docker image building, etc.
 
 ## Docs
 
