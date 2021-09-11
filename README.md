@@ -9,9 +9,9 @@ A NestJS RESTful APIs sample project, including:
 
 * Restful APIs satisfies Richardson Maturity Model(Level 2)
 * Custom Mongoose integration module instead of @nestjs/mongoose
-* Passport/Jwt auth with simple text secrets
-* Fully testing codes with Jest, jest-mock-extended, ts-mockit, @golevelup/ts-jest etc.
-* Github actions for continuous testing, code coverage report, docker image building, etc.
+* Passport/Jwt authentication with simple text secrets
+* Fully testing codes with Jest, jest-mock-extended, ts-mockito, @golevelup/ts-jest etc.
+* Github actions workflow for continuous testing, code coverage report, docker image building, etc.
 
 ## Docs
 
