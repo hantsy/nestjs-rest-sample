@@ -3,7 +3,7 @@
 ![Compile and build](https://github.com/hantsy/nestjs-sample/workflows/Build/badge.svg)
 ![Build Docker Image](https://github.com/hantsy/nestjs-sample/workflows/Dockerize/badge.svg)
 ![Run e2e testing](https://github.com/hantsy/nestjs-sample/workflows/e2e/badge.svg)
-[![codecov](https://codecov.io/gh/hantsy/nestjs-sample/branch/master/graph/badge.svg)](https://codecov.io/gh/hantsy/nestjs-sample)
+[![codecov](https://codecov.io/gh/hantsy/nestjs-rest-sample/branch/master/graph/badge.svg?token=MBLWAJPG13)](https://codecov.io/gh/hantsy/nestjs-rest-sample)
 
 A NestJS RESTful APIs sample project, including:
 
