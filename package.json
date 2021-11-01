@@ -41,7 +41,7 @@
     "rxjs": "^7.1.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^13.1.0",
+    "@commitlint/cli": "^14.1.0",
     "@commitlint/config-conventional": "^14.1.0",
     "@golevelup/ts-jest": "^0.3.1",
     "@nestjs/cli": "^8.0.2",
