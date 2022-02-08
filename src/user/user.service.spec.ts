@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Model } from 'mongoose';
 import { lastValueFrom, of } from 'rxjs';
-import { RoleType } from '../shared/enum/role-type.enum';
+
 import { USER_MODEL } from '../database/database.constants';
 import { User } from '../database/user.model';
 import { SendgridService } from '../sendgrid/sendgrid.service';
+import { RoleType } from '../shared/enum/role-type.enum';
 import { UserService } from './user.service';
 
 describe('UserService', () => {
@@ -181,7 +182,13 @@ describe('UserService', () => {
     it('should return true if exists ', async () => {
       const existsSpy = jest
         .spyOn(model, 'exists')
-        .mockImplementation(() => Promise.resolve(true));
+        .mockImplementation((filter: any, callback: any) => {
+          return {
+            exec: jest.fn().mockResolvedValue({
+              _id: 'test',
+            } as any),
+          } as any;
+        });
       const result = await lastValueFrom(service.existsByUsername('hantsy'));
 
       expect(existsSpy).toBeCalledWith({ username: 'hantsy' });
@@ -192,7 +199,11 @@ describe('UserService', () => {
     it('should return false if not exists ', async () => {
       const existsSpy = jest
         .spyOn(model, 'exists')
-        .mockImplementation(() => Promise.resolve(false));
+        .mockImplementation((filter: any, callback: any) => {
+          return {
+            exec: jest.fn().mockResolvedValue(null),
+          } as any;
+        });
       const result = await lastValueFrom(service.existsByUsername('hantsy'));
 
       expect(existsSpy).toBeCalledWith({ username: 'hantsy' });
@@ -205,7 +216,13 @@ describe('UserService', () => {
     it('should return true if exists ', async () => {
       const existsSpy = jest
         .spyOn(model, 'exists')
-        .mockImplementation(() => Promise.resolve(true));
+        .mockImplementation((filter: any, callback: any) => {
+          return {
+            exec: jest.fn().mockResolvedValue({
+              _id: 'test',
+            } as any),
+          } as any;
+        });
       const result = await lastValueFrom(
         service.existsByEmail('hantsy@example.com'),
       );
@@ -218,7 +235,11 @@ describe('UserService', () => {
     it('should return false if not exists ', async () => {
       const existsSpy = jest
         .spyOn(model, 'exists')
-        .mockImplementation(() => Promise.resolve(false));
+        .mockImplementation((filter: any, callback: any) => {
+          return {
+            exec: jest.fn().mockResolvedValue(null),
+          } as any;
+        });
       const result = await lastValueFrom(
         service.existsByEmail('hantsy@example.com'),
       );

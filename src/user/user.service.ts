@@ -1,6 +1,6 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { EMPTY, from, Observable, of, throwError } from 'rxjs';
-import { mergeMap, tap, throwIfEmpty, catchError } from 'rxjs/operators';
+import { mergeMap, tap, throwIfEmpty, catchError, map } from 'rxjs/operators';
 import { RoleType } from '../shared/enum/role-type.enum';
 import { USER_MODEL } from '../database/database.constants';
 import { User, UserModel } from '../database/user.model';
@@ -11,23 +11,27 @@ import { RegisterDto } from './register.dto';
 export class UserService {
   constructor(
     @Inject(USER_MODEL) private userModel: UserModel,
-    private sendgridService: SendgridService
-  ) { }
+    private sendgridService: SendgridService,
+  ) {}
 
   findByUsername(username: string): Observable<User> {
     return from(this.userModel.findOne({ username }).exec());
   }
 
+  // since mongoose 6.2, `Model.exists` is chagned to return a lean document with `_id` or `null`
   existsByUsername(username: string): Observable<boolean> {
-    return from(this.userModel.exists({ username }));
+    return from(this.userModel.exists({ username }).exec()).pipe(
+      map((exists) => exists != null),
+    );
   }
 
   existsByEmail(email: string): Observable<boolean> {
-    return from(this.userModel.exists({ email }));
+    return from(this.userModel.exists({ email }).exec()).pipe(
+      map((exists) => exists != null),
+    );
   }
 
   register(data: RegisterDto): Observable<User> {
-
     // Simply here we can send a verification email to the new registered user
     // by calling SendGrid directly.
     //
@@ -62,7 +66,7 @@ export class UserService {
 
     const created = this.userModel.create({
       ...data,
-      roles: [RoleType.USER]
+      roles: [RoleType.USER],
     });
 
     return from(created);
@@ -89,7 +93,7 @@ export class UserService {
   findById(id: string, withPosts = false): Observable<User> {
     const userQuery = this.userModel.findOne({ _id: id });
     if (withPosts) {
-      userQuery.populate("posts");
+      userQuery.populate('posts');
     }
     return from(userQuery.exec()).pipe(
       mergeMap((p) => (p ? of(p) : EMPTY)),
