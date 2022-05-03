@@ -93,7 +93,7 @@ describe('UserService', () => {
   it('findByUsername should return user', async () => {
     jest
       .spyOn(model, 'findOne')
-      .mockImplementation((conditions: any, projection: any, options: any) => {
+      .mockImplementation((filter: any, callback: any) => {
         return {
           exec: jest.fn().mockResolvedValue({
             username: 'hantsy',
@@ -116,7 +116,7 @@ describe('UserService', () => {
       jest
         .spyOn(model, 'findOne')
         .mockImplementation(
-          (conditions: any, projection: any, options: any) => {
+          (filter: any, callback: any) => {
             return {
               exec: jest.fn().mockResolvedValue({
                 username: 'hantsy',
@@ -139,7 +139,7 @@ describe('UserService', () => {
       jest
         .spyOn(model, 'findOne')
         .mockImplementation(
-          (conditions: any, projection: any, options: any) => {
+          (filter: any, callback: any) => {
             return {
               exec: jest.fn().mockResolvedValue(null) as any,
             } as any;
@@ -157,7 +157,7 @@ describe('UserService', () => {
       jest
         .spyOn(model, 'findOne')
         .mockImplementation(
-          (conditions: any, projection: any, options: any) => {
+          (filter: any, callback: any) => {
             return {
               populate: jest.fn().mockReturnThis(),
               exec: jest.fn().mockResolvedValue({
