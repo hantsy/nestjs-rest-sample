@@ -182,7 +182,7 @@ describe('UserService', () => {
     it('should return true if exists ', async () => {
       const existsSpy = jest
         .spyOn(model, 'exists')
-        .mockImplementation((filter: any, callback: any) => {
+        .mockImplementation((filter: any) => {
           return {
             exec: jest.fn().mockResolvedValue({
               _id: 'test',
@@ -199,7 +199,7 @@ describe('UserService', () => {
     it('should return false if not exists ', async () => {
       const existsSpy = jest
         .spyOn(model, 'exists')
-        .mockImplementation((filter: any, callback: any) => {
+        .mockImplementation((filter: any) => {
           return {
             exec: jest.fn().mockResolvedValue(null),
           } as any;
@@ -216,7 +216,7 @@ describe('UserService', () => {
     it('should return true if exists ', async () => {
       const existsSpy = jest
         .spyOn(model, 'exists')
-        .mockImplementation((filter: any, callback: any) => {
+        .mockImplementation((filter: any) => {
           return {
             exec: jest.fn().mockResolvedValue({
               _id: 'test',
@@ -235,7 +235,7 @@ describe('UserService', () => {
     it('should return false if not exists ', async () => {
       const existsSpy = jest
         .spyOn(model, 'exists')
-        .mockImplementation((filter: any, callback: any) => {
+        .mockImplementation((filter: any) => {
           return {
             exec: jest.fn().mockResolvedValue(null),
           } as any;
