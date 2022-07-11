@@ -44,7 +44,7 @@
     "@commitlint/cli": "^17.0.0",
     "@commitlint/config-conventional": "^17.0.0",
     "@golevelup/ts-jest": "^0.3.1",
-    "@nestjs/cli": "^8.0.2",
+    "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.1",
     "@nestjs/testing": "^8.0.0",
     "@types/bcrypt": "^5.0.0",
