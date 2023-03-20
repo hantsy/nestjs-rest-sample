@@ -55,7 +55,7 @@
     "@types/passport-local": "^1.0.34",
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "5.55.0",
-    "@typescript-eslint/parser": "5.54.1",
+    "@typescript-eslint/parser": "5.55.0",
     "eslint": "8.36.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.4",
