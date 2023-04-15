@@ -1,7 +1,8 @@
 import { REQUEST } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
-import { FilterQuery, Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { lastValueFrom } from 'rxjs';
+
 import { Comment } from '../database/comment.model';
 import { COMMENT_MODEL, POST_MODEL } from '../database/database.constants';
 import { Post } from '../database/post.model';
@@ -99,22 +100,15 @@ describe('PostService', () => {
     expect(data.length).toBe(3);
     expect(model.find).toHaveBeenCalled();
 
-    jest
-      .spyOn(model, 'find')
-      .mockImplementation(
-        (
-          conditions: FilterQuery<Post>,
-          callback?: (err: any, res: Post[]) => void,
-        ) => {
-          return {
-            skip: jest.fn().mockReturnValue({
-              limit: jest.fn().mockReturnValue({
-                exec: jest.fn().mockResolvedValueOnce([posts[0]]),
-              }),
-            }),
-          } as any;
-        },
-      );
+    jest.spyOn(model, 'find').mockImplementation(() => {
+      return {
+        skip: jest.fn().mockReturnValue({
+          limit: jest.fn().mockReturnValue({
+            exec: jest.fn().mockResolvedValueOnce([posts[0]]),
+          }),
+        }),
+      } as any;
+    });
 
     const result = await lastValueFrom(service.findAll('Generate', 0, 10));
     expect(result.length).toBe(1);
@@ -171,14 +165,14 @@ describe('PostService', () => {
     const toReturned = {
       _id: '5ee49c3115a4e75254bb732e',
       ...toCreated,
-    } as Post;
+    } as any;
 
     jest
       .spyOn(model, 'create')
-      .mockImplementation(() => Promise.resolve(toReturned));
+      .mockImplementation(() => Promise.resolve([toReturned]));
 
     const data = await lastValueFrom(service.save(toCreated));
-    expect(data._id).toBe('5ee49c3115a4e75254bb732e');
+    expect(data[0]._id).toBe('5ee49c3115a4e75254bb732e');
     expect(model.create).toBeCalledWith({
       ...toCreated,
       createdBy: {
@@ -300,26 +294,19 @@ describe('PostService', () => {
   });
 
   it('should get comments of post ', async () => {
-    jest
-      .spyOn(commentModel, 'find')
-      .mockImplementation(
-        (
-          conditions: FilterQuery<Comment>,
-          callback?: (err: any, res: Comment[]) => void,
-        ) => {
-          return {
-            select: jest.fn().mockReturnValue({
-              exec: jest.fn().mockResolvedValue([
-                {
-                  _id: 'test',
-                  content: 'content',
-                  post: { _id: '_test_id' },
-                },
-              ] as any),
-            }),
-          } as any;
-        },
-      );
+    jest.spyOn(commentModel, 'find').mockImplementation(() => {
+      return {
+        select: jest.fn().mockReturnValue({
+          exec: jest.fn().mockResolvedValue([
+            {
+              _id: 'test',
+              content: 'content',
+              post: { _id: '_test_id' },
+            },
+          ] as any),
+        }),
+      } as any;
+    });
 
     const result = await lastValueFrom(service.commentsOf('test'));
     expect(result.length).toBe(1);
