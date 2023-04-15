@@ -37,7 +37,7 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.1.13",
-    "rimraf": "^4.0.7",
+    "rimraf": "^5.0.0",
     "rxjs": "^7.1.0"
   },
   "devDependencies": {
@@ -54,9 +54,9 @@
     "@types/passport-jwt": "^3.0.6",
     "@types/passport-local": "^1.0.34",
     "@types/supertest": "^2.0.11",
-    "@typescript-eslint/eslint-plugin": "5.57.0",
+    "@typescript-eslint/eslint-plugin": "5.57.1",
     "@typescript-eslint/parser": "5.57.1",
-    "eslint": "8.37.0",
+    "eslint": "8.38.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.4",
     "husky": "^8.0.1",
