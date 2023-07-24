@@ -43,7 +43,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.6.1",
     "@commitlint/config-conventional": "^17.6.1",
-    "@golevelup/ts-jest": "^0.3.5",
+    "@golevelup/ts-jest": "^0.4.0",
     "@nestjs/cli": "^10.0.3",
     "@nestjs/schematics": "^10.0.1",
     "@nestjs/testing": "^9.4.0",
