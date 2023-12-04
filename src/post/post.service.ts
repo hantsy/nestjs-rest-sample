@@ -76,7 +76,7 @@ export class PostService {
 
   deleteById(id: string): Observable<Post> {
     return from(this.postModel.findOneAndDelete({ _id: id }).exec()).pipe(
-      mergeMap((p) => (p.ok ? of(p.value) : EMPTY)),
+      mergeMap((p) => (p ? of(p.value) : EMPTY)),
       throwIfEmpty(() => new NotFoundException(`post:$id was not found`)),
     );
     // const filter = { _id: id };
