@@ -30,7 +30,7 @@ import { UpdatePostDto } from './update-post.dto';
 
 @Controller({ path: 'posts', scope: Scope.REQUEST })
 export class PostController {
-  constructor(private postService: PostService) { }
+  constructor(private readonly postService: PostService) { }
 
   @Get('')
   getAllPosts(

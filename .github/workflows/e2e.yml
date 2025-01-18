@@ -3,7 +3,7 @@ name: e2e
 on:
   push:
     paths-ignore:
-      - "docs/**"
+      - 'docs/**'
     branches:
       - master
       - release/*
@@ -22,7 +22,7 @@ jobs:
       - name: Setup NodeJS
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: '22'
 
       - name: Cache Node.js modules
         uses: actions/cache@v4
@@ -36,7 +36,7 @@ jobs:
       - run: npm install  --registry=https://registry.npmjs.org
       - name: Running mongodb service
         run: |
-          docker-compose up -d mongodb
+          docker compose up -d mongodb
           docker ps -a
 
       # install dependencies and build the project
