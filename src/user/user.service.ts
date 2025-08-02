@@ -5,7 +5,7 @@ import { RoleType } from '../shared/enum/role-type.enum';
 import { USER_MODEL } from '../database/database.constants';
 import { User, UserModel } from '../database/user.model';
 import { SendgridService } from '../sendgrid/sendgrid.service';
-import { RegisterDto } from './register.dto';
+import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class UserService {

@@ -3,7 +3,7 @@ import { RegisterController } from './register.controller';
 import { UserService } from './user.service';
 import { of, lastValueFrom } from 'rxjs';
 import { User } from 'database/user.model';
-import { RegisterDto } from './register.dto';
+import { RegisterDto } from './dto/register.dto';
 
 describe('Register Controller', () => {
   let controller: RegisterController;

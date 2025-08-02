@@ -1,4 +1,4 @@
-import { RegisterDto } from './register.dto';
+import { RegisterDto } from './dto/register.dto';
 
 describe('RegisterDto', () => {
   it('should be defined', () => {
@@ -6,24 +6,20 @@ describe('RegisterDto', () => {
   });
 
   it('should equals', () => {
-
     const dto: RegisterDto = {
       username: 'hantsy',
       password: 'password',
       firstName: 'Hantsy',
       lastName: 'Bai',
-      email: 'hantsy@gmail.com'
+      email: 'hantsy@gmail.com',
     };
 
-    expect(dto).toEqual(
-      {
-        username: 'hantsy',
-        password: 'password',
-        firstName: 'Hantsy',
-        lastName: 'Bai',
-        email: 'hantsy@gmail.com'
-      }
-    );
-
+    expect(dto).toEqual({
+      username: 'hantsy',
+      password: 'password',
+      firstName: 'Hantsy',
+      lastName: 'Bai',
+      email: 'hantsy@gmail.com',
+    });
   });
 });

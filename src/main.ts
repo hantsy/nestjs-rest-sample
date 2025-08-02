@@ -8,7 +8,13 @@ async function bootstrap() {
   // enable shutdown hooks explicitly.
   app.enableShutdownHooks();
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
   app.enableCors();
   //app.useLogger();
   await app.listen(3000);
