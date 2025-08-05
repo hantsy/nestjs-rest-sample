@@ -112,7 +112,7 @@ describe('PostService', () => {
 
     const result = await lastValueFrom(service.findAll('Generate', 0, 10));
     expect(result.length).toBe(1);
-    expect(model.find).lastCalledWith({
+    expect(model.find).toHaveBeenLastCalledWith({
       title: { $regex: '.*' + 'Generate' + '.*' },
     });
   });
@@ -173,13 +173,13 @@ describe('PostService', () => {
 
     const data = await lastValueFrom(service.save(toCreated));
     expect(data[0]._id).toBe('5ee49c3115a4e75254bb732e');
-    expect(model.create).toBeCalledWith({
+    expect(model.create).toHaveBeenCalledWith({
       ...toCreated,
       createdBy: {
         _id: 'dummyId',
       },
     });
-    expect(model.create).toBeCalledTimes(1);
+    expect(model.create).toHaveBeenCalledTimes(1);
   });
 
   describe('update', () => {
@@ -197,7 +197,7 @@ describe('PostService', () => {
       service.update('5ee49c3115a4e75254bb732e', toUpdated).subscribe({
         next: (data) => {
           expect(data).toBeTruthy();
-          expect(model.findOneAndUpdate).toBeCalled();
+          expect(model.findOneAndUpdate).toHaveBeenCalled();
         },
         error: (error) => console.log(error),
         complete: done(),
@@ -238,7 +238,7 @@ describe('PostService', () => {
       service.deleteById('anystring').subscribe({
         next: (data) => {
           expect(data).toBeTruthy();
-          expect(model.findOneAndDelete).toBeCalled();
+          expect(model.findOneAndDelete).toHaveBeenCalled();
         },
         error: (error) => console.log(error),
         complete: done(),
@@ -252,7 +252,7 @@ describe('PostService', () => {
       service.deleteById('anystring').subscribe({
         error: (error) => {
           expect(error).toBeDefined();
-          expect(model.findOneAndDelete).toBeCalledTimes(1);
+          expect(model.findOneAndDelete).toHaveBeenCalledTimes(1);
         },
         complete: done(),
       });
@@ -286,7 +286,7 @@ describe('PostService', () => {
       service.createCommentFor('test', comment),
     );
     expect(result.content).toEqual('test');
-    expect(commentModel.create).toBeCalledWith({
+    expect(commentModel.create).toHaveBeenCalledWith({
       ...comment,
       post: { _id: 'test' },
       createdBy: { _id: 'dummyId' },
@@ -311,6 +311,6 @@ describe('PostService', () => {
     const result = await lastValueFrom(service.commentsOf('test'));
     expect(result.length).toBe(1);
     expect(result[0].content).toEqual('content');
-    expect(commentModel.find).toBeCalledWith({ post: { _id: 'test' } });
+    expect(commentModel.find).toHaveBeenCalledWith({ post: { _id: 'test' } });
   });
 });

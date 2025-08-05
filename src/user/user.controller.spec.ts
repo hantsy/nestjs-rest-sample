@@ -42,6 +42,6 @@ describe('UserController', () => {
     const user = await lastValueFrom(controller.getUser('id', false));
     expect(user.firstName).toBe('hantsy');
     expect(user.lastName).toBe('bai');
-    expect(service.findById).toBeCalledWith('id', false);
+    expect(service.findById).toHaveBeenCalledWith('id', false);
   });
 });

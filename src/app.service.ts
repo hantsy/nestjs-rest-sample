@@ -4,7 +4,7 @@ import { LoggerService } from './logger/logger.service';
 
 @Injectable()
 export class AppService {
-  constructor(@Logger('AppService') private logger: LoggerService) {}
+  constructor(@Logger('AppService') private readonly logger: LoggerService) {}
 
   getHello(): string {
     this.logger.log('Hello World');

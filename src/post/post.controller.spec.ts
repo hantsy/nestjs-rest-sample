@@ -207,8 +207,8 @@ describe('Post Controller', () => {
     it('should get all posts(useValue: jest mocking)', async () => {
       const result = await lastValueFrom(controller.getAllPosts('test', 10, 0));
       expect(result[0]._id).toEqual('testid');
-      expect(postService.findAll).toBeCalled();
-      expect(postService.findAll).lastCalledWith('test', 0, 10);
+      expect(postService.findAll).toHaveBeenCalled();
+      expect(postService.findAll).toHaveBeenLastCalledWith('test', 0, 10);
     });
   });
 

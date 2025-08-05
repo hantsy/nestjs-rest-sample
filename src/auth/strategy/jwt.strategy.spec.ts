@@ -15,13 +15,12 @@ describe('JwtStrategy', () => {
         {
           provide: jwtConfig.KEY,
           useValue: {
-            secretKey: "test",
-            expiresIn:'100s'
+            secretKey: 'test',
+            expiresIn: '100s',
           },
         },
       ],
-    })
-    .compile();
+    }).compile();
 
     strategy = app.get<JwtStrategy>(JwtStrategy);
     config = app.get<ConfigType<typeof jwtConfig>>(jwtConfig.KEY);
@@ -29,13 +28,13 @@ describe('JwtStrategy', () => {
 
   describe('validate', () => {
     it('should return user principal if user and password is provided ', async () => {
-      expect(config.secretKey).toBe('test')
-      expect(config.expiresIn).toBe('100s')
-      const user = await strategy.validate({
-        upn: "test",
+      expect(config.secretKey).toBe('test');
+      expect(config.expiresIn).toBe('100s');
+      const user = strategy.validate({
+        upn: 'test',
         sub: 'testid',
-        email: "test@example.com",
-        roles: [RoleType.USER]
+        email: 'test@example.com',
+        roles: [RoleType.USER],
       });
       expect(user.username).toEqual('test');
       expect(user.id).toEqual('testid');
@@ -59,13 +58,12 @@ describe('JwtStrategy(call supper)', () => {
 
   it('call super', () => {
     const config = mock<ConfigType<typeof jwtConfig>>();
-    config.secretKey="test";
+    config.secretKey = 'test';
     new JwtStrategy(config);
     expect(parentMock.mock.calls.length).toBe(1);
 
     expect(parentMock.mock.calls[0][0].jwtFromRequest).toBeDefined();
     expect(parentMock.mock.calls[0][0].ignoreExpiration).toBeFalsy();
-    expect(parentMock.mock.calls[0][0].secretOrKey).toEqual("test");
-
-  })
+    expect(parentMock.mock.calls[0][0].secretOrKey).toEqual('test');
+  });
 });

@@ -47,7 +47,7 @@ describe('AuthController', () => {
         ),
       );
       expect(token).toBeTruthy();
-      expect(authService.login).toBeCalled();
+      expect(authService.login).toHaveBeenCalled();
     });
   });
 });

@@ -47,7 +47,7 @@ describe('SendgridService', () => {
       .mockResolvedValue({} as any);
 
     await lastValueFrom(service.send(msg));
-    expect(sendSpy).toBeCalledTimes(1);
-    expect(sendSpy).toBeCalledWith(msg, false);
+    expect(sendSpy).toHaveBeenCalledTimes(1);
+    expect(sendSpy).toHaveBeenCalledWith(msg, false);
   });
 });

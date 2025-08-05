@@ -84,7 +84,10 @@ describe('UserService', () => {
       });
 
     const result = await lastValueFrom(service.register(sampleData));
-    expect(saveSpy).toBeCalledWith({ ...sampleData, roles: [RoleType.USER] });
+    expect(saveSpy).toHaveBeenCalledWith({
+      ...sampleData,
+      roles: [RoleType.USER],
+    });
     expect(result._id).toBeDefined();
     //expect(sendSpy).toBeCalledWith(msg);
     //expect(pipeSpy).toBeCalled();
@@ -98,7 +101,7 @@ describe('UserService', () => {
             username: 'hantsy',
             email: 'hantsy@example.com',
           } as User),
-        } as any),
+        }) as any,
     );
 
     const foundUser = await lastValueFrom(service.findByUsername('hantsy'));
@@ -106,21 +109,20 @@ describe('UserService', () => {
       username: 'hantsy',
       email: 'hantsy@example.com',
     });
-    expect(model.findOne).lastCalledWith({ username: 'hantsy' });
-    expect(model.findOne).toBeCalledTimes(1);
+    expect(model.findOne).toHaveBeenLastCalledWith({ username: 'hantsy' });
+    expect(model.findOne).toHaveBeenCalledTimes(1);
   });
 
   describe('findById', () => {
     it('return one result', async () => {
-      jest.spyOn(model, 'findOne')
-      .mockImplementation(
+      jest.spyOn(model, 'findOne').mockImplementation(
         (filter?: FilterQuery<User>) =>
           ({
             exec: jest.fn().mockResolvedValue({
               username: 'hantsy',
               email: 'hantsy@example.com',
             } as User),
-          } as any),
+          }) as any,
       );
 
       const foundUser = await lastValueFrom(service.findById('hantsy'));
@@ -128,16 +130,17 @@ describe('UserService', () => {
         username: 'hantsy',
         email: 'hantsy@example.com',
       });
-      expect(model.findOne).lastCalledWith({ _id: 'hantsy' });
-      expect(model.findOne).toBeCalledTimes(1);
+      expect(model.findOne).toHaveBeenLastCalledWith({ _id: 'hantsy' });
+      expect(model.findOne).toHaveBeenCalledTimes(1);
     });
 
     it('return a null result', async () => {
-      jest
-        .spyOn(model, 'findOne')
-        .mockImplementation((filter?: FilterQuery<User>) => ({
-          exec: jest.fn().mockResolvedValue(null) as any,
-        } as any));
+      jest.spyOn(model, 'findOne').mockImplementation(
+        (filter?: FilterQuery<User>) =>
+          ({
+            exec: jest.fn().mockResolvedValue(null) as any,
+          }) as any,
+      );
 
       try {
         const foundUser = await lastValueFrom(service.findById('hantsy'));
@@ -147,23 +150,24 @@ describe('UserService', () => {
     });
 
     it('parameter withPosts=true', async () => {
-      jest
-        .spyOn(model, 'findOne')
-        .mockImplementation((filter?: FilterQuery<User>) => ({
-          populate: jest.fn().mockReturnThis(),
-          exec: jest.fn().mockResolvedValue({
-            username: 'hantsy',
-            email: 'hantsy@example.com',
-          } as User),
-        } as any));
+      jest.spyOn(model, 'findOne').mockImplementation(
+        (filter?: FilterQuery<User>) =>
+          ({
+            populate: jest.fn().mockReturnThis(),
+            exec: jest.fn().mockResolvedValue({
+              username: 'hantsy',
+              email: 'hantsy@example.com',
+            } as User),
+          }) as any,
+      );
 
       const foundUser = await lastValueFrom(service.findById('hantsy', true));
       expect(foundUser).toEqual({
         username: 'hantsy',
         email: 'hantsy@example.com',
       });
-      expect(model.findOne).lastCalledWith({ _id: 'hantsy' });
-      expect(model.findOne).toBeCalledTimes(1);
+      expect(model.findOne).toHaveBeenLastCalledWith({ _id: 'hantsy' });
+      expect(model.findOne).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -180,8 +184,8 @@ describe('UserService', () => {
         });
       const result = await lastValueFrom(service.existsByUsername('hantsy'));
 
-      expect(existsSpy).toBeCalledWith({ username: 'hantsy' });
-      expect(existsSpy).toBeCalledTimes(1);
+      expect(existsSpy).toHaveBeenCalledWith({ username: 'hantsy' });
+      expect(existsSpy).toHaveBeenCalledTimes(1);
       expect(result).toBeTruthy();
     });
 
@@ -195,8 +199,8 @@ describe('UserService', () => {
         });
       const result = await lastValueFrom(service.existsByUsername('hantsy'));
 
-      expect(existsSpy).toBeCalledWith({ username: 'hantsy' });
-      expect(existsSpy).toBeCalledTimes(1);
+      expect(existsSpy).toHaveBeenCalledWith({ username: 'hantsy' });
+      expect(existsSpy).toHaveBeenCalledTimes(1);
       expect(result).toBeFalsy();
     });
   });
@@ -216,8 +220,8 @@ describe('UserService', () => {
         service.existsByEmail('hantsy@example.com'),
       );
 
-      expect(existsSpy).toBeCalledWith({ email: 'hantsy@example.com' });
-      expect(existsSpy).toBeCalledTimes(1);
+      expect(existsSpy).toHaveBeenCalledWith({ email: 'hantsy@example.com' });
+      expect(existsSpy).toHaveBeenCalledTimes(1);
       expect(result).toBeTruthy();
     });
 
@@ -233,8 +237,8 @@ describe('UserService', () => {
         service.existsByEmail('hantsy@example.com'),
       );
 
-      expect(existsSpy).toBeCalledWith({ email: 'hantsy@example.com' });
-      expect(existsSpy).toBeCalledTimes(1);
+      expect(existsSpy).toHaveBeenCalledWith({ email: 'hantsy@example.com' });
+      expect(existsSpy).toHaveBeenCalledTimes(1);
       expect(result).toBeFalsy();
     });
   });

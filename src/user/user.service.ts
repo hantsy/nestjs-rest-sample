@@ -10,8 +10,8 @@ import { RegisterDto } from './register.dto';
 @Injectable()
 export class UserService {
   constructor(
-    @Inject(USER_MODEL) private userModel: UserModel,
-    private sendgridService: SendgridService,
+    @Inject(USER_MODEL) private readonly userModel: UserModel,
+    private readonly sendgridService: SendgridService,
   ) {}
 
   findByUsername(username: string): Observable<User> {

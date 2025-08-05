@@ -17,7 +17,7 @@ describe('LocalStrategy', () => {
           useValue: {
             constructor: jest.fn(),
             login: jest.fn(),
-            validateUser: jest.fn()
+            validateUser: jest.fn(),
           },
         },
       ],
@@ -41,7 +41,7 @@ describe('LocalStrategy', () => {
         });
       const user = await strategy.validate('test', 'pass');
       expect(user.username).toEqual('test');
-      expect(authService.validateUser).toBeCalledWith('test', 'pass');
+      expect(authService.validateUser).toHaveBeenCalledWith('test', 'pass');
     });
 
     it('should throw UnauthorizedException  if user is not valid ', async () => {
@@ -55,9 +55,9 @@ describe('LocalStrategy', () => {
         const user = await strategy.validate('test', 'pass');
       } catch (e) {
         //console.log(e)
-        expect(e).toBeDefined()
+        expect(e).toBeDefined();
       }
-      expect(authService.validateUser).toBeCalledWith('test', 'pass');
+      expect(authService.validateUser).toHaveBeenCalledWith('test', 'pass');
     });
   });
 });
@@ -79,9 +79,9 @@ describe('LocalStrategy(call supper)', () => {
   it('call super', () => {
     new LocalStrategy(mock<AuthService>());
     expect(parentMock.mock.calls.length).toBe(1);
-    expect(parentMock).toBeCalledWith({
+    expect(parentMock).toHaveBeenCalledWith({
       usernameField: 'username',
       passwordField: 'password',
     });
-  })
+  });
 });

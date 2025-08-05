@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RegisterController } from './register.controller';
 import { UserService } from './user.service';
-import { of, lastValueFrom } from 'rxjs';
+import { of } from 'rxjs';
 import { User } from 'database/user.model';
 import { RegisterDto } from './register.dto';
 
@@ -50,17 +50,15 @@ describe('Register Controller', () => {
         send: jest.fn().mockReturnThis(),
       } as any;
       try {
-        await lastValueFrom(
-          controller.register(
-            { username: 'hantsy' } as RegisterDto,
-            responseMock,
-          ),
+        await controller.register(
+          { username: 'hantsy' } as RegisterDto,
+          responseMock,
         );
       } catch (e) {
         expect(e).toBeDefined();
-        expect(existsByUsernameSpy).toBeCalledWith('hantsy');
-        expect(existsByEmailSpy).toBeCalledTimes(0);
-        expect(saveSpy).toBeCalledTimes(0);
+        expect(existsByUsernameSpy).toHaveBeenCalledWith('hantsy');
+        expect(existsByEmailSpy).toHaveBeenCalledTimes(0);
+        expect(saveSpy).toHaveBeenCalledTimes(0);
       }
     });
 
@@ -81,17 +79,15 @@ describe('Register Controller', () => {
         send: jest.fn().mockReturnThis(),
       } as any;
       try {
-        await lastValueFrom(
-          controller.register(
-            { username: 'hantsy', email: 'hantsy@example.com' } as RegisterDto,
-            responseMock,
-          ),
+        await controller.register(
+          { username: 'hantsy', email: 'hantsy@example.com' } as RegisterDto,
+          responseMock,
         );
       } catch (e) {
         expect(e).toBeDefined();
-        expect(existsByUsernameSpy).toBeCalledWith('hantsy');
-        expect(existsByEmailSpy).toBeCalledWith('hantsy@example.com');
-        expect(saveSpy).toBeCalledTimes(0);
+        expect(existsByUsernameSpy).toHaveBeenCalledWith('hantsy');
+        expect(existsByEmailSpy).toHaveBeenCalledWith('hantsy@example.com');
+        expect(saveSpy).toHaveBeenCalledTimes(0);
       }
     });
 
@@ -116,19 +112,17 @@ describe('Register Controller', () => {
       const statusSpy = jest.spyOn(responseMock, 'status');
       const sendSpy = jest.spyOn(responseMock, 'send');
 
-      await lastValueFrom(
-        controller.register(
-          { username: 'hantsy', email: 'hantsy@example.com' } as RegisterDto,
-          responseMock,
-        ),
+      await controller.register(
+        { username: 'hantsy', email: 'hantsy@example.com' } as RegisterDto,
+        responseMock,
       );
 
-      expect(existsByUsernameSpy).toBeCalledWith('hantsy');
-      expect(existsByEmailSpy).toBeCalledWith('hantsy@example.com');
-      expect(saveSpy).toBeCalledTimes(1);
-      expect(locationSpy).toBeCalled();
-      expect(statusSpy).toBeCalled();
-      expect(sendSpy).toBeCalled();
+      expect(existsByUsernameSpy).toHaveBeenCalledWith('hantsy');
+      expect(existsByEmailSpy).toHaveBeenCalledWith('hantsy@example.com');
+      expect(saveSpy).toHaveBeenCalledTimes(1);
+      expect(locationSpy).toHaveBeenCalled();
+      expect(statusSpy).toHaveBeenCalled();
+      expect(sendSpy).toHaveBeenCalled();
     });
   });
 });

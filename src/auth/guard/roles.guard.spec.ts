@@ -45,7 +45,7 @@ describe('RolesGuard', () => {
     const result = await guard.canActivate(context);
 
     expect(result).toBeTruthy();
-    expect(reflector.get).toBeCalled();
+    expect(reflector.get).toHaveBeenCalled();
   });
 
   it('should return true if the `HasRoles` decorator is set', async () => {
@@ -63,7 +63,7 @@ describe('RolesGuard', () => {
 
     const result = await guard.canActivate(context);
     expect(result).toBeTruthy();
-    expect(reflector.get).toBeCalled();
+    expect(reflector.get).toHaveBeenCalled();
   });
 
   it('should return false if the `HasRoles` decorator is set but role is not allowed', async () => {
@@ -79,7 +79,7 @@ describe('RolesGuard', () => {
 
     const result = await guard.canActivate(context);
     expect(result).toBeFalsy();
-    expect(reflector.get).toBeCalled();
+    expect(reflector.get).toHaveBeenCalled();
   });
 });
 
@@ -189,7 +189,7 @@ describe('RoelsGuard(jest-mock-extended)', () => {
     const result = await guard.canActivate(context);
 
     expect(result).toBeTruthy();
-    expect(reflecter.get).toBeCalledTimes(1);
+    expect(reflecter.get).toHaveBeenCalledTimes(1);
   });
 
   it('should return true if the `HasRoles` decorator is set', async () => {
@@ -210,7 +210,7 @@ describe('RoelsGuard(jest-mock-extended)', () => {
     const result = await guard.canActivate(context);
 
     expect(result).toBeTruthy();
-    expect(reflecter.get).toBeCalledTimes(1);
+    expect(reflecter.get).toHaveBeenCalledTimes(1);
   });
 
   it('should return false if the `HasRoles` decorator is set but role is not allowed', async () => {
@@ -233,6 +233,6 @@ describe('RoelsGuard(jest-mock-extended)', () => {
     const result = await guard.canActivate(context);
 
     expect(result).toBeFalsy();
-    expect(reflecter.get).toBeCalledTimes(1);
+    expect(reflecter.get).toHaveBeenCalledTimes(1);
   });
 });

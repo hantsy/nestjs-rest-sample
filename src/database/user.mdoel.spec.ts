@@ -31,16 +31,16 @@ describe('UserSchema', () => {
   it('should called Schame.virtual ', () => {
     expect(UserSchema).toBeDefined();
 
-    expect(getMock).toBeCalled();
-    expect(getMock).toBeCalledWith(anyFunction());
-    expect(virtualMock).toBeCalled();
+    expect(getMock).toHaveBeenCalled();
+    expect(getMock).toHaveBeenCalledWith(anyFunction());
+    expect(virtualMock).toHaveBeenCalled();
     expect(virtualMock).toHaveBeenNthCalledWith(1, 'name');
     expect(virtualMock).toHaveBeenNthCalledWith(2, 'posts', {
       foreignField: 'createdBy',
       localField: '_id',
       ref: 'Post',
     });
-    expect(virtualMock).toBeCalledTimes(2);
+    expect(virtualMock).toHaveBeenCalledTimes(2);
   });
 });
 
@@ -53,8 +53,8 @@ describe('preSaveHook', () => {
     };
     contextMock.isModified.mockReturnValueOnce(false);
     await preSaveHook.call(contextMock, nextMock);
-    expect(contextMock.isModified).toBeCalledWith('password');
-    expect(nextMock).toBeCalledTimes(1);
+    expect(contextMock.isModified).toHaveBeenCalledWith('password');
+    expect(nextMock).toHaveBeenCalledTimes(1);
   });
 
   test('should set password when password is modified', async () => {
@@ -66,9 +66,9 @@ describe('preSaveHook', () => {
     };
     contextMock.isModified.mockReturnValueOnce(true);
     await preSaveHook.call(contextMock, nextMock);
-    expect(contextMock.isModified).toBeCalledWith('password');
-    expect(nextMock).toBeCalledTimes(1);
-    expect(contextMock.set).toBeCalledTimes(1);
+    expect(contextMock.isModified).toHaveBeenCalledWith('password');
+    expect(nextMock).toHaveBeenCalledTimes(1);
+    expect(contextMock.set).toHaveBeenCalledTimes(1);
   });
 });
 

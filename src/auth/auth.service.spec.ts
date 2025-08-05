@@ -51,7 +51,7 @@ describe('AuthService', () => {
             password: 'password',
             email: 'hantsy@example.com',
             roles: [RoleType.USER],
-            comparePassword: (password: string) => of(true)
+            comparePassword: (password: string) => of(true),
           } as User);
         });
 
@@ -63,8 +63,8 @@ describe('AuthService', () => {
           expect(data.roles).toEqual([RoleType.USER]);
 
           //verify
-          expect(userService.findByUsername).toBeCalledTimes(1);
-          expect(userService.findByUsername).toBeCalledWith('test');
+          expect(userService.findByUsername).toHaveBeenCalledTimes(1);
+          expect(userService.findByUsername).toHaveBeenCalledWith('test');
         },
       });
     });
@@ -78,16 +78,14 @@ describe('AuthService', () => {
             password: 'password',
             email: 'hantsy@example.com',
             roles: [RoleType.USER],
-            comparePassword: (password: string) => of(false)
+            comparePassword: (password: string) => of(false),
           } as User);
         });
 
-      service
-        .validateUser('test', 'password001')
-        .subscribe({
-          next: (data) => console.log(data),
-          error: error => expect(error).toBeDefined()
-        });
+      service.validateUser('test', 'password001').subscribe({
+        next: (data) => console.log(data),
+        error: (error) => expect(error).toBeDefined(),
+      });
     });
 
     it('if user is not found', async () => {
@@ -97,13 +95,10 @@ describe('AuthService', () => {
           return of(null as User);
         });
 
-
-      service
-        .validateUser('test', 'password001')
-        .subscribe({
-          next: (data) => console.log(data),
-          error: error => expect(error).toBeDefined()
-        });
+      service.validateUser('test', 'password001').subscribe({
+        next: (data) => console.log(data),
+        error: (error) => expect(error).toBeDefined(),
+      });
     });
   });
 
@@ -121,8 +116,8 @@ describe('AuthService', () => {
         .subscribe({
           next: (data) => {
             expect(data.access_token).toBe('test');
-            expect(jwtService.signAsync).toBeCalledTimes(1);
-            expect(jwtService.signAsync).toBeCalledWith({
+            expect(jwtService.signAsync).toHaveBeenCalledTimes(1);
+            expect(jwtService.signAsync).toHaveBeenCalledWith({
               upn: 'test',
               sub: '_id',
               email: 'hantsy@example.com',
