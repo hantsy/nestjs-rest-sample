@@ -141,6 +141,7 @@ describe('Post Controller', () => {
 
   describe('Replace PostService in provider(useValue: fake object)', () => {
     let controller: PostController;
+    const id = '5ee49c3115a4e75254bb732e';
 
     beforeEach(async () => {
       const module: TestingModule = await Test.createTestingModule({
@@ -151,7 +152,7 @@ describe('Post Controller', () => {
               findAll: (_keyword?: string, _skip?: number, _limit?: number) =>
                 of<any[]>([
                   {
-                    _id: 'testid',
+                    _id: id,
                     title: 'test title',
                     content: 'test content',
                   },
@@ -167,13 +168,14 @@ describe('Post Controller', () => {
 
     it('should get all posts(useValue: fake object)', async () => {
       const result = await lastValueFrom(controller.getAllPosts());
-      expect(result[0]._id).toEqual('testid');
+      expect(result[0]._id).toEqual(id);
     });
   });
 
   describe('Replace PostService in provider(useValue: jest mocked object)', () => {
     let controller: PostController;
     let postService: PostService;
+    const id = '5ee49c3115a4e75254bb732e';
 
     beforeEach(async () => {
       const module: TestingModule = await Test.createTestingModule({
@@ -188,7 +190,7 @@ describe('Post Controller', () => {
                   (_keyword?: string, _skip?: number, _limit?: number) =>
                     of<any[]>([
                       {
-                        _id: 'testid',
+                        _id: id,
                         title: 'test title',
                         content: 'test content',
                       },
@@ -205,10 +207,13 @@ describe('Post Controller', () => {
     });
 
     it('should get all posts(useValue: jest mocking)', async () => {
-      const result = await lastValueFrom(controller.getAllPosts('test', 10, 0));
-      expect(result[0]._id).toEqual('testid');
+      const keyword = 'test';
+      const result = await lastValueFrom(
+        controller.getAllPosts(keyword, 10, 0),
+      );
+      expect(result[0]._id).toEqual(id);
       expect(postService.findAll).toHaveBeenCalled();
-      expect(postService.findAll).toHaveBeenLastCalledWith('test', 0, 10);
+      expect(postService.findAll).toHaveBeenLastCalledWith(keyword, 0, 10);
     });
   });
 
@@ -225,8 +230,12 @@ describe('Post Controller', () => {
         mockedPostService.findAll(anyString(), anyNumber(), anyNumber()),
       ).thenReturn(
         of([
-          { _id: 'testid', title: 'test title', content: 'content' },
-        ]) as Observable<Post[]>,
+          {
+            _id: '5ee49c3115a4e75254bb732e',
+            title: 'test title',
+            content: 'content',
+          },
+        ]) as unknown as Observable<Post[]>,
       );
       const result = await lastValueFrom(controller.getAllPosts('', 10, 0));
       expect(result.length).toEqual(1);

@@ -1,15 +1,16 @@
 import { Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { EMPTY, from, Observable, of } from 'rxjs';
 import { mergeMap, throwIfEmpty } from 'rxjs/operators';
 import { AuthenticatedRequest } from '../auth/interface/authenticated-request.interface';
 import { Comment } from '../database/comment.model';
 import { COMMENT_MODEL, POST_MODEL } from '../database/database.constants';
-import { Post } from '../database/post.model';
+import { Post, PostModel } from '../database/post.model';
 import { CreateCommentDto } from './create-comment.dto';
 import { CreatePostDto } from './create-post.dto';
 import { UpdatePostDto } from './update-post.dto';
+import { User } from 'database/user.model';
 
 @Injectable({ scope: Scope.REQUEST })
 export class PostService {
@@ -43,7 +44,7 @@ export class PostService {
   save(data: CreatePostDto): Observable<Post> {
     const createPost: Promise<Post> = this.postModel.create({
       ...data,
-      createdBy: { _id: this.req.user.id },
+      createdBy: new Types.ObjectId(this.req.user.id),
     });
     return from(createPost);
   }
@@ -53,7 +54,10 @@ export class PostService {
       this.postModel
         .findOneAndUpdate(
           { _id: id },
-          { ...data, updatedBy: { _id: this.req.user.id } },
+          {
+            ...data,
+            updatedBy: { _id: this.req.user.id },
+          } as unknown as Partial<User>,
           { new: true },
         )
         .exec(),
@@ -77,9 +81,9 @@ export class PostService {
   //  actions for comments
   createCommentFor(id: string, data: CreateCommentDto): Observable<Comment> {
     const createdComment: Promise<Comment> = this.commentModel.create({
-      post: { _id: id },
+      post: new Types.ObjectId(id),
       ...data,
-      createdBy: { _id: this.req.user.id },
+      createdBy: new Types.ObjectId(this.req.user.id),
     });
     return from(createdComment);
   }
@@ -87,7 +91,7 @@ export class PostService {
   commentsOf(id: string): Observable<Comment[]> {
     const comments = this.commentModel
       .find({
-        post: { _id: id },
+        post: new Types.ObjectId(id),
       })
       .select('-post')
       .exec();

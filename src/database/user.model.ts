@@ -1,15 +1,25 @@
 import { compare, hash } from 'bcrypt';
-import { Connection, Document, Model, Schema, SchemaTypes } from 'mongoose';
+import {
+  Connection,
+  Document,
+  Model,
+  Schema,
+  SchemaTypes,
+  Types,
+} from 'mongoose';
 import { from, Observable } from 'rxjs';
 import { RoleType } from '../shared/enum/role-type.enum';
+
 interface User extends Document {
-  comparePassword(password: string): Observable<boolean>;
   readonly username: string;
   readonly email: string;
   readonly password: string;
   readonly firstName?: string;
   readonly lastName?: string;
   readonly roles?: RoleType[];
+
+  // user methods
+  comparePassword(password: string): Observable<boolean>;
 }
 
 type UserModel = Model<User>;
@@ -38,15 +48,13 @@ const UserSchema = new Schema<User>(
 
 // see: https://wanago.io/2020/05/25/api-nestjs-authenticating-users-bcrypt-passport-jwt-cookies/
 // and https://stackoverflow.com/questions/48023018/nodejs-bcrypt-async-mongoose-login
-async function preSaveHook(next) {
+async function preSaveHook() {
   // Only run this function if password was modified
-  if (!this.isModified('password')) return next();
+  if (!this.isModified('password')) return;
 
   // Hash the password
   const password = await hash(this.password, 12);
   this.set('password', password);
-
-  next();
 }
 
 UserSchema.pre<User>('save', preSaveHook);

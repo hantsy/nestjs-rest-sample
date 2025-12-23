@@ -16,24 +16,24 @@ export class PostServiceStub implements Pick<PostService, keyof PostService> {
       _id: '5ee49c3115a4e75254bb732e',
       title: 'Generate a NestJS project',
       content: 'content',
-    } as Post,
+    } as unknown as Post,
     {
       _id: '5ee49c3115a4e75254bb732f',
       title: 'Create CRUD RESTful APIs',
       content: 'content',
-    } as Post,
+    } as unknown as Post,
     {
       _id: '5ee49c3115a4e75254bb7330',
       title: 'Connect to MongoDB',
       content: 'content',
-    } as Post,
+    } as unknown as Post,
   ];
 
   private comments: Comment[] = [
     {
       post: { _id: '5ee49c3115a4e75254bb732e' },
       content: 'comment of post',
-    } as Comment,
+    } as unknown as Comment,
   ];
 
   findAll(): Observable<Post[]> {
@@ -42,7 +42,7 @@ export class PostServiceStub implements Pick<PostService, keyof PostService> {
 
   findById(id: string): Observable<Post> {
     const { title, content } = this.posts[0];
-    return of({ _id: id, title, content } as Post);
+    return of({ _id: id, title, content } as unknown as Post);
   }
 
   save(data: CreatePostDto): Observable<Post> {
@@ -50,11 +50,15 @@ export class PostServiceStub implements Pick<PostService, keyof PostService> {
   }
 
   update(id: string, data: UpdatePostDto): Observable<Post> {
-    return of({ _id: id, ...data } as Post);
+    return of({ _id: id, ...data } as unknown as Post);
   }
 
   deleteById(id: string): Observable<Post> {
-    return of({ _id: id, title:'test title', content:'content' } as Post);
+    return of({
+      _id: id,
+      title: 'test title',
+      content: 'content',
+    } as unknown as Post);
   }
 
   deleteAll(): Observable<any> {
@@ -65,7 +69,11 @@ export class PostServiceStub implements Pick<PostService, keyof PostService> {
     postid: string,
     data: CreateCommentDto,
   ): Observable<Comment> {
-    return of({ id: 'test', post: { _id: postid }, ...data } as Comment);
+    return of({
+      id: 'test',
+      post: { _id: postid },
+      ...data,
+    } as unknown as Comment);
   }
 
   commentsOf(id: string): Observable<Comment[]> {

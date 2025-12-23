@@ -12,7 +12,7 @@ export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   validateUser(username: string, pass: string): Observable<UserPrincipal> {
     return this.userService.findByUsername(username).pipe(
@@ -23,20 +23,31 @@ export class AuthService {
       // Concise info could be considered for security.
       // Detailed info will be helpful for crackers.
       // throwIfEmpty(() => new NotFoundException(`username:${username} was not found`)),
-      throwIfEmpty(() => new UnauthorizedException(`username or password is not matched`)),
+      throwIfEmpty(
+        () => new UnauthorizedException(`username or password is not matched`),
+      ),
 
       mergeMap((user) => {
         const { _id, password, username, email, roles } = user;
-        return user.comparePassword(pass).pipe(map(m => {
-          if (m) {
-            return { id: _id, username, email, roles } as UserPrincipal;
-          }else {
-            // The same reason above.
-            //throw new UnauthorizedException('password was not matched.')
-            throw new UnauthorizedException('username or password is not matched')
-          }
-        }))
-      })
+        return user.comparePassword(pass).pipe(
+          map((m) => {
+            if (m) {
+              return {
+                id: _id,
+                username,
+                email,
+                roles,
+              } as unknown as UserPrincipal;
+            } else {
+              // The same reason above.
+              //throw new UnauthorizedException('password was not matched.')
+              throw new UnauthorizedException(
+                'username or password is not matched',
+              );
+            }
+          }),
+        );
+      }),
     );
   }
 

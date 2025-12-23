@@ -1,6 +1,6 @@
 import { REQUEST } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { lastValueFrom } from 'rxjs';
 
 import { Comment } from '../database/comment.model';
@@ -12,6 +12,8 @@ describe('PostService', () => {
   let service: PostService;
   let model: Model<Post>;
   let commentModel: Model<Comment>;
+
+  const TEST_USER_ID = new Types.ObjectId('605c39f4bcf86cd799439011');
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -54,7 +56,7 @@ describe('PostService', () => {
           provide: REQUEST,
           useValue: {
             user: {
-              id: 'dummyId',
+              id: '605c39f4bcf86cd799439011',
             },
           },
         },
@@ -175,9 +177,7 @@ describe('PostService', () => {
     expect(data[0]._id).toBe('5ee49c3115a4e75254bb732e');
     expect(model.create).toHaveBeenCalledWith({
       ...toCreated,
-      createdBy: {
-        _id: 'dummyId',
-      },
+      createdBy: TEST_USER_ID,
     });
     expect(model.create).toHaveBeenCalledTimes(1);
   });
@@ -275,42 +275,47 @@ describe('PostService', () => {
 
   it('should create comment ', async () => {
     const comment = { content: 'test' };
-    jest.spyOn(commentModel, 'create').mockImplementation(() =>
-      Promise.resolve({
-        ...comment,
-        post: { _id: 'test' },
-      } as any),
-    );
+    const TEST_ID = '605c39f4bcf86cd799439011';
+    const TEST_OBJ_ID = new Types.ObjectId(TEST_ID);
+    const mockedCreateResult = {
+      ...comment,
+      post: TEST_OBJ_ID,
+    } as any;
+    jest
+      .spyOn(commentModel, 'create')
+      .mockImplementation((any) => Promise.resolve(mockedCreateResult));
 
     const result = await lastValueFrom(
-      service.createCommentFor('test', comment),
+      service.createCommentFor(TEST_ID, comment),
     );
     expect(result.content).toEqual('test');
     expect(commentModel.create).toHaveBeenCalledWith({
       ...comment,
-      post: { _id: 'test' },
-      createdBy: { _id: 'dummyId' },
+      post: TEST_OBJ_ID,
+      createdBy: TEST_USER_ID,
     });
   });
 
   it('should get comments of post ', async () => {
+    const TEST_ID = '605c39f4bcf86cd799439011';
+    const TEST_OBJ_ID = new Types.ObjectId(TEST_ID);
     jest.spyOn(commentModel, 'find').mockImplementation(() => {
       return {
         select: jest.fn().mockReturnValue({
           exec: jest.fn().mockResolvedValue([
             {
-              _id: 'test',
+              _id: '605c3a2ebcf86cd799439012',
               content: 'content',
-              post: { _id: '_test_id' },
+              post: TEST_OBJ_ID,
             },
           ] as any),
         }),
       } as any;
     });
 
-    const result = await lastValueFrom(service.commentsOf('test'));
+    const result = await lastValueFrom(service.commentsOf(TEST_ID));
     expect(result.length).toBe(1);
     expect(result[0].content).toEqual('content');
-    expect(commentModel.find).toHaveBeenCalledWith({ post: { _id: 'test' } });
+    expect(commentModel.find).toHaveBeenCalledWith({ post: TEST_OBJ_ID });
   });
 });

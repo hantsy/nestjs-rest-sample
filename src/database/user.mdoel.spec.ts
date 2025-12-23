@@ -47,27 +47,23 @@ describe('UserSchema', () => {
 // see: https://stackoverflow.com/questions/58701700/how-do-i-test-if-statement-inside-my-mongoose-pre-save-hook
 describe('preSaveHook', () => {
   test('should execute next middleware when password is not modified', async () => {
-    const nextMock = jest.fn();
     const contextMock = {
       isModified: jest.fn(),
     };
     contextMock.isModified.mockReturnValueOnce(false);
-    await preSaveHook.call(contextMock, nextMock);
+    await preSaveHook.call(contextMock);
     expect(contextMock.isModified).toHaveBeenCalledWith('password');
-    expect(nextMock).toHaveBeenCalledTimes(1);
   });
 
   test('should set password when password is modified', async () => {
-    const nextMock = jest.fn();
     const contextMock = {
       isModified: jest.fn(),
       set: jest.fn(),
       password: '123456',
     };
     contextMock.isModified.mockReturnValueOnce(true);
-    await preSaveHook.call(contextMock, nextMock);
+    await preSaveHook.call(contextMock);
     expect(contextMock.isModified).toHaveBeenCalledWith('password');
-    expect(nextMock).toHaveBeenCalledTimes(1);
     expect(contextMock.set).toHaveBeenCalledTimes(1);
   });
 });

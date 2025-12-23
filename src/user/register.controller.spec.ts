@@ -100,7 +100,7 @@ describe('Register Controller', () => {
         .mockReturnValue(of(false));
       const saveSpy = jest
         .spyOn(service, 'register')
-        .mockReturnValue(of({ _id: '123' } as User));
+        .mockReturnValue(of({ _id: '123' } as unknown as User));
 
       const responseMock = {
         location: jest.fn().mockReturnThis(),

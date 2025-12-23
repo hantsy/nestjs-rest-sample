@@ -1,5 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Model, FilterQuery } from 'mongoose';
+import {
+  Model,
+  ProjectionType,
+  Query,
+  QueryFilter,
+  QueryOptions,
+} from 'mongoose';
 import { lastValueFrom, of } from 'rxjs';
 
 import { USER_MODEL } from '../database/database.constants';
@@ -95,7 +101,7 @@ describe('UserService', () => {
 
   it('findByUsername should return user', async () => {
     jest.spyOn(model, 'findOne').mockImplementation(
-      (filter?: FilterQuery<User>) =>
+      (filter?: any, projection?: any, options?: any) =>
         ({
           exec: jest.fn().mockResolvedValue({
             username: 'hantsy',
@@ -116,7 +122,7 @@ describe('UserService', () => {
   describe('findById', () => {
     it('return one result', async () => {
       jest.spyOn(model, 'findOne').mockImplementation(
-        (filter?: FilterQuery<User>) =>
+        (filter?: any, projection?: any, options?: any) =>
           ({
             exec: jest.fn().mockResolvedValue({
               username: 'hantsy',
@@ -136,7 +142,7 @@ describe('UserService', () => {
 
     it('return a null result', async () => {
       jest.spyOn(model, 'findOne').mockImplementation(
-        (filter?: FilterQuery<User>) =>
+        (filter?: any, projection?: any, options?: any) =>
           ({
             exec: jest.fn().mockResolvedValue(null) as any,
           }) as any,
@@ -151,7 +157,7 @@ describe('UserService', () => {
 
     it('parameter withPosts=true', async () => {
       jest.spyOn(model, 'findOne').mockImplementation(
-        (filter?: FilterQuery<User>) =>
+        (filter?: any, projection?: any, options?: any) =>
           ({
             populate: jest.fn().mockReturnThis(),
             exec: jest.fn().mockResolvedValue({
