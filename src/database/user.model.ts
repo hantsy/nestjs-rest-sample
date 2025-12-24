@@ -1,12 +1,5 @@
 import { compare, hash } from 'bcrypt';
-import {
-  Connection,
-  Document,
-  Model,
-  Schema,
-  SchemaTypes,
-  Types,
-} from 'mongoose';
+import { Connection, Document, Model, Schema, SchemaTypes } from 'mongoose';
 import { from, Observable } from 'rxjs';
 import { RoleType } from '../shared/enum/role-type.enum';
 
