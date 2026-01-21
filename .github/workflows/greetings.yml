@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/first-interaction@v3
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          issue-message: |
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          issue_message: |
             Hello @${{ github.actor }}, thank you for your interest in this repo! Please follow the **Bug Report** template to fill out the steps to reproduce the issues. Thanks again.
-          pr-message: "Hello @${{ github.actor }}, thanks for sending a PR. Please be patient, I will review it as soon as possible."
+          pr_message: "Hello @${{ github.actor }}, thanks for sending a PR. Please be patient, I will review it as soon as possible."
