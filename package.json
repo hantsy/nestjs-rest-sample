@@ -44,7 +44,7 @@
     "@commitlint/cli": "^20.2.0",
     "@commitlint/config-conventional": "^20.2.0",
     "@eslint/eslintrc": "^3.3.3",
-    "@eslint/js": "^9.39.2",
+    "@eslint/js": "^10.0.1",
     "@golevelup/ts-jest": "^1.1.1",
     "@nestjs/cli": "^11.0.14",
     "@nestjs/schematics": "^11.0.9",
