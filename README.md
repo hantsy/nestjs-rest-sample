@@ -5,69 +5,72 @@
 ![Run e2e testing](https://github.com/hantsy/nestjs-sample/workflows/e2e/badge.svg)
 [![codecov](https://codecov.io/gh/hantsy/nestjs-rest-sample/branch/master/graph/badge.svg?token=MBLWAJPG13)](https://codecov.io/gh/hantsy/nestjs-rest-sample)
 
-A NestJS RESTful APIs sample project, including:
+A sample NestJS project demonstrating RESTful APIs.
 
-* Restful APIs satisfies Richardson Maturity Model(Level 2)
-* Custom Mongoose integration module instead of @nestjs/mongoose
-* Passport/Jwt authentication with simple text secrets
-* Fully testing codes with Jest, jest-mock-extended, ts-mockito, @golevelup/ts-jest etc.
-* Github actions workflow for continuous testing, code coverage report, docker image building, etc.
+Features include:
 
-## Docs
+- APIs that meet Richardson Maturity Model Level 2
+- A custom Mongoose integration module (instead of `@nestjs/mongoose`)
+- Passport/JWT authentication using simple text secrets
+- Comprehensive tests built with Jest, `jest-mock-extended`, `ts-mockito`, `@golevelup/ts-jest`, etc.
+- GitHub Actions workflows for continuous testing, coverage reporting, Docker image builds, and more
 
-* [Getting Started](./docs/guide.md)
-* [Connecting to MongoDB](./docs/mongo.md)
-* [Protect your APIs with JWT Token](./docs/auth.md)
-* [Dealing with model relations](./docs/model.md)
-* [Externalizing the configuration](./docs/config.md)
-* [Handling user registration](./docs/user.md)
-* [Testing Nestjs applications](./docs/testing.md)
+## Documentation
 
-## Build
+- [Getting Started](./docs/guide.md)
+- [Connecting to MongoDB](./docs/mongo.md)
+- [Securing APIs with JWT](./docs/auth.md)
+- [Handling Model Relationships](./docs/model.md)
+- [Externalizing Configuration](./docs/config.md)
+- [User Registration](./docs/user.md)
+- [Testing NestJS Applications](./docs/testing.md)
 
-Install the dependencies.
+## Build & Run
+
+Make sure you have Node.js and npm installed, then run the following commands in the project directory to install dependencies:
 
 ```bash
-$ npm install
+npm install
 ```
 
-Running the app
+Start the application:
 
 ```bash
 # development
-$ npm run start
+npm run start
 
 # watch mode
-$ npm run start:dev
+npm run start:dev
 
-# production mode
-$ npm run start:prod
+# production
+npm run start:prod
 ```
 
-Test
+Run tests:
 
 ```bash
 # unit tests
-$ npm run test
+npm run test
 
-# e2e tests
-$ npm run test:e2e
+# end-to-end tests
+npm run test:e2e
 
-# test coverage
-$ npm run test:cov
+# coverage report
+npm run test:cov
 ```
 
+## References
 
-## Reference
+- [Official NestJS documentation](https://docs.nestjs.com/first-steps)
+- [Unit testing NestJS applications with Jest](https://blog.logrocket.com/unit-testing-nestjs-applications-with-jest/)
+- [ts-mockito – a TypeScript mocking library](https://github.com/NagRock/ts-mockito)
+- [Clock‑in/out System Series](https://carloscaballero.io/part-2-clock-in-out-system-basic-backend/)
+- [Modern full‑stack NestJS/React/TypeScript/MongoDB – Part 1](https://auth0.com/blog/modern-full-stack-development-with-nestjs-react-typescript-and-mongodb-part-1/) & [Part 2](https://auth0.com/blog/modern-full-stack-development-with-nestjs-react-typescript-and-mongodb-part-2/)
+- [Jest full & partial mocks/spies of module imports](https://codewithhugo.com/jest-mock-spy-module-import/)
 
-* [The official Nestjs documentation](https://docs.nestjs.com/first-steps)
-* [Unit testing NestJS applications with Jest](https://blog.logrocket.com/unit-testing-nestjs-applications-with-jest/)
-* [ts-mockito: Mocking library for TypeScript inspired by http://mockito.org/](https://github.com/NagRock/ts-mockito)
-* [Clock-in/out System Series](https://carloscaballero.io/part-2-clock-in-out-system-basic-backend/)
-* [Modern Full-Stack Development with Nest.js, React, TypeScript, and MongoDB: Part 1](https://auth0.com/blog/modern-full-stack-development-with-nestjs-react-typescript-and-mongodb-part-1/), [Part 2](https://auth0.com/blog/modern-full-stack-development-with-nestjs-react-typescript-and-mongodb-part-2/)
-* [Code with Hugo - Jest Full and Partial Mock/Spy of CommonJS and ES6 Module Imports](https://codewithhugo.com/jest-mock-spy-module-import/)
-* There is a collection of courses from [https://wanago.io/](https://wanago.io/) which is very helpful for building applications with NestJS:
-  * [API with NestJS](https://wanago.io/courses/api-with-nestjs/)
-  * [Series: TypeScript Express tutorial](https://wanago.io/courses/typescript-express-tutorial/)
-  * [Series: Node.js TypeScript](https://wanago.io/courses/node-js-typescript/)
-  * [Series: JavaScript testing tutorial](https://wanago.io/courses/javascript-testing-tutorial/)
+Helpful courses from [wanago.io](https://wanago.io/):
+
+- [API with NestJS](https://wanago.io/courses/api-with-nestjs/)
+- [TypeScript Express tutorial series](https://wanago.io/courses/typescript-express-tutorial/)
+- [Node.js & TypeScript series](https://wanago.io/courses/node-js-typescript/)
+- [JavaScript testing tutorial series](https://wanago.io/courses/javascript-testing-tutorial/)
