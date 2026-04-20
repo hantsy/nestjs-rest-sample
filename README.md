@@ -1,8 +1,8 @@
 # NestJS Sample
 
-![Compile and build](https://github.com/hantsy/nestjs-sample/actions/workflows/build.yml/badge.svg)
-![Build Docker Image](https://github.com/hantsy/nestjs-sample/workflows/Dockerize/badge.svg)
-![Run e2e testing](https://github.com/hantsy/nestjs-sample/workflows/e2e/badge.svg)
+[![Build](https://github.com/hantsy/nestjs-rest-sample/actions/workflows/build.yml/badge.svg)](https://github.com/hantsy/nestjs-rest-sample/actions/workflows/build.yml)
+[![Dockerize](https://github.com/hantsy/nestjs-rest-sample/actions/workflows/dockerize.yml/badge.svg)](https://github.com/hantsy/nestjs-rest-sample/actions/workflows/dockerize.yml)
+[![e2e](https://github.com/hantsy/nestjs-rest-sample/actions/workflows/e2e.yml/badge.svg)](https://github.com/hantsy/nestjs-rest-sample/actions/workflows/e2e.yml)
 [![codecov](https://codecov.io/gh/hantsy/nestjs-rest-sample/branch/master/graph/badge.svg?token=MBLWAJPG13)](https://codecov.io/gh/hantsy/nestjs-rest-sample)
 
 A sample NestJS project demonstrating RESTful APIs.
