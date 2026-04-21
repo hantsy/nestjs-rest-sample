@@ -92,7 +92,7 @@ describe('AuthService', () => {
       jest
         .spyOn(userService, 'findByUsername')
         .mockImplementation((username: string) => {
-          return of(null as User);
+          return of(null as unknown as User);
         });
 
       service.validateUser('test', 'password001').subscribe({

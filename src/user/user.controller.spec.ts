@@ -30,7 +30,7 @@ describe('UserController', () => {
   it('getUser', async () => {
     jest
       .spyOn(service, 'findById')
-      .mockImplementationOnce((id: string, withPosts: boolean) =>
+      .mockImplementationOnce((id: string, withPosts: boolean = false) =>
         of({
           username: 'hantsy',
           password: 'mysecret',

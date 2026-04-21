@@ -63,8 +63,8 @@ describe('LocalStrategy', () => {
 });
 
 describe('LocalStrategy(call supper)', () => {
-  let local;
-  let parentMock;
+  let local: any;
+  let parentMock: any;
 
   beforeEach(() => {
     local = Object.getPrototypeOf(LocalStrategy);

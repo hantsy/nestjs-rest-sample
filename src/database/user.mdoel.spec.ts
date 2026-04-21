@@ -49,7 +49,7 @@ describe('preSaveHook', () => {
   test('should execute next middleware when password is not modified', async () => {
     const contextMock = {
       isModified: jest.fn(),
-    };
+    } as any;
     contextMock.isModified.mockReturnValueOnce(false);
     await preSaveHook.call(contextMock);
     expect(contextMock.isModified).toHaveBeenCalledWith('password');
@@ -60,7 +60,7 @@ describe('preSaveHook', () => {
       isModified: jest.fn(),
       set: jest.fn(),
       password: '123456',
-    };
+    } as any;
     contextMock.isModified.mockReturnValueOnce(true);
     await preSaveHook.call(contextMock);
     expect(contextMock.isModified).toHaveBeenCalledWith('password');
@@ -73,7 +73,7 @@ describe('nameGetHook', () => {
     const contextMock = {
       firstName: 'Hantsy',
       lastName: 'Bai',
-    };
+    } as any;
     const name = await nameGetHook.call(contextMock);
     expect(name).toBe('Hantsy Bai');
   });
@@ -84,7 +84,7 @@ describe('comparePasswordMethod', () => {
     const hashed = await hash('123456', 10);
     const contextMock = {
       password: hashed,
-    };
+    } as any;
 
     const result = await lastValueFrom(
       comparePasswordMethod.call(contextMock, '123456'),
@@ -96,7 +96,7 @@ describe('comparePasswordMethod', () => {
     const hashed = await hash('123456', 10);
     const contextMock = {
       password: hashed,
-    };
+    } as any;
 
     // input password is wrong
     const result = await lastValueFrom(

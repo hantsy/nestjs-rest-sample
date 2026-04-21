@@ -41,7 +41,7 @@ const UserSchema = new Schema<User>(
 
 // see: https://wanago.io/2020/05/25/api-nestjs-authenticating-users-bcrypt-passport-jwt-cookies/
 // and https://stackoverflow.com/questions/48023018/nodejs-bcrypt-async-mongoose-login
-async function preSaveHook() {
+async function preSaveHook(this: User) {
   // Only run this function if password was modified
   if (!this.isModified('password')) return;
 
@@ -52,13 +52,16 @@ async function preSaveHook() {
 
 UserSchema.pre<User>('save', preSaveHook);
 
-function comparePasswordMethod(password: string): Observable<boolean> {
+function comparePasswordMethod(
+  this: User,
+  password: string,
+): Observable<boolean> {
   return from(compare(password, this.password));
 }
 
 UserSchema.methods.comparePassword = comparePasswordMethod;
 
-function nameGetHook() {
+function nameGetHook(this: User): string {
   return `${this.firstName} ${this.lastName}`;
 }
 

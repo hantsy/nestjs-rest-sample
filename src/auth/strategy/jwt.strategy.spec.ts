@@ -43,8 +43,8 @@ describe('JwtStrategy', () => {
 });
 
 describe('JwtStrategy(call supper)', () => {
-  let local;
-  let parentMock;
+  let local: any;
+  let parentMock: any;
 
   beforeEach(() => {
     local = Object.getPrototypeOf(JwtStrategy);

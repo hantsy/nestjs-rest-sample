@@ -15,7 +15,12 @@ export class UserService {
   ) {}
 
   findByUsername(username: string): Observable<User> {
-    return from(this.userModel.findOne({ username }).exec());
+    return from(this.userModel.findOne({ username }).exec()).pipe(
+      mergeMap((p) => (p ? of(p) : EMPTY)),
+      throwIfEmpty(
+        () => new NotFoundException(`user:${username} was not found`),
+      ),
+    );
   }
 
   // since mongoose 6.2, `Model.exists` is chagned to return a lean document with `_id` or `null`
@@ -90,7 +95,7 @@ export class UserService {
     // );
   }
 
-  findById(id: string, withPosts = false): Observable<User> {
+  findById(id: string, withPosts: boolean = false): Observable<User> {
     const userQuery = this.userModel.findOne({ _id: id });
     if (withPosts) {
       userQuery.populate('posts');

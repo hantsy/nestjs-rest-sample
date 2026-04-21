@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 import { ParseObjectIdPipe } from './parse-object-id.pipe';
 
 describe('ParseObjectIdPipe', () => {
-  let isObjectId;
+  let isObjectId: any;
 
   beforeEach(() => {
     isObjectId = new ParseObjectIdPipe();
