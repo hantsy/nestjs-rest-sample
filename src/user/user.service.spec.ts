@@ -1,22 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  Model,
-  ProjectionType,
-  Query,
-  QueryFilter,
-  QueryOptions,
-} from 'mongoose';
 import { lastValueFrom, of } from 'rxjs';
 
 import { USER_MODEL } from '../database/database.constants';
-import { User } from '../database/user.model';
+import { User, UserModel } from '../database/user.model';
 import { SendgridService } from '../sendgrid/sendgrid.service';
 import { RoleType } from '../shared/enum/role-type.enum';
 import { UserService } from './user.service';
 
 describe('UserService', () => {
   let service: UserService;
-  let model: Model<User>;
+  let model: UserModel;
   let sendgrid: SendgridService;
 
   beforeEach(async () => {
@@ -42,7 +35,7 @@ describe('UserService', () => {
 
     service = module.get<UserService>(UserService);
     sendgrid = module.get<SendgridService>(SendgridService);
-    model = module.get<Model<User>>(USER_MODEL);
+    model = module.get<UserModel>(USER_MODEL);
   });
 
   it('should be defined', () => {
