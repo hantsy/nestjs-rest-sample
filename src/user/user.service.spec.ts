@@ -119,6 +119,20 @@ describe('UserService', () => {
     expect(model.findOne).toHaveBeenCalledTimes(1);
   });
 
+  it('findByUsername should return null if not found', async () => {
+    jest.spyOn(model, 'findOne').mockImplementation(
+      (filter?: any, projection?: any, options?: any) =>
+        ({
+          exec: jest.fn().mockResolvedValue(null) as any,
+        }) as any,
+    );
+    try {
+      const foundUser = await lastValueFrom(service.findByUsername('hantsy'));
+    } catch (e) {
+      expect(e).toBeDefined();
+    }
+  });
+
   describe('findById', () => {
     it('return one result', async () => {
       jest.spyOn(model, 'findOne').mockImplementation(

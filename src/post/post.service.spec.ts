@@ -7,6 +7,7 @@ import { Comment } from '../database/comment.model';
 import { COMMENT_MODEL, POST_MODEL } from '../database/database.constants';
 import { Post } from '../database/post.model';
 import { PostService } from './post.service';
+import { CreatePostDto } from './create-post.dto';
 
 describe('PostService', () => {
   let service: PostService;
@@ -162,7 +163,7 @@ describe('PostService', () => {
     const toCreated = {
       title: 'test title',
       content: 'test content',
-    };
+    } as unknown as CreatePostDto;
 
     const toReturned = {
       _id: '5ee49c3115a4e75254bb732e',
@@ -171,10 +172,10 @@ describe('PostService', () => {
 
     jest
       .spyOn(model, 'create')
-      .mockImplementation(() => Promise.resolve([toReturned]));
+      .mockImplementation(() => Promise.resolve(toReturned));
 
     const data = await lastValueFrom(service.save(toCreated));
-    expect(data[0]._id).toBe('5ee49c3115a4e75254bb732e');
+    expect(data._id).toBe('5ee49c3115a4e75254bb732e');
     expect(model.create).toHaveBeenCalledWith({
       ...toCreated,
       createdBy: TEST_USER_ID,

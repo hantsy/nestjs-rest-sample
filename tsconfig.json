@@ -2,15 +2,20 @@
   "compilerOptions": {
     "types": ["jest", "node"],
     "module": "commonjs",
+    "esModuleInterop": true,
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es2017",
+    "strictPropertyInitialization": false,
+    "target": "es2025",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./src",
-    "incremental": true
+    "paths": {
+      "*": ["./src/*", "./types/*"]
+    },
+    "incremental": true,
+    "ignoreDeprecations": "6.0"
   }
 }
