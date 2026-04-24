@@ -534,7 +534,7 @@ post.controller.spec.ts
 post.controller.ts
 ```
 
-And `PostController` is registered in `PostModule` automatcially when it is generated.
+And `PostController` is registered in `PostModule` automatically when it is generated.
 
 ```typescript
 //...other imports
