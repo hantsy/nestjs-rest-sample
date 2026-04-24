@@ -1,7 +1,7 @@
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { of } from 'rxjs';
-import { User } from '../database/user.model';
+import { User, UserMethods } from '../database/user.model';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { RoleType } from '../shared/enum/role-type.enum';
@@ -52,7 +52,7 @@ describe('AuthService', () => {
             email: 'hantsy@example.com',
             roles: [RoleType.USER],
             comparePassword: (password: string) => of(true),
-          } as User);
+          } as User & UserMethods);
         });
 
       service.validateUser('test', 'password').subscribe({
@@ -79,7 +79,7 @@ describe('AuthService', () => {
             email: 'hantsy@example.com',
             roles: [RoleType.USER],
             comparePassword: (password: string) => of(false),
-          } as User);
+          } as User & UserMethods);
         });
 
       service.validateUser('test', 'password001').subscribe({
@@ -92,7 +92,7 @@ describe('AuthService', () => {
       jest
         .spyOn(userService, 'findByUsername')
         .mockImplementation((username: string) => {
-          return of(null as unknown as User);
+          return of(null as unknown as User & UserMethods);
         });
 
       service.validateUser('test', 'password001').subscribe({

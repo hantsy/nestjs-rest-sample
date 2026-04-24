@@ -1,17 +1,13 @@
-import {
-  Connection,
-  Document,
-  Model,
-  Schema,
-  SchemaTypes,
-  Types,
-} from 'mongoose';
+import { Connection, Model, Schema, SchemaTypes, Types } from 'mongoose';
 
-interface Comment extends Document {
+interface Comment {
+  _id: Types.ObjectId;
   readonly content: string;
   readonly post?: Types.ObjectId;
   readonly createdBy?: Types.ObjectId;
   readonly updatedBy?: Types.ObjectId;
+  readonly createdAt?: Date;
+  readonly updatedAt?: Date;
 }
 
 type CommentModel = Model<Comment>;

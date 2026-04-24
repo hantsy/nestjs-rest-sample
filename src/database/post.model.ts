@@ -1,18 +1,13 @@
-import {
-  Connection,
-  Document,
-  Model,
-  Schema,
-  SchemaTypes,
-  Types,
-} from 'mongoose';
-import { User } from './user.model';
+import { Connection, Model, Schema, SchemaTypes, Types } from 'mongoose';
 
-interface Post extends Document {
+interface Post {
+  _id: Types.ObjectId;
   readonly title: string;
   readonly content: string;
   readonly createdBy?: Types.ObjectId;
   readonly updatedBy?: Types.ObjectId;
+  readonly createdAt?: Date;
+  readonly updatedAt?: Date;
 }
 
 type PostModel = Model<Post>;

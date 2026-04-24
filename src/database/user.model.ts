@@ -1,23 +1,37 @@
 import { compare, hash } from 'bcrypt';
-import { Connection, Document, Model, Schema, SchemaTypes } from 'mongoose';
+import {
+  Connection,
+  HydratedDocument,
+  Model,
+  Schema,
+  SchemaTypes,
+  Types,
+} from 'mongoose';
 import { from, Observable } from 'rxjs';
 import { RoleType } from '../shared/enum/role-type.enum';
+import { stat } from 'node:fs';
 
-interface User extends Document {
+interface User {
+  _id: Types.ObjectId;
   readonly username: string;
   readonly email: string;
   readonly password: string;
   readonly firstName?: string;
   readonly lastName?: string;
   readonly roles?: RoleType[];
+  readonly createdAt?: Date;
+  readonly updatedAt?: Date;
+}
 
-  // user methods
+interface UserMethods {
   comparePassword(password: string): Observable<boolean>;
 }
 
-type UserModel = Model<User>;
+interface UserModel extends Model<User, object, UserMethods> {
+  staticMethodExample(): string;
+}
 
-const UserSchema = new Schema<User>(
+const UserSchema = new Schema<User, UserModel, UserMethods>(
   {
     username: SchemaTypes.String,
     password: SchemaTypes.String,
@@ -41,7 +55,7 @@ const UserSchema = new Schema<User>(
 
 // see: https://wanago.io/2020/05/25/api-nestjs-authenticating-users-bcrypt-passport-jwt-cookies/
 // and https://stackoverflow.com/questions/48023018/nodejs-bcrypt-async-mongoose-login
-async function preSaveHook(this: User) {
+async function preSaveHook(this: HydratedDocument<User, UserMethods>) {
   // Only run this function if password was modified
   if (!this.isModified('password')) return;
 
@@ -50,10 +64,10 @@ async function preSaveHook(this: User) {
   this.set('password', password);
 }
 
-UserSchema.pre<User>('save', preSaveHook);
+UserSchema.pre<HydratedDocument<User, UserMethods>>('save', preSaveHook);
 
 function comparePasswordMethod(
-  this: User,
+  this: HydratedDocument<User, UserMethods>,
   password: string,
 ): Observable<boolean> {
   return from(compare(password, this.password));
@@ -61,9 +75,14 @@ function comparePasswordMethod(
 
 UserSchema.methods.comparePassword = comparePasswordMethod;
 
-function nameGetHook(this: User): string {
+function nameGetHook(this: HydratedDocument<User, UserMethods>): string {
   return `${this.firstName} ${this.lastName}`;
 }
+
+UserSchema.statics.staticMethodExample = function () {
+  console.log('This is a static method');
+  return 'hello';
+};
 
 UserSchema.virtual('name').get(nameGetHook);
 
@@ -74,11 +93,12 @@ UserSchema.virtual('posts', {
 });
 
 const createUserModel: (conn: Connection) => UserModel = (conn: Connection) =>
-  conn.model<User>('User', UserSchema, 'users');
+  conn.model<User, UserModel>('User', UserSchema, 'users');
 
 export {
   User,
   UserModel,
+  UserMethods,
   createUserModel,
   UserSchema,
   preSaveHook,

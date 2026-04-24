@@ -3,7 +3,7 @@ import { EMPTY, from, Observable, of, throwError } from 'rxjs';
 import { mergeMap, tap, throwIfEmpty, catchError, map } from 'rxjs/operators';
 import { RoleType } from '../shared/enum/role-type.enum';
 import { USER_MODEL } from '../database/database.constants';
-import { User, UserModel } from '../database/user.model';
+import { User, UserMethods, UserModel } from '../database/user.model';
 import { SendgridService } from '../sendgrid/sendgrid.service';
 import { RegisterDto } from './register.dto';
 
@@ -14,7 +14,7 @@ export class UserService {
     private readonly sendgridService: SendgridService,
   ) {}
 
-  findByUsername(username: string): Observable<User> {
+  findByUsername(username: string): Observable<User & UserMethods> {
     return from(this.userModel.findOne({ username }).exec()).pipe(
       mergeMap((p) => (p ? of(p) : EMPTY)),
       throwIfEmpty(
