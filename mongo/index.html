@@ -1,0 +1,1342 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Step-by-step guide of creating RESTful APIs using NestJS and Typescript">
+      
+      
+      
+      
+        <link rel="prev" href="../first/">
+      
+      
+        <link rel="next" href="../auth/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Connecting to MongoDB - Building RESTful APIs with NestJS</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#connecting-to-mongodb" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Building RESTful APIs with NestJS" class="md-header__button md-logo" aria-label="Building RESTful APIs with NestJS" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Building RESTful APIs with NestJS
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Connecting to MongoDB
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/hantsy/nestjs-sample" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Building RESTful APIs with NestJS" class="md-nav__button md-logo" aria-label="Building RESTful APIs with NestJS" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Building RESTful APIs with NestJS
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/hantsy/nestjs-sample" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connecting to MongoDB
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connecting to MongoDB
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#adding-mongoosemodule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding MongooseModule
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#refactoring-postservice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Refactoring PostService
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleaning-up-postcontroller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cleaning up PostController
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-the-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run the application
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#clean-the-testing-codes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Clean the testing codes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../auth/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Protect your APIs with JWT Token
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dealing with model relations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Externalizing the configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Handling user registration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing Nestjs applications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#adding-mongoosemodule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding MongooseModule
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#refactoring-postservice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Refactoring PostService
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleaning-up-postcontroller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cleaning up PostController
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-the-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run the application
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#clean-the-testing-codes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Clean the testing codes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="connecting-to-mongodb">Connecting to MongoDB</h1>
+<p>In the last post , we created a RESTful API application for simple CRUD functionalities.  In this post, we will enrich it: </p>
+<ul>
+<li>Adding MongoDB support via Mongoose module</li>
+<li>Changing dummy data storage to use MongoDB server</li>
+<li>Cleaning up the testing codes </li>
+</ul>
+<p>Let's go.</p>
+<h2 id="adding-mongoosemodule">Adding MongooseModule</h2>
+<p><a href="https://www.mongodb.com">MongoDB</a> is  a leading document-based NoSQL database.  Nestjs has official support for MongoDB via  its <a href="https://mongoosejs.com/">Mongoosejs</a> integration. </p>
+<p>Firstly, install the following dependencies.</p>
+<pre><code class="language-bash">npm install --save @nestjs/mongoose mongoose
+npm install --save-dev @types/mongoose
+</code></pre>
+<p>Declare  a <code>MongooseModule</code> in the top-level <code>AppModule</code> to activate Mongoose support.</p>
+<pre><code class="language-typescript">//... other imports
+import { MongooseModule } from '@nestjs/mongoose';
+
+@Module({
+  imports: [
+      //...other modules imports
+      // add MongooseModule
+      MongooseModule.forRoot('mongodb://localhost/blog')
+  ],
+  //... providers, controllers
+})
+export class AppModule {}
+</code></pre>
+<p>Mongoose requires a Schema definition to describe every document in MongoDB. Nestjs provides a simple to combine the schema definition and document POJO in the same form. </p>
+<p>Rename our former <em>post.interface.ts</em> to <em>post.model.ts</em>, the <em>.model</em> suffix means it is a Mongoose managed <code>Model</code>.</p>
+<pre><code class="language-typescript">import { SchemaFactory, Schema, Prop } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+
+@Schema()
+export class Post extends Document {
+  @Prop({ required: true })
+  title: string;
+
+  @Prop({ required: true })
+  content: string;
+
+  @Prop()
+  createdAt?: Date;
+
+  @Prop()
+  updatedAt?: Date;
+}
+export const PostSchema = SchemaFactory.createForClass(Post);
+</code></pre>
+<p>The annotations <code>@Schema</code>, <code>@Prop</code> defines the schema definitions on the document class instead of a <a href="https://mongoosejs.com/docs/guide.html#definition">mongoose Schema</a> function.</p>
+<p>Open <code>PostModule</code>,  declare a <code>posts</code> collection for storing <code>Post</code> document via importing a <code>MongooseModule.forFeature</code>.</p>
+<pre><code>import { PostSchema } from './post.model';
+//other imports
+
+@Module({
+  imports: [MongooseModule.forFeature([{ name: 'posts', schema: PostSchema }])],
+  // providers, controllers
+})
+export class PostModule {}
+</code></pre>
+<h2 id="refactoring-postservice">Refactoring PostService</h2>
+<p>When a Mongoose schema (eg. <code>PostSchame</code>) is mapped to a document collection(eg. <code>posts</code>), a Mongoose <code>Model</code> is ready for the operations of this collections in MongoDB.</p>
+<p>Open <em>post.service.ts</em> file.</p>
+<p>Change the content to the following:</p>
+<pre><code class="language-typescript">@Injectable()
+export class PostService {
+  constructor(@InjectModel('posts') private postModel: Model&lt;Post&gt;) {}
+
+  findAll(keyword?: string, skip = 0, limit = 10): Observable&lt;Post[]&gt; {
+    if (keyword) {
+      return from(
+        this.postModel
+          .find({ title: { $regex: '.*' + keyword + '.*' } })
+          .skip(skip)
+          .limit(limit)
+          .exec(),
+      );
+    } else {
+      return from(
+        this.postModel
+          .find({})
+          .skip(skip)
+          .limit(limit)
+          .exec(),
+      );
+    }
+  }
+
+  findById(id: string): Observable&lt;Post&gt; {
+    return from(this.postModel.findOne({ _id: id }).exec());
+  }
+
+  save(data: CreatePostDto): Observable&lt;Post&gt; {
+    const createPost = this.postModel.create({ ...data });
+    return from(createPost);
+  }
+
+  update(id: string, data: UpdatePostDto): Observable&lt;Post&gt; {
+    return from(this.postModel.findOneAndUpdate({ _id: id }, data).exec());
+  }
+
+  deleteById(id: string): Observable&lt;Post&gt; {
+    return from(this.postModel.findOneAndDelete({ _id: id }).exec());
+  }
+
+  deleteAll(): Observable&lt;any&gt; {
+    return from(this.postModel.deleteMany({}).exec());
+  }
+}
+
+</code></pre>
+<p>In the constructor of <code>PostService</code> class, use a <code>@InjectMock('posts')</code> to bind the <code>posts</code> collection to a parameterized Model handler.</p>
+<p>The usage of all mongoose related functions can be found in <a href="https://mongoosejs.com/docs/api/query.html">the official Mongoose docs</a>.</p>
+<p>As you see,  we also add two classes  <code>CreatePostDto</code> and <code>UpdatePostDto</code> instead of the original <code>Post</code> for the case of creating and updating posts. </p>
+<p>Following the principle <a href="https://en.wikipedia.org/wiki/Separation_of_concerns">separation of concerns</a>, <code>CreatePostDto</code> and <code>UpdatePostDto</code> are only used for transform data from client, add <code>readonly</code> modifier to keep the data <em>immutable</em> in the transforming progress. </p>
+<pre><code class="language-typescript">// create-post.dto.ts
+export class CreatePostDto {
+  readonly title: string;
+  readonly content: string;
+}
+// update-post.dto.ts
+export class UpdatePostDto {
+  readonly title: string;
+  readonly content: string;
+}
+</code></pre>
+<h2 id="cleaning-up-postcontroller">Cleaning up PostController</h2>
+<p>Clean the <code>post.controller.ts</code> correspondingly.</p>
+<pre><code class="language-typescript">@Controller('posts')
+export class PostController {
+  constructor(private postService: PostService) {}
+
+  @Get('')
+  getAllPosts(
+    @Query('q') keyword?: string,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit?: number,
+    @Query('skip', new DefaultValuePipe(0), ParseIntPipe) skip?: number,
+  ): Observable&lt;BlogPost[]&gt; {
+    return this.postService.findAll(keyword, skip, limit);
+  }
+
+  @Get(':id')
+  getPostById(@Param('id') id: string): Observable&lt;BlogPost&gt; {
+    return this.postService.findById(id);
+  }
+
+  @Post('')
+  createPost(@Body() post: CreatePostDto): Observable&lt;BlogPost&gt; {
+    return this.postService.save(post);
+  }
+
+  @Put(':id')
+  updatePost(
+    @Param('id') id: string,
+    @Body() post: UpdatePostDto,
+  ): Observable&lt;BlogPost&gt; {
+    return this.postService.update(id, post);
+  }
+
+  @Delete(':id')
+  deletePostById(@Param('id') id: string): Observable&lt;BlogPost&gt; {
+    return this.postService.deleteById(id);
+  }
+}
+</code></pre>
+<blockquote>
+<p>Unluckily, Mongoose APIs has no built-in Rxjs's <code>Observable</code>  support, if you are stick on Rxjs, you have to use <code>from</code> to wrap an existing <code>Promise</code> to Rxjs's <code>Observable</code>.  Check <a href="https://stackoverflow.com/questions/37364973/what-is-the-difference-between-promises-and-observables">this topic on stackoverflow to know more details about the difference bwteen Promise and Observable</a>.</p>
+</blockquote>
+<h2 id="run-the-application">Run the application</h2>
+<p>To run the application, a  running MongoDB server is required. You can download a copy from <a href="https://www.mongodb.com">MongoDB</a>, and follow the <a href="https://docs.mongodb.com/manual/installation/">installation guide</a> to install it into your system.</p>
+<p>Simply, prepare a <em>docker-compose.yaml</em> to run the dependent servers in the development stage.</p>
+<pre><code class="language-yaml">version: '3.8' # specify docker-compose version
+
+# Define the services/containers to be run
+services:
+
+  mongodb: 
+    image: mongo 
+    volumes:
+      - mongodata:/data/db
+    ports:
+      - &quot;27017:27017&quot;
+    networks:
+      - backend   
+
+volumes:
+  mongodata:  
+
+networks:
+  backend:
+</code></pre>
+<p>Run the following command to start up a mongo service in a Docker container.</p>
+<pre><code class="language-bash">docker-compose up
+</code></pre>
+<p>Execute the following command in the project root folder to start up the application.</p>
+<pre><code class="language-bash">npm run start
+</code></pre>
+<p>Now open your terminal and use <code>curl</code> to test the endpoints, and make sure it works as expected.</p>
+<pre><code class="language-bash">&gt;curl http://localhost:3000/posts/
+[]
+</code></pre>
+<p>There is no sample data in the MongoDB. Utilizing with <a href="https://docs.nestjs.com/fundamentals/lifecycle-events">the lifecycle events</a>, it is easy to add some sample data for the test purpose.</p>
+<pre><code class="language-typescript">@Injectable()
+export class DataInitializerService implements OnModuleInit, OnModuleDestroy {
+  private data: CreatePostDto[] = [
+    {
+      title: 'Generate a NestJS project',
+      content: 'content',
+    },
+    {
+      title: 'Create CRUD RESTful APIs',
+      content: 'content',
+    },
+    {
+      title: 'Connect to MongoDB',
+      content: 'content',
+    },
+  ];
+
+  constructor(private postService: PostService) {}
+  onModuleInit(): void {
+    this.data.forEach(d =&gt; {
+      this.postService.save(d).subscribe(saved =&gt; console.log(saved));
+    });
+  }
+  onModuleDestroy(): void {
+    console.log('module is be destroying...');
+    this.postService
+      .deleteAll()
+      .subscribe(del =&gt; console.log(`deleted ${del} records.`));
+  }
+
+}
+</code></pre>
+<p>Register it in <code>PostModule</code>.</p>
+<pre><code class="language-typescript">//other imports
+import { DataInitializerService } from './data-initializer.service';
+
+@Module({
+  //imports, controllers...
+  providers: [//other services... 
+  DataInitializerService],
+})
+export class PostModule {}
+</code></pre>
+<p>Run the application again. Now you will see some data when hinting <em>http://localhost:3000/posts/</em>.</p>
+<pre><code class="language-bash">&gt;curl http://localhost:3000/posts/
+[{&quot;_id&quot;:&quot;5ee49c3115a4e75254bb732e&quot;,&quot;title&quot;:&quot;Generate a NestJS project&quot;,&quot;content&quot;:&quot;content&quot;,&quot;__v&quot;:0},{&quot;_id&quot;:&quot;5ee49c3115a4e75254bb732f&quot;,&quot;title&quot;:&quot;Create CRUD RESTful APIs&quot;,&quot;content&quot;:&quot;content&quot;,&quot;__v&quot;:0},{&quot;_id&quot;:&quot;5ee49c3115a4e75254bb7330&quot;,&quot;title&quot;:&quot;Connect to MongoDB&quot;,&quot;content&quot;:&quot;content&quot;,&quot;__v&quot;:0}]
+
+&gt;curl http://localhost:3000/posts/5ee49c3115a4e75254bb732e
+{&quot;_id&quot;:&quot;5ee49c3115a4e75254bb732e&quot;,&quot;title&quot;:&quot;Generate a NestJS project&quot;,&quot;content&quot;:&quot;content&quot;,&quot;__v&quot;:0}
+
+&gt;curl http://localhost:3000/posts/ -d &quot;{\&quot;title\&quot;:\&quot;new post\&quot;,\&quot;content\&quot;:\&quot;content of my new post\&quot;}&quot; -H &quot;Content-Type:application/json&quot; -X POST
+{&quot;_id&quot;:&quot;5ee49ca915a4e75254bb7331&quot;,&quot;title&quot;:&quot;new post&quot;,&quot;content&quot;:&quot;content of my new post&quot;,&quot;__v&quot;:0}
+
+&gt;curl http://localhost:3000/posts/5ee49ca915a4e75254bb7331 -d &quot;{\&quot;title\&quot;:\&quot;my updated post\&quot;,\&quot;content\&quot;:\&quot;content of my new post\&quot;}&quot; -H &quot;Content-Type:application/json&quot; -X PUT
+{&quot;_id&quot;:&quot;5ee49ca915a4e75254bb7331&quot;,&quot;title&quot;:&quot;new post&quot;,&quot;content&quot;:&quot;content of my new post&quot;,&quot;__v&quot;:0}
+
+&gt;curl http://localhost:3000/posts
+[{&quot;_id&quot;:&quot;5ee49c3115a4e75254bb732e&quot;,&quot;title&quot;:&quot;Generate a NestJS project&quot;,&quot;content&quot;:&quot;content&quot;,&quot;__v&quot;:0},{&quot;_id&quot;:&quot;5ee49c3115a4e75254bb732f&quot;,&quot;title&quot;:&quot;Create CRUD RESTful APIs&quot;,&quot;content&quot;:&quot;content&quot;,&quot;__v&quot;:0},{&quot;_id&quot;:&quot;5ee49c3115a4e75254bb7330&quot;,&quot;title&quot;:&quot;Connect to MongoDB&quot;,&quot;content&quot;:&quot;content&quot;,&quot;__v&quot;:0},{&quot;_id&quot;:&quot;5ee49ca915a4e75254bb7331&quot;,&quot;title&quot;:&quot;my updated post&quot;,&quot;content&quot;:&quot;content of my new post&quot;,&quot;__v&quot;:0}]
+
+&gt;curl http://localhost:3000/posts/5ee49ca915a4e75254bb7331  -X DELETE
+{&quot;_id&quot;:&quot;5ee49ca915a4e75254bb7331&quot;,&quot;title&quot;:&quot;my updated post&quot;,&quot;content&quot;:&quot;content of my new post&quot;,&quot;__v&quot;:0}
+
+&gt;curl http://localhost:3000/posts
+[{&quot;_id&quot;:&quot;5ee49c3115a4e75254bb732e&quot;,&quot;title&quot;:&quot;Generate a NestJS project&quot;,&quot;content&quot;:&quot;content&quot;,&quot;__v&quot;:0},{&quot;_id&quot;:&quot;5ee49c3115a4e75254bb732f&quot;,&quot;title&quot;:&quot;Create CRUD RESTful APIs&quot;,&quot;content&quot;:&quot;content&quot;,&quot;__v&quot;:0},{&quot;_id&quot;:&quot;5ee49c3115a4e75254bb7330&quot;,&quot;title&quot;:&quot;Connect to MongoDB&quot;,&quot;content&quot;:&quot;content&quot;,&quot;__v&quot;:0}]
+</code></pre>
+<h2 id="clean-the-testing-codes">Clean the testing codes</h2>
+<p>When switching to real data storage instead of the dummy array,  we face the first issue is how to treat with the Mongo database dependency in our <em>post.service.spec.ts</em>. </p>
+<p>Jest provides comprehensive mocking features to isolate the dependencies in test cases. Let's have a look at the whole content of  the refactored <em>post.service.spec.ts</em> file.</p>
+<pre><code class="language-typescript">describe('PostService', () =&gt; {
+  let service: PostService;
+  let model: Model&lt;Post&gt;;
+
+  beforeEach(async () =&gt; {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        PostService,
+        {
+          provide: getModelToken('posts'),
+          useValue: {
+            new: jest.fn(),
+            constructor: jest.fn(),
+            find: jest.fn(),
+            findOne: jest.fn(),
+            update: jest.fn(),
+            create: jest.fn(),
+            remove: jest.fn(),
+            exec: jest.fn(),
+            findOneAndUpdate: jest.fn(),
+            findOneAndDelete: jest.fn(),
+          },
+        },
+      ],
+    }).compile();
+
+    service = module.get&lt;PostService&gt;(PostService);
+    model = module.get&lt;Model&lt;Post&gt;&gt;(getModelToken('posts'));
+  });
+
+  it('should be defined', () =&gt; {
+    expect(service).toBeDefined();
+  });
+
+  it('getAllPosts should return 3 posts', async () =&gt; {
+    const posts = [
+      {
+        _id: '5ee49c3115a4e75254bb732e',
+        title: 'Generate a NestJS project',
+        content: 'content',
+      },
+      {
+        _id: '5ee49c3115a4e75254bb732f',
+        title: 'Create CRUD RESTful APIs',
+        content: 'content',
+      },
+      {
+        _id: '5ee49c3115a4e75254bb7330',
+        title: 'Connect to MongoDB',
+        content: 'content',
+      },
+    ];
+    jest.spyOn(model, 'find').mockReturnValue({
+      skip: jest.fn().mockReturnValue({
+        limit: jest.fn().mockReturnValue({
+          exec: jest.fn().mockResolvedValueOnce(posts) as any,
+        }),
+      }),
+    } as any);
+
+    const data = await service.findAll().toPromise();
+    expect(data.length).toBe(3);
+  });
+
+  it('getPostById with existing id should return 1 post', done =&gt; {
+    const found = {
+      _id: '5ee49c3115a4e75254bb732e',
+      title: 'Generate a NestJS project',
+      content: 'content',
+    };
+
+    jest.spyOn(model, 'findOne').mockReturnValue({
+      exec: jest.fn().mockResolvedValueOnce(found) as any,
+    } as any);
+
+    service.findById('1').subscribe({
+      next: data =&gt; {
+        expect(data._id).toBe('5ee49c3115a4e75254bb732e');
+        expect(data.title).toEqual('Generate a NestJS project');
+      },
+      error: error =&gt; console.log(error),
+      complete: done(),
+    });
+  });
+
+  it('should save post', async () =&gt; {
+    const toCreated = {
+      title: 'test title',
+      content: 'test content',
+    };
+
+    const toReturned = {
+      _id: '5ee49c3115a4e75254bb732e',
+      ...toCreated,
+    };
+
+    jest.spyOn(model, 'create').mockResolvedValue(toReturned as Post);
+
+    const data = await service.save(toCreated).toPromise();
+    expect(data._id).toBe('5ee49c3115a4e75254bb732e');
+    expect(model.create).toBeCalledWith(toCreated);
+    expect(model.create).toBeCalledTimes(1);
+  });
+
+  it('should update post', done =&gt; {
+    const toUpdated = {
+      _id: '5ee49c3115a4e75254bb732e',
+      title: 'test title',
+      content: 'test content',
+    };
+
+    jest.spyOn(model, 'findOneAndUpdate').mockReturnValue({
+      exec: jest.fn().mockResolvedValueOnce(toUpdated) as any,
+    } as any);
+
+    service.update('5ee49c3115a4e75254bb732e', toUpdated).subscribe({
+      next: data =&gt; {
+        expect(data._id).toBe('5ee49c3115a4e75254bb732e');
+      },
+      error: error =&gt; console.log(error),
+      complete: done(),
+    });
+  });
+
+  it('should delete post', done =&gt; {
+    jest.spyOn(model, 'findOneAndDelete').mockReturnValue({
+      exec: jest.fn().mockResolvedValueOnce({
+        deletedCount: 1,
+      }),
+    } as any);
+
+    service.deleteById('anystring').subscribe({
+      next: data =&gt; expect(data).toBeTruthy,
+      error: error =&gt; console.log(error),
+      complete: done(),
+    });
+  });
+});
+
+</code></pre>
+<p>In the above codes,</p>
+<ul>
+<li>Use a custom <em>Provider</em> to provide a <code>PostModel</code> dependency for <code>PostService</code>, the Model is provided in <code>useValue</code> which hosted a mocked object instance for PostModel at runtime.</li>
+<li>In every test case, use <code>jest.spyOn</code> to assume some mocked behaviors of PostModel  happened before the service is executed.</li>
+<li>You can use the <code>toBeCalledWith</code> like assertions on mocked object or spied object.</li>
+</ul>
+<blockquote>
+<p>For me, most of time working as a Java/Spring developers, constructing such a simple Jest based test is not easy, <a href="https://github.com/jmcdo29/testing-nestjs">jmcdo29/testing-nestjs</a> is very helpful for me to jump into jest testing work.  </p>
+<p>The jest mock is every different from Mockito in Java. Luckily there is a ts-mockito which port Mockito to the Typescript world, check <a href="https://github.com/NagRock/ts-mockito">this link</a> for more details .</p>
+</blockquote>
+<p>OK, let's move to <em>post.controller.spec.ts</em>.</p>
+<p>Similarly,   <code>PostController</code> depends on <code>PostService</code>.  To test the functionalities of <code>PostController</code>,  we should mock it.</p>
+<p>Like the method we used in <code>post.service.spec.ts</code>, we can mock it in a <code>Provider</code>.</p>
+<pre><code class="language-typescript">describe('Post Controller(useValue jest mocking)', () =&gt; {
+  let controller: PostController;
+  let postService: PostService;
+
+  beforeEach(async () =&gt; {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        {
+          provide: PostService,
+          useValue: {
+            findAll: jest
+              .fn()
+              .mockImplementation(
+                (_keyword?: string, _skip?: number, _limit?: number) =&gt;
+                  of&lt;any[]&gt;([
+                    {
+                      _id: 'testid',
+                      title: 'test title',
+                      content: 'test content',
+                    },
+                  ]),
+              ),
+          },
+        },
+      ],
+      controllers: [PostController],
+    }).compile();
+
+    controller = module.get&lt;PostController&gt;(PostController);
+    postService = module.get&lt;PostService&gt;(PostService);
+  });
+
+  it('should get all posts(useValue: jest mocking)', async () =&gt; {
+    const result = await controller.getAllPosts('test', 10, 0).toPromise();
+    expect(result[0]._id).toEqual('testid');
+    expect(postService.findAll).toBeCalled();
+    expect(postService.findAll).lastCalledWith('test', 0, 10);
+  });
+});
+</code></pre>
+<p>Instead of the jest mocking,  you can use a dummy implementation directly in the <code>Provider</code>.</p>
+<pre><code class="language-typescript">describe('Post Controller(useValue fake object)', () =&gt; {
+  let controller: PostController;
+
+  beforeEach(async () =&gt; {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        {
+          provide: PostService,
+          useValue: {
+            findAll: (_keyword?: string, _skip?: number, _limit?: number) =&gt;
+              of&lt;any[]&gt;([
+                { _id: 'testid', title: 'test title', content: 'test content' },
+              ]),
+          },
+        },
+      ],
+      controllers: [PostController],
+    }).compile();
+
+    controller = module.get&lt;PostController&gt;(PostController);
+  });
+
+  it('should get all posts(useValue: fake object)', async () =&gt; {
+    const result = await controller.getAllPosts().toPromise();
+    expect(result[0]._id).toEqual('testid');
+  });
+});
+</code></pre>
+<p>Or use fake class to replace the real <code>PostService</code> in the tests.</p>
+<pre><code class="language-typescript">class PostServiceFake {
+  private posts = [
+    {
+      _id: '5ee49c3115a4e75254bb732e',
+      title: 'Generate a NestJS project',
+      content: 'content',
+    },
+    {
+      _id: '5ee49c3115a4e75254bb732f',
+      title: 'Create CRUD RESTful APIs',
+      content: 'content',
+    },
+    {
+      _id: '5ee49c3115a4e75254bb7330',
+      title: 'Connect to MongoDB',
+      content: 'content',
+    },
+  ];
+
+  findAll() {
+    return of(this.posts);
+  }
+
+  findById(id: string) {
+    const { title, content } = this.posts[0];
+    return of({ _id: id, title, content });
+  }
+
+  save(data: CreatePostDto) {
+    return of({ _id: this.posts[0]._id, ...data });
+  }
+
+  update(id: string, data: UpdatePostDto) {
+    return of({ _id: id, ...data });
+  }
+
+  deleteById(id: string) {
+    return of({ ...this.posts[0], _id: id });
+  }
+}
+
+describe('Post Controller', () =&gt; {
+  let controller: PostController;
+
+  beforeEach(async () =&gt; {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        {
+          provide: PostService,
+          useClass: PostServiceFake,
+        },
+      ],
+      controllers: [PostController],
+    }).compile();
+
+    controller = module.get&lt;PostController&gt;(PostController);
+  });
+
+  it('should be defined', () =&gt; {
+    expect(controller).toBeDefined();
+  });
+
+  it('GET on /posts should return all posts', async () =&gt; {
+    const posts = await controller.getAllPosts().toPromise();
+    expect(posts.length).toBe(3);
+  });
+
+  it('GET on /posts/1 should return one post ', done =&gt; {
+    controller.getPostById('1').subscribe(data =&gt; {
+      expect(data._id).toEqual('1');
+      done();
+    });
+  });
+
+  it('POST on /posts should return all posts', async () =&gt; {
+    const post: CreatePostDto = {
+      title: 'test title',
+      content: 'test content',
+    };
+    const saved = await controller.createPost(post).toPromise();
+    expect(saved.title).toEqual('test title');
+  });
+
+  it('PUT on /posts/1 should return all posts', done =&gt; {
+    const post: UpdatePostDto = {
+      title: 'test title',
+      content: 'test content',
+    };
+    controller.updatePost('1', post).subscribe(data =&gt; {
+      expect(data.title).toEqual('test title');
+      expect(data.content).toEqual('test content');
+      done();
+    });
+  });
+
+  it('DELETE on /posts/1 should return true', done =&gt; {
+    controller.deletePostById('1').subscribe(data =&gt; {
+      expect(data).toBeTruthy();
+      done();
+    });
+  });
+});
+</code></pre>
+<p>The above codes are more close the ones in the first article, it is simple and easy to understand.  </p>
+<blockquote>
+<p>To ensure the fake PostService has the exact method signature of the real PostService, it is better to use an interface to define the methods if you prefer this apporach.</p>
+</blockquote>
+<p>I have mentioned <em>ts-mockito</em>, for me it is easier to boost up a Mockito like test.</p>
+<pre><code class="language-bash">npm install --save-dev ts-mockito
+</code></pre>
+<p>A simple mockito based test looks like this.</p>
+<pre><code class="language-typescript">// import facilites from ts-mockito
+import { mock, verify, instance, anyString, anyNumber, when } from 'ts-mockito';
+
+describe('Post Controller(using ts-mockito)', () =&gt; {
+  let controller: PostController;
+  const mockedPostService: PostService = mock(PostService);
+
+  beforeEach(async () =&gt; {
+    controller = new PostController(instance(mockedPostService));
+  });
+
+  it('should get all posts(ts-mockito)', async () =&gt; {
+    when(
+      mockedPostService.findAll(anyString(), anyNumber(), anyNumber()),
+    ).thenReturn(
+      of([
+        { _id: 'testid', title: 'test title', content: 'content' },
+      ]) as Observable&lt;Post[]&gt;,
+    );
+    const result = await controller.getAllPosts('', 10, 0).toPromise();
+    expect(result.length).toEqual(1);
+    expect(result[0].title).toBe('test title');
+    verify(
+      mockedPostService.findAll(anyString(), anyNumber(), anyNumber()),
+    ).once();
+  });
+});
+</code></pre>
+<p>Now run the tests again. All tests should pass. </p>
+<pre><code class="language-bash">&gt; npm run test
+
+...
+
+ PASS  src/app.controller.spec.ts
+ PASS  src/post/post.service.spec.ts (10.307 s)
+ PASS  src/post/post.controller.spec.ts (10.471 s)
+
+Test Suites: 3 passed, 3 total
+Tests:       17 passed, 17 total
+Snapshots:   0 total
+Time:        11.481 s, estimated 12 s
+Ran all test suites.
+</code></pre>
+<p>In this post, we connected to the real MongoDB instead of the dummy data storage, correspond to the changes , we have refactored all tests, and discuss some approaches to isolate the dependencies in tests.  But we have not test all functionalities in a real integrated environment,  Nestjs provides e2e testing skeleton, we will discuss it in a future post.</p>
+<p>Grab <a href="https://github.com/hantsy/nestjs-sample">the source codes from my github</a>, switch to branch <a href="https://github.com/hantsy/nestjs-sample/blob/feat/mongo">feat/mongo</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

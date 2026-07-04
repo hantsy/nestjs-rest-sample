@@ -1,0 +1,1052 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Step-by-step guide of creating RESTful APIs using NestJS and Typescript">
+      
+      
+      
+      
+        <link rel="prev" href="../config/">
+      
+      
+        <link rel="next" href="../testing/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Handling user registration - Building RESTful APIs with NestJS</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#handling-user-registration" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Building RESTful APIs with NestJS" class="md-header__button md-logo" aria-label="Building RESTful APIs with NestJS" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Building RESTful APIs with NestJS
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Handling user registration
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/hantsy/nestjs-sample" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Building RESTful APIs with NestJS" class="md-nav__button md-logo" aria-label="Building RESTful APIs with NestJS" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Building RESTful APIs with NestJS
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/hantsy/nestjs-sample" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mongo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connecting to MongoDB
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../auth/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Protect your APIs with JWT Token
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dealing with model relations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Externalizing the configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Handling user registration
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Handling user registration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#registering-a-new-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registering a new user
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hashing-password" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hashing password
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registration-welcome-notification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registration Welcome Notification
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing Nestjs applications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#registering-a-new-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registering a new user
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hashing-password" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hashing password
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registration-welcome-notification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registration Welcome Notification
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="handling-user-registration">Handling user registration</h1>
+<p>In the previous posts, the user sample data is initialized in a service which is observing an <code>OnMoudleInit</code> event. </p>
+<p>In this post we will add an endpoint to handle user registration request, including:</p>
+<ul>
+<li>Add an endpoint <em>/register</em> to handling user registration progress</li>
+<li>Hashing password with bcrypt</li>
+<li>Sending notifications via SendGrid mail service</li>
+</ul>
+<h2 id="registering-a-new-user">Registering a new user</h2>
+<p>Generate a register controller.</p>
+<pre><code class="language-bash">nest g controller user/register --flat
+</code></pre>
+<p>Fill the following content into the <code>RegisterController</code>.</p>
+<pre><code class="language-typescript">// user/register.controller.ts
+
+@Controller('register')
+export class RegisterController {
+    constructor(private userService: UserService) { }
+
+    @Post()
+    register(
+        @Body() registerDto: RegisterDto,
+        @Res() res: Response): Observable&lt;Response&gt; {
+        const username = registerDto.username;
+
+        return this.userService.existsByUsername(username).pipe(
+            flatMap(exists =&gt; {
+                if (exists) {
+                    throw new ConflictException(`username:${username} is existed`)
+                }
+                else {
+                    const email = registerDto.email;
+                    return this.userService.existsByEmail(email).pipe(
+                        flatMap(exists =&gt; {
+                            if (exists) {
+                                throw new ConflictException(`email:${email} is existed`)
+                            }
+                            else {
+                                return this.userService.register(registerDto).pipe(
+                                    map(user =&gt;
+                                        res.location('/users/' + user.id)
+                                            .status(201)
+                                            .send()
+                                    )
+                                );
+                            }
+                        })
+                    );
+                }
+            })
+        );
+    }
+}
+</code></pre>
+<p>In the above codes, we will check  user existence by username and email respectively, then save the user data  into the MongoDB  database.</p>
+<p>In the <code>UserService</code>, add the missing methods.</p>
+<pre><code class="language-typescript">@Injectable()
+export class UserService {
+
+  existsByUsername(username: string): Observable&lt;boolean&gt; {
+    return from(this.userModel.exists({ username }));
+  }
+
+  existsByEmail(email: string): Observable&lt;boolean&gt; {
+    return from(this.userModel.exists({ email }));
+  }
+
+  register(data: RegisterDto): Observable&lt;User&gt; {
+
+    const created = this.userModel.create({
+      ...data,
+      roles: [RoleType.USER]
+    });
+
+    return from(created);
+  }
+  //...
+}
+</code></pre>
+<p>Create a DTO class to represent the user registration request data. Generate the DTO skeleton firstly.</p>
+<pre><code class="language-bash">nest g class user/register.dto --flat
+</code></pre>
+<p>And fill the following content.</p>
+<pre><code class="language-typescript">import { IsEmail, IsNotEmpty, MaxLength, MinLength } from &quot;class-validator&quot;;
+
+export class RegisterDto {
+    @IsNotEmpty()
+    readonly username: string;
+
+    @IsNotEmpty()
+    @IsEmail()
+    readonly email: string;
+
+    @IsNotEmpty()
+    @MinLength(8, { message: &quot; The min length of password is 8 &quot; })
+    @MaxLength(20, { message: &quot; The password can't accept more than 20 characters &quot; })
+    // @Matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,20}$/,
+    //     { message: &quot; A password at least contains one numeric digit, one supercase char and one lowercase char&quot; }
+    // )
+    readonly password: string;
+
+    @IsNotEmpty()
+    readonly firstName?: string;
+
+    @IsNotEmpty()
+    readonly lastName?: string;
+}
+</code></pre>
+<p>In the above codes, the <code>@IsNotEmpty()</code>,<code>@IsEmail</code>, <code>@MinLength()</code>, <code>@MaxLength()</code>, <code>@Matches()</code> are from <code>class-validator</code>. If you have some experience of Java EE/Jakarta EE Bean Validation or Hibernate Validators, these annotations are easy to understand.</p>
+<ul>
+<li><code>@IsNotEmpty()</code> to check  if the given value is empty</li>
+<li><code>@IsEmail</code> to validate if the input string is an valid email format</li>
+<li><code>@MinLength()</code> and <code>@MaxLength()</code>are to limit the length range of the input value</li>
+<li><code>@Matches()</code> is flexible for custom RegExp matches.</li>
+</ul>
+<blockquote>
+<p>More info about the usage of class-validator, check the details of project <a href="https://github.com/typestack/class-validator">typestack/class-validator</a>.</p>
+</blockquote>
+<p>In the previous posts, we have applied a global <code>ValidationPipe</code> in <code>bootstrap</code> function in the <code>main.ts</code> entry file. When registering with invalid data,it will return a 404 error.</p>
+<pre><code class="language-bash"> $ curl http://localhost:3000/register -d &quot;{}&quot; {&quot;statusCode&quot;:400,&quot;message&quot;:[&quot;username should not be empty&quot;,&quot;email must be an em ail&quot;,&quot;email should not be empty&quot;,&quot; The password can't accept more than 20 charac ters &quot;,&quot; The min length of password is 8 &quot;,&quot;password should not be empty&quot;,&quot;first Name should not be empty&quot;,&quot;lastName should not be empty&quot;],&quot;error&quot;:&quot;Bad Request&quot;}
+</code></pre>
+<p>Add a test for the <code>RegisterController</code>.</p>
+<pre><code class="language-typescript">describe('Register Controller', () =&gt; {
+  let controller: RegisterController;
+  let service: UserService;
+
+  beforeEach(async () =&gt; {
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [RegisterController],
+      providers: [
+        {
+          provide: UserService,
+          useValue: {
+            register: jest.fn(),
+            existsByUsername: jest.fn(),
+            existsByEmail: jest.fn()
+          },
+        },
+      ]
+    }).compile();
+
+    controller = module.get&lt;RegisterController&gt;(RegisterController);
+    service = module.get&lt;UserService&gt;(UserService);
+  });
+
+  it('should be defined', () =&gt; {
+    expect(controller).toBeDefined();
+  });
+
+  describe('register', () =&gt; {
+    it('should throw ConflictException when username is existed ', async () =&gt; {
+      const existsByUsernameSpy = jest.spyOn(service, 'existsByUsername').mockReturnValue(of(true));
+      const existsByEmailSpy = jest.spyOn(service, 'existsByEmail').mockReturnValue(of(true));
+      const saveSpy = jest.spyOn(service, 'register').mockReturnValue(of({} as User));
+
+      const responseMock = {
+        location: jest.fn().mockReturnThis(),
+        json: jest.fn().mockReturnThis(),
+        send: jest.fn().mockReturnThis()
+      } as any;
+      try {
+        await controller.register({ username: 'hantsy' } as RegisterDto, responseMock).toPromise();
+      } catch (e) {
+        expect(e).toBeDefined();
+        expect(existsByUsernameSpy).toBeCalledWith('hantsy');
+        expect(existsByEmailSpy).toBeCalledTimes(0);
+        expect(saveSpy).toBeCalledTimes(0)
+      }
+    });
+
+    it('should throw ConflictException when email is existed ', async () =&gt; {
+      const existsByUsernameSpy = jest.spyOn(service, 'existsByUsername').mockReturnValue(of(false));
+      const existsByEmailSpy = jest.spyOn(service, 'existsByEmail').mockReturnValue(of(true));
+      const saveSpy = jest.spyOn(service, 'register').mockReturnValue(of({} as User));
+
+      const responseMock = {
+        location: jest.fn().mockReturnThis(),
+        json: jest.fn().mockReturnThis(),
+        send: jest.fn().mockReturnThis()
+      } as any;
+      try {
+        await controller.register({ username: 'hantsy', email: 'hantsy@example.com' } as RegisterDto, responseMock).toPromise();
+      } catch (e) {
+        expect(e).toBeDefined();
+        expect(existsByUsernameSpy).toBeCalledWith('hantsy');
+        expect(existsByEmailSpy).toBeCalledWith('hantsy@example.com');
+        expect(saveSpy).toBeCalledTimes(0)
+      }
+    });
+
+    it('should save when username and email are available ', async () =&gt; {
+      const existsByUsernameSpy = jest.spyOn(service, 'existsByUsername').mockReturnValue(of(false));
+      const existsByEmailSpy = jest.spyOn(service, 'existsByEmail').mockReturnValue(of(false));
+      const saveSpy = jest.spyOn(service, 'register').mockReturnValue(of({ _id: '123' } as User));
+
+      const responseMock = {
+        location: jest.fn().mockReturnThis(),
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn().mockReturnThis()
+      } as any;
+
+      const locationSpy = jest.spyOn(responseMock, 'location');
+      const statusSpy = jest.spyOn(responseMock, 'status');
+      const sendSpy = jest.spyOn(responseMock, 'send');
+
+      await controller.register({ username: 'hantsy', email: 'hantsy@example.com' } as RegisterDto, responseMock).toPromise();
+
+      expect(existsByUsernameSpy).toBeCalledWith('hantsy');
+      expect(existsByEmailSpy).toBeCalledWith('hantsy@example.com');
+      expect(saveSpy).toBeCalledTimes(1);
+      expect(locationSpy).toBeCalled();
+      expect(statusSpy).toBeCalled();
+      expect(sendSpy).toBeCalled();
+
+    });
+  });
+});
+</code></pre>
+<p>In the above testing codes, we go through all conditions and make sure all code blocks in the <code>RegisterController</code> are hit.</p>
+<p>Correspondingly add tests for the newly added methods in <code>UserService</code> .  Here I skip the testing codes here, please check the <a href="https://github.com/hantsy/nestjs-sample/tree/feat/user">source code</a> yourself.</p>
+<h2 id="hashing-password">Hashing password</h2>
+<p>In the former posts, we used plain text to store the password field in user document. In a real world application, we should choose a hash algorithm to encode the plain password for security consideration.</p>
+<p>Bcrypt is very popular for hashing password. </p>
+<p>Install <code>bcypt</code> firstly.</p>
+<pre><code class="language-bash">npm install --save bcrypt
+</code></pre>
+<p>When saving a new user, hashing the password then save it. Add a pre save hook in the <code>User</code> model.</p>
+<pre><code class="language-typescript">async function preSaveHook(next) {
+
+  // Only run this function if password was modified
+  if (!this.isModified('password')) return next();
+
+  // Hash the password
+  const password = await hash(this.password, 12);
+  this.set('password', password);
+
+  next();
+}
+
+UserSchema.pre&lt;User&gt;('save', preSaveHook);
+</code></pre>
+<p>The <code>preSave</code> hook will be invoked before the new user data is being persisted into the MongoDB.</p>
+<p>When a user is trying to login via username and password pair, it should check if password is matched to the one in the database.</p>
+<p>Add a method to the <code>User</code> model.</p>
+<pre><code class="language-typescript">function comparePasswordMethod(password: string): Observable&lt;boolean&gt; {
+  return from(compare(password, this.password));
+}
+
+UserSchema.methods.comparePassword = comparePasswordMethod;
+</code></pre>
+<p>Change the <code>validateUser</code> method of the <code>AuthService</code>, check the password if matched there.</p>
+<pre><code class="language-typescript">flatMap((user) =&gt; {
+    const { _id, password, username, email, roles } = user;
+    return user.comparePassword(pass).pipe(map(m =&gt; {
+        if (m) {
+            return { id: _id, username, email, roles } as UserPrincipal;
+        }else {
+            throw new UnauthorizedException('username or password is not matched')
+        }
+    }))
+</code></pre>
+<p>It is a little difficult to test the hooks of  the <code>User</code> model, to simplify the testing work,  here I  extract the  hooks to standalone functions, and mock the calling context in the tests.</p>
+<pre><code class="language-typescript">// see: https://stackoverflow.com/questions/58701700/how-do-i-test-if-statement-inside-my-mongoose-pre-save-hook
+describe('preSaveHook', () =&gt; {
+    test('should execute next middleware when password is not modified', async () =&gt; {
+        const nextMock = jest.fn();
+        const contextMock = {
+            isModified: jest.fn()
+        };
+        contextMock.isModified.mockReturnValueOnce(false);
+        await preSaveHook.call(contextMock, nextMock);
+        expect(contextMock.isModified).toBeCalledWith('password');
+        expect(nextMock).toBeCalledTimes(1);
+    });
+
+    test('should set password when password is modified', async () =&gt; {
+        const nextMock = jest.fn();
+        const contextMock = {
+            isModified: jest.fn(),
+            set: jest.fn(),
+            password: '123456'
+        };
+        contextMock.isModified.mockReturnValueOnce(true);
+        await preSaveHook.call(contextMock, nextMock);
+        expect(contextMock.isModified).toBeCalledWith('password');
+        expect(nextMock).toBeCalledTimes(1);
+        expect(contextMock.set).toBeCalledTimes(1);
+    });
+});
+</code></pre>
+<p>Explore other tests for <code>comparePasswordMethod</code> etc in the <a href="https://github.com/hantsy/nestjs-sample/blob/master/src/database/user.mdoel.spec.ts">user.mdoel.sepc.ts</a>.</p>
+<p>Now run the application, have a look at the log in the console about the user initialization, as you see the password stored in the MongoDB is hashed.</p>
+<pre><code class="language-typescript">(UserModule) is initialized...
+[
+  {
+    roles: [ 'USER' ],
+    _id: 5f477055fb9a2b3fa4cb1c21,
+    username: 'hantsy',
+    password: '$2b$12$/spjKM3Vdf5vRJE9u2cHaulIAWzKMbNVSyHjMp9E9PifbSEHTQrJy',
+    email: 'hantsy@example.com',
+    createdAt: 2020-08-27T08:35:33.800Z,
+    updatedAt: 2020-08-27T08:35:33.800Z,
+    __v: 0
+  },
+  {
+    roles: [ 'ADMIN' ],
+    _id: 5f477055fb9a2b3fa4cb1c22,
+    username: 'admin',
+    password: '$2b$12$kFhASRJPkb/WD99J4uZrf.ZkkeKghpvf/6pgVGQArGiIgXu5aNMe.',
+    email: 'admin@example.com',
+    createdAt: 2020-08-27T08:35:33.801Z,
+    updatedAt: 2020-08-27T08:35:33.801Z,
+    __v: 0
+  }
+]
+</code></pre>
+<h2 id="registration-welcome-notification">Registration Welcome Notification</h2>
+<p>Generally, in a real world application, a welcome email should be sent to the new registered user when the registration is completed successfully.</p>
+<p>There are several modules can be used to send emails in NodeJS applications, for example, <code>nodemailer</code> etc.  There are also some cloud service for emails, such as <a href="https://sendgrid.com/">SendGrid</a>. There is an existing Nestjs module to integrate SendGrid to Nestjs, check <a href="https://github.com/ntegral/nestjs-sendgrid">ntegral/nestjs-sendgrid</a> project.</p>
+<p>In this sample, we will not use the existing one, and create a new home-use module for this application.</p>
+<p>Install sendgrid npm package firstly.</p>
+<pre><code class="language-bash">npm i @sendgrid/mail
+</code></pre>
+<p>Generate a sendgrid module and a sendgrid service. </p>
+<pre><code class="language-bash">nest g mo sendgrid
+nest g s sendgrid
+</code></pre>
+<p>Add the following content into the <code>SendgridService</code>.</p>
+<pre><code class="language-typescript">@Injectable()
+export class SendgridService {
+
+    constructor(@Inject(SENDGRID_MAIL) private mailService: MailService) { }
+
+    send(data: MailDataRequired): Observable&lt;any&gt;{
+        //console.log(this.mailService)
+        return from(this.mailService.send(data, false))
+    }
+
+}
+</code></pre>
+<p>Create a provider to expose the <code>MailService</code> from <code>@sendgrid/mail</code> package.</p>
+<pre><code class="language-typescript">export const sendgridProviders = [
+    {
+      provide: SENDGRID_MAIL,
+      useFactory: (config: ConfigType&lt;typeof sendgridConfig&gt;): MailService =&gt;
+        {
+            const mail = new MailService();
+            mail.setApiKey(config.apiKey);
+            mail.setTimeout(5000);
+            //mail.setTwilioEmailAuth(username, password)
+            return mail;
+        },
+      inject: [sendgridConfig.KEY],
+    }
+  ];
+
+</code></pre>
+<p>Accordingly, add a config for sendgrid.</p>
+<pre><code class="language-typescript">//config/sendgrid.config.ts
+export default registerAs('sendgrid', () =&gt; ({
+  apiKey: process.env.SENDGRID_API_KEY || 'SG.test',
+}));
+</code></pre>
+<blockquote>
+<p>Signup SendGrid and generate an API Key for your applications to send emails.</p>
+</blockquote>
+<p>Declares  sendgrid related config, provider and service in <code>SendgridModule</code>.</p>
+<pre><code class="language-typescript">@Module({
+  imports: [ConfigModule.forFeature(sendgridConfig)],
+  providers: [...sendgridProviders, SendgridService],
+  exports: [...sendgridProviders, SendgridService]
+})
+export class SendgridModule { }
+</code></pre>
+<p>Change the register function in the <code>UserService</code>.</p>
+<pre><code class="language-typescript">
+    const msg = {
+      from: 'hantsy@gmail.com', // Use the email address or domain you verified above
+      subject: 'Welcome to Nestjs Sample',
+      templateId: &quot;d-cc6080999ac04a558d632acf2d5d0b7a&quot;,
+      personalizations: [
+        {
+          to: data.email,
+          dynamicTemplateData: { name: data.firstName + ' ' + data.lastName },
+        }
+      ]
+
+    };
+    return this.sendgridService.send(msg).pipe(
+      catchError(err=&gt;of(`sending email failed:${err}`)),
+      tap(data =&gt; console.log(data)),
+      flatMap(data =&gt; from(created)),
+    );
+</code></pre>
+<blockquote>
+<p>The templateId is the id of the templates managed by SendGrid. SendGrid has great web UI for you to compose and manage email templates.</p>
+</blockquote>
+<p>Ideally, a user registration progress should be split into two steps.  </p>
+<ul>
+<li>Validate the user input data from the registration form, and persist it into the MongoDB, then send a verification number to verify the registered phone number, email, etc.  In this stage, the user account will be suspended to verify.</li>
+<li>The registered user receive the verification number or links in emails, provide it in the verification page or click the link in the email directly, and get verified. In this stage, the user account will be activated.</li>
+</ul>
+<p>Grab <a href="https://github.com/hantsy/nestjs-sample">the source codes from my github</a>, switch to branch <a href="https://github.com/hantsy/nestjs-sample/blob/feat/user">feat/user</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

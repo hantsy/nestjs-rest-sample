@@ -1,0 +1,1328 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Step-by-step guide of creating RESTful APIs using NestJS and Typescript">
+      
+      
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../mongo/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Getting Started - Building RESTful APIs with NestJS</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#building-restful-apis-with-nestjs" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Building RESTful APIs with NestJS" class="md-header__button md-logo" aria-label="Building RESTful APIs with NestJS" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Building RESTful APIs with NestJS
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Getting Started
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/hantsy/nestjs-sample" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Building RESTful APIs with NestJS" class="md-nav__button md-logo" aria-label="Building RESTful APIs with NestJS" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Building RESTful APIs with NestJS
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/hantsy/nestjs-sample" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-nestjs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is NestJS?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#generating-a-nestjs-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generating a NestJS project
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exploring-the-project-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exploring the project files
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#defining-the-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Defining the APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-postservice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating PostService
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-postcontroller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating PostController
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-the-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run the application
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mongo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connecting to MongoDB
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../auth/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Protect your APIs with JWT Token
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dealing with model relations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Externalizing the configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Handling user registration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing Nestjs applications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-nestjs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is NestJS?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#generating-a-nestjs-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generating a NestJS project
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exploring-the-project-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exploring the project files
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#defining-the-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Defining the APIs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-postservice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating PostService
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-postcontroller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating PostController
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-the-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run the application
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="building-restful-apis-with-nestjs">Building RESTful APIs with NestJS</h1>
+<p>In this post, I will demonstrate how to kickstart a simple RESTful APIs with NestJS from a newbie's viewpoint.</p>
+<h2 id="what-is-nestjs">What is NestJS?</h2>
+<p>As described in the <a href="https://nestjs.com">Nestjs</a> website, Nestjs is <em>a progressive Node.js framework for building efficient, reliable and scalable server-side applications.</em></p>
+<p>Nestjs combines the best programming practice and the cutting-edge techniques from the NodeJS communities.</p>
+<ul>
+<li>A lot of NestJS concepts are heavily inspired by the effort of the popular frameworks in the world, esp. <a href="https://www.angular.io">Angular</a> .</li>
+<li>Nestjs hides the complexities of web programming in NodeJS, it provides a common abstraction of the web request handling, you are free to choose <a href="https://expressjs.com/">Expressjs</a> or <a href="https://www.fastify.io">Fastify</a> as the background engine.</li>
+<li>Nestjs provides a lot of third party project integrations, from database operations, such as Mongoose, TypeORM, etc. to Message Brokers, such as Redis, RabbitMQ, etc.</li>
+</ul>
+<p>If you are new to Nestjs like me but has some experience of <a href="https://www.angular.io">Angular</a> , <a href="https://github.com/typestack/typedi#usage-with-typescript">TypeDI</a> or <a href="http://www.spring.io">Spring WebMVC</a>, bootstraping a Nestjs project is really a piece of cake.</p>
+<h2 id="generating-a-nestjs-project">Generating a NestJS project</h2>
+<p>Make sure you have installed the latest <a href="https://nodejs.org/en/">Nodejs</a>.</p>
+<pre><code class="language-bash">npm i -g @nestjs/cli
+</code></pre>
+<p>When it is finished, there is a <code>nest</code> command available in the <code>Path</code>. The usage of <code>nest</code> is similar with <code>ng</code> (Angular CLI), type <code>nest --help</code> in the terminal to list help for all commands.</p>
+<pre><code class="language-bash">❯ nest --help
+Usage: nest &lt;command&gt; [options]
+
+Options:
+  -v, --version                                   Output the current version.
+  -h, --help                                      Output usage information.
+
+Commands:
+  new|n [options] [name]                          Generate Nest application.
+  build [options] [app]                           Build Nest application.
+  start [options] [app]                           Run Nest application.
+  info|i                                          Display Nest project details.
+  update|u [options]                              Update Nest dependencies.
+  add [options] &lt;library&gt;                         Adds support for an external library to your project.
+  generate|g [options] &lt;schematic&gt; [name] [path]  Generate a Nest element.
+    Available schematics:
+      ┌───────────────┬─────────────┐
+      │ name          │ alias       │
+      │ application   │ application │
+      │ class         │ cl          │
+      │ configuration │ config      │
+      │ controller    │ co          │
+      │ decorator     │ d           │
+      │ filter        │ f           │
+      │ gateway       │ ga          │
+      │ guard         │ gu          │
+      │ interceptor   │ in          │
+      │ interface     │ interface   │
+      │ middleware    │ mi          │
+      │ module        │ mo          │
+      │ pipe          │ pi          │
+      │ provider      │ pr          │
+      │ resolver      │ r           │
+      │ service       │ s           │
+      │ library       │ lib         │
+      │ sub-app       │ app         │
+      └───────────────┴─────────────┘
+</code></pre>
+<p>Now generate a Nestjs project via:</p>
+<pre><code class="language-bash">nest new nestjs-sample
+</code></pre>
+<p>Open it in your favorite IDEs, such as <a href="https://www.jetbrains.com/webstorm/">Intellij WebStorm</a> or <a href="https://code.visualstudio.com/">VSCode</a>.</p>
+<h2 id="exploring-the-project-files">Exploring the project files</h2>
+<p>Expand the project root, you will see the following like tree nodes.</p>
+<pre><code class="language-bash">.
+├── LICENSE
+├── nest-cli.json
+├── package.json
+├── package-lock.json
+├── README.md
+├── src
+│   ├── app.controller.spec.ts
+│   ├── app.controller.ts
+│   ├── app.module.ts
+│   ├── app.service.ts
+│   └── main.ts
+├── test
+│   ├── app.e2e-spec.ts
+│   └── jest-e2e.json
+├── tsconfig.build.json
+└── tsconfig.json
+
+</code></pre>
+<p>The default structure of this project is very similar with the one generated by Angular CLI.</p>
+<ul>
+<li><em>src/main.ts</em> is the entry file of this application.</li>
+<li><em>src/app.*</em> is the top-level component in a Nest application.</li>
+<li>There is an <em>app.module.ts</em>, which is a Nestjs <code>Module</code>, similar to Angular <code>NgModule</code>, and used to organize code in the logic view.</li>
+<li>The <em>app.service.ts</em> is an <code>@Injectable</code> component, similar to the service in <a href="https://spring.io">Angular</a> or Spring's Service, it is used for handling business logic. A service is annotated with <code>@Injectable</code>.</li>
+<li>The <em>app.controller.ts</em> is the controller of MVC, to handle incoming requests, and respond with the handled result back to the client. The annotation <code>@Controller()</code> is similar to Spring MVC's <code>@Controller</code>.</li>
+<li>The <em>app.controller.spec.ts</em> is test file for <em>app.controller.ts</em>. NestJS uses <a href="https://jestjs.io/">Jest</a> as the testing framework.</li>
+<li><em>test</em> folder is for storing e2e test files.</li>
+</ul>
+<h2 id="defining-the-apis">Defining the APIs</h2>
+<p>I will reuse the concept I've used in the former examples - the blogging posts.</p>
+<ul>
+<li>GET /posts - Get all posts</li>
+<li>GET /posts/id - Get post by id</li>
+<li>POST /posts - Save a post</li>
+<li>PUT /posts/id - Update a certain post specified by id</li>
+<li>DELETE /posts/id - Delete a post</li>
+</ul>
+<p>In the next steps, we will create:</p>
+<ul>
+<li>A new module <code>PostModule</code> to organize all these features.</li>
+<li>A <code>Post</code> interface to present the <code>Post</code> entity resource.</li>
+<li>A <code>PostService</code> component to serve the data for the controller. In this post, we use dummy data for storage temporarily; we will replace it with a real MongoDB in a future post.</li>
+<li>A <code>PostController</code> to expose APIs, which is responsible for handling incoming requests.</li>
+</ul>
+<h2 id="creating-postservice">Creating PostService</h2>
+<p>Following the Nestjs coding style, first of all, let's generate a module named <code>post</code>:</p>
+<pre><code class="language-bash">nest g mo post
+</code></pre>
+<p><code>PosModule</code> is imported into the top-level <code>AppModule</code>. Check the content of the file <em>src/app/app.module.ts</em>:</p>
+<pre><code class="language-typescript">//... other imports
+import { PostModule } from './post/post.module';
+
+@Module({
+  imports: [PostModule],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
+</code></pre>
+<p>Then generate a <code>Post</code> service and interface, respectively.</p>
+<pre><code class="language-bash">nest g s post
+nest g interface post
+</code></pre>
+<p>The <code>PostService</code> is added to the <code>PostModule</code> automatically when it is generated.</p>
+<pre><code class="language-typescript">//...other imports
+import { PostService } from './post.service';
+
+@Module({
+  providers: [PostService],
+})
+export class PostModule {}
+</code></pre>
+<p>After it is done there are 4 files created in the <em>src/app/post</em> folder, including a <em>spec</em> file for testing <code>PostService</code>.</p>
+<pre><code class="language-bash">post.interface.ts
+post.module.ts
+post.service.spec.ts
+post.service.ts
+</code></pre>
+<p>Firstly, let's open <code>post.interface.ts</code> to model the <code>Post</code> entity.</p>
+<pre><code class="language-typescript">export interface Post {
+  id?: number;
+  title: string;
+  content: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+</code></pre>
+<p>In the above interface, add some fields as you see, here we make the <code>id</code>, <code>createdAt</code>, <code>updatedAt</code> <em>optional</em> now.</p>
+<p>Let's create a method in <code>PostService</code> to fetch all posts.</p>
+<pre><code class="language-typescript">@Injectable()
+export class PostService {
+  private posts: Post[] = [
+    {
+      id: 1,
+      title: 'Generate a NestJS project',
+      content: 'content',
+      createdAt: new Date(),
+    },
+    {
+      id: 2,
+      title: 'Create CRUD RESTful APIs',
+      content: 'content',
+      createdAt: new Date(),
+    },
+    {
+      id: 3,
+      title: 'Connect to MongoDB',
+      content: 'content',
+      createdAt: new Date(),
+    },
+  ];
+
+  findAll(): Observable&lt;Post&gt; {
+    return from(this.posts);
+  }
+}
+</code></pre>
+<p>In the codes, we used an array <code>posts</code> as the background data storage. The <code>findAll</code> method returns a <code>Observerable</code> which is created from the dummy <code>posts</code> we have declared.</p>
+<p>Add a test for this method. Open <code>post.service.spec.ts</code>, add a new test case.</p>
+<pre><code class="language-typescript">
+describe('PostService', () =&gt; {
+  let service: PostService;
+
+  beforeEach(async () =&gt; {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [PostService],
+    }).compile();
+
+    service = module.get&lt;PostService&gt;(PostService);
+  });
+
+  it('should be defined', () =&gt; {
+    expect(service).toBeDefined();
+  });
+
+  it('getAllPosts should return 3 posts', done =&gt; {
+    service
+      .findAll()
+      .pipe(take(3), toArray())
+      .subscribe({
+        next: data =&gt; expect(data.length).toBe(3),
+        error: error =&gt; console.log(error),
+        complete: done(),
+      });
+  });
+}
+</code></pre>
+<p>Similar with Angular, in the <code>beforeEach</code> hook , it prepares a <code>TestingModule</code> to assemble the required resources in the test.</p>
+<blockquote>
+<p>Like the annotations (@BeforeEach, etc.) provided JUnit 5 in Java world, there are some similar hooks ready for preparing the test and doing clean work in a Jest test, such as <code>beforeAll, afterAll, beforeEache, afterEach</code> , etc.</p>
+</blockquote>
+<p>In the newly added <code>it('getAllPosts should return 3 posts', done =&gt; {}</code> , it uses a <code>done</code> handler to mark the an asynchronous task is done. It is very helpful to test <code>Promise</code> or <code>Observerable</code> invocation in a test.</p>
+<p>The <code>pipe</code> accepts a series of Rxjs operators for some <code>processor</code> working, such as filtering, transforming, collecting, etc. check the <a href="https://rxjs.dev/operator-decision-tree">Rxjs official docs</a>.</p>
+<p>The <code>subscribe</code> accept a subscriber to handle the data stream, see the <a href="https://rxjs.dev/api/index/class/Subscriber">Subscriber API</a> for more details.</p>
+<p>Run <code>npm run test</code> command in the root folder to run all tests.</p>
+<pre><code class="language-bash">❯ npm run test
+
+&gt; nestjs-sample@0.0.1 test D:\hantsylabs\nestjs-sample
+&gt; jest
+
+...
+Time:        4.563 s, estimated 11 s
+Ran all test suites.
+</code></pre>
+<p>Awesome, it works.</p>
+<blockquote>
+<p>If you want to track the changes of test codes and rerun the test cases automatically, use <code>npm run test:watch</code> instead.</p>
+</blockquote>
+<p>Let's modify the <code>findAll</code> slightly, make it accept a keyword to query the posts.</p>
+<pre><code class="language-typescript">@Injectable()
+export class PostService {
+  //...
+  findAll(keyword?: string): Observable&lt;Post&gt; {
+    if (keyword) {
+      return from(
+        this.posts.filter((post) =&gt; post.title.indexOf(keyword) &gt;= 0),
+      );
+    }
+
+    return from(this.posts);
+  }
+}
+</code></pre>
+<p>Add another test to verify filtering the posts by keyword.</p>
+<pre><code class="language-typescript">it('getAllPosts with keyword should return 1 post', (done) =&gt; {
+  service
+    .findAll('Generate')
+    .pipe(take(3), toArray())
+    .subscribe({
+      next: (data) =&gt; expect(data.length).toBe(1),
+      error: (error) =&gt; console.log(error),
+      complete: done(),
+    });
+});
+</code></pre>
+<p>When using a keyword <em>Generate</em>, only one item will be included in the data stream. Run the test again, it will pass.</p>
+<p>Let's move the next one. Create a <code>findById</code> method in <code>PostService</code> class. When a post is found return the found post else return a Rxjs <code>EMPTY</code>.</p>
+<pre><code class="language-typescript">findById(id: number): Observable&lt;Post&gt; {
+    const found = this.posts.find(post =&gt; post.id === id);
+    if (found) {
+      return of(found);
+    }
+    return EMPTY;
+}
+</code></pre>
+<p>And add a test for the case when a post is found.</p>
+<pre><code class="language-typescript">it('getPostById with existing id should return 1 post', (done) =&gt; {
+  service.findById(1).subscribe({
+    next: (data) =&gt; {
+      expect(data.id).toBe(1);
+      expect(data.title).toEqual('Generate a NestJS project');
+    },
+    error: (error) =&gt; console.log(error),
+    complete: done(),
+  });
+});
+</code></pre>
+<p>When the <code>findById</code> return a <code>EMPTY</code>, I tried to use the same approach to verify the result in the <code>next</code> handler, but failed, the <code>next</code> is never called, I started a <a href="https://stackoverflow.com/questions/62208107/how-test-a-rxjs-empty-operater-using-jest">topic on stackoverflow</a>, and got two solutions for handling the <code>EMPTY</code> stream.</p>
+<p>The first solution is utilizing the <em>testing</em> facility from Rxjs. Set up a <code>TestScheduler</code> for test, and use <code>expectObservable</code> to assert the data stream in <a href="https://rxjs-dev.firebaseapp.com/guide/testing/internal-marble-tests">marble diagrams</a>.</p>
+<pre><code class="language-typescript">beforeEach(() =&gt; {
+  testScheduler = new TestScheduler((actual, expected) =&gt; {
+    // asserting the two objects are equal
+    expect(actual).toEqual(expected);
+  });
+});
+
+// This test will actually run *synchronously*
+it('test complete for empty()', () =&gt; {
+  testScheduler.run((helpers) =&gt; {
+    const { cold, expectObservable, expectSubscriptions } = helpers;
+    expectObservable(service.findById(10001)).toBe('|');
+  });
+});
+</code></pre>
+<p>The second test is using a signal myself to make sure it is completed.</p>
+<pre><code class="language-typescript">it('getPostById with none existing id should return empty', done =&gt; {
+    let called = false;
+    service.findById(10001).subscribe({
+        next: data =&gt; {
+            console.log(data);
+            called = true;
+        },
+        error: error =&gt; {
+            console.log(error);
+            called = true;
+        },
+        complete: () =&gt; {
+            expect(called).toBeFalsy();
+            done();
+        },
+    });
+</code></pre>
+<p>Another workaround is converting the <code>EMPTY</code> stream to an array and asserting it is an empty array in the <code>next</code> handler.</p>
+<pre><code class="language-typescript">it('getPostById with none existing id should return empty', (done) =&gt; {
+  service
+    .findById(10001)
+    .pipe(toArray())
+    .subscribe({
+      next: (data) =&gt; expect(data.length).toBe(0),
+      error: (error) =&gt; console.log(error),
+      complete: done(),
+    });
+});
+</code></pre>
+<p>Ok, we have resolved the <code>emtpy</code> stream testing issue. Go ahead.</p>
+<p>Next, let's create a method to save a new <code>Post</code> into the data storage. Since we are using an array for the dummy storage, it is simple when saving a new <code>Post</code>, just append it into the end of the existing <code>posts</code>:</p>
+<pre><code class="language-typescript">save(data: Post): Observable&lt;Post&gt; {
+    const post = { ...data, id: this.posts.length + 1, createdAt: new Date() };
+    this.posts = [...this.posts, post];
+    return from(this.posts);
+}
+</code></pre>
+<blockquote>
+<p>Here, we return the new array as result. In a real world application, most of case it is better to return the new persisted object or the id of the new post.</p>
+</blockquote>
+<p>Create a test for saving a new post, verify if the length of the array is increased and if the <code>createdAt</code> is set in the new post.</p>
+<pre><code class="language-typescript">it('save should increase the length of posts', (done) =&gt; {
+  service
+    .save({
+      id: 4,
+      title: 'test title',
+      content: 'test content',
+    })
+    .pipe(toArray())
+    .subscribe({
+      next: (data) =&gt; {
+        expect(data.length).toBe(4);
+        expect(data[3].createdAt).toBeTruthy();
+      },
+      error: (error) =&gt; console.log(error),
+      complete: done(),
+    });
+});
+</code></pre>
+<p>Execute <code>npm run test</code> to make make sure it works.</p>
+<p>Similarly, create a <code>update</code> method in <code>PostService</code> class to update the existing post.</p>
+<pre><code class="language-typescript">update(id: number, data: Post): Observable&lt;Post&gt; {
+    this.posts = this.posts.map(post =&gt; {
+        if (id === post.id) {
+            post.title = data.title;
+            post.content = data.content;
+            post.updatedAt = new Date();
+        }
+        return post;
+    });
+    return from(this.posts);
+}
+</code></pre>
+<p>Create a test for <code>update</code> method. In the test, we updated the first item in the <code>posts</code> data store, and update it, and finally verify the changes.</p>
+<pre><code class="language-typescript">it('update should change the content of post', (done) =&gt; {
+  service
+    .update(1, {
+      id: 1,
+      title: 'test title',
+      content: 'test content',
+      createdAt: new Date(),
+    })
+    .pipe(take(4), toArray())
+    .subscribe({
+      next: (data) =&gt; {
+        expect(data.length).toBe(3);
+        expect(data[0].title).toBe('test title');
+        expect(data[0].content).toBe('test content');
+        expect(data[0].updatedAt).not.toBeNull();
+      },
+      error: (error) =&gt; console.log(error),
+      complete: done(),
+    });
+});
+</code></pre>
+<p>Create a method to delete post by id.</p>
+<pre><code class="language-typescript">deleteById(id: number): Observable&lt;boolean&gt; {
+    const idx: number = this.posts.findIndex(post =&gt; post.id === id);
+    if (idx &gt;= 0) {
+        this.posts = [
+            ...this.posts.slice(0, idx),
+            ...this.posts.slice(idx + 1),
+        ];
+        return of(true);
+    }
+    return of(false);
+}
+</code></pre>
+<p>Create a test case in <code>post.service.test</code> to verify the functionality of the <code>deleteById</code> method.</p>
+<pre><code class="language-typescript">it('deleteById with existing id should return true', (done) =&gt; {
+  service.deleteById(1).subscribe({
+    next: (data) =&gt; expect(data).toBeTruthy,
+    error: (error) =&gt; console.log(error),
+    complete: done(),
+  });
+});
+
+it('deleteById with none existing id should return false', (done) =&gt; {
+  service.deleteById(10001).subscribe({
+    next: (data) =&gt; expect(data).toBeFalsy,
+    error: (error) =&gt; console.log(error),
+    complete: done(),
+  });
+});
+</code></pre>
+<p>OK, all methods used for CRUD functionalities are ready, let's move to the controller.</p>
+<h2 id="creating-postcontroller">Creating PostController</h2>
+<p>Like Spring WebMVC, in the NestJS world, the controller is responsible for handling incoming requests from the client, and sending back the handled result to the client.</p>
+<p>Generate a controller using <code>nest</code> command:</p>
+<pre><code class="language-bash">nest g co post
+</code></pre>
+<p>It will add two files into the <em>src/app/post</em> folder.</p>
+<pre><code class="language-bash">post.controller.spec.ts
+post.controller.ts
+</code></pre>
+<p>And <code>PostController</code> is registered in <code>PostModule</code> automatically when it is generated.</p>
+<pre><code class="language-typescript">//...other imports
+import { PostController } from './post.controller';
+
+@Module({
+  controllers: [PostController],
+  providers: [PostService],
+})
+export class PostModule {}
+</code></pre>
+<p>Open the <em>post.controller.ts</em> file and enrich the <code>PostController</code> class as we planned.</p>
+<pre><code class="language-typescript">@Controller('posts')
+export class PostController {
+  constructor(private postService: PostService) {}
+
+  @Get('')
+  getAllPosts(@Query('q') keyword?: string): Observable&lt;BlogPost[]&gt; {
+    return this.postService.findAll(keyword).pipe(take(10), toArray());
+  }
+
+  @Get(':id')
+  getPostById(@Param('id', ParseIntPipe) id: number): Observable&lt;BlogPost&gt; {
+    return this.postService.findById(id);
+  }
+
+  @Post('')
+  createPost(@Body() post: BlogPost): Observable&lt;BlogPost[]&gt; {
+    return this.postService.save(post).pipe(toArray());
+  }
+
+  @Put(':id')
+  updatePost(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() post: BlogPost,
+  ): Observable&lt;BlogPost[]&gt; {
+    return this.postService.update(id, post).pipe(toArray());
+  }
+
+  @Delete(':id')
+  deletePostById(@Param('id', ParseIntPipe) id: number): Observable&lt;boolean&gt; {
+    return this.postService.deleteById(id);
+  }
+}
+</code></pre>
+<p>In the above codes:</p>
+<ul>
+<li>In the <code>constructor</code>, we add <code>PostService</code> as its argument; the <code>PostService</code> component will be injected automatically.</li>
+<li>The <code>Controller</code> annotation indicates it is a controller, and it uses <code>/posts</code> as the base URI for all methods.</li>
+<li>The <code>Get</code>, <code>Post</code>, <code>Put</code>, and <code>Delete</code> methods are used for handling different HTTP methods.</li>
+<li>The <code>@Param</code> binds the path parameters (<code>:id</code>) to the method arguments, and there is <code>ParseIntPipe</code> applied in the second argument of Param. Pipe is an Angular concept, here it is closer to Spring's converters and validators.</li>
+<li><code>@Body</code> parses the request body into a <code>Post</code> object.</li>
+</ul>
+<blockquote>
+<p>In the Typescript language, we call the <code>@Controller</code> syntax as <code>Decorator</code>. For those familiar with Spring WebMVC, the word <strong>annotation</strong> is easier to understand.</p>
+</blockquote>
+<p>Now we add tests for <code>PostController</code>.</p>
+<p>Open <em>post.controller.spec.ts</em> , add the following tests.</p>
+<pre><code class="language-typescript">describe('Post Controller', () =&gt; {
+  let controller: PostController;
+
+  beforeEach(async () =&gt; {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [PostService],
+      controllers: [PostController],
+    }).compile();
+
+    controller = module.get&lt;PostController&gt;(PostController);
+  });
+
+  it('should be defined', () =&gt; {
+    expect(controller).toBeDefined();
+  });
+
+  it('GET on /posts should return all posts', async () =&gt; {
+    const posts = await controller.getAllPosts().toPromise();
+    expect(posts.length).toBe(3);
+  });
+
+  it('GET on /posts/1 should return one post ', (done) =&gt; {
+    controller.getPostById(1).subscribe((data) =&gt; {
+      expect(data.id).toEqual(1);
+      done();
+    });
+  });
+
+  it('POST on /posts should return all posts', async () =&gt; {
+    const post: Post = { id: 4, title: 'test title', content: 'test content' };
+    const posts = await controller.createPost(post).toPromise();
+    expect(posts.length).toBe(4);
+  });
+
+  it('PUT on /posts/1 should return all posts', (done) =&gt; {
+    const post: Post = { id: 4, title: 'test title', content: 'test content' };
+    controller.updatePost(1, post).subscribe((data) =&gt; {
+      expect(data.length).toBe(3);
+      expect(data[0].title).toEqual('test title');
+      expect(data[0].content).toEqual('test content');
+      expect(data[0].updatedAt).toBeTruthy();
+      done();
+    });
+  });
+
+  it('DELETE on /posts/1 should return true', (done) =&gt; {
+    controller.deletePostById(1).subscribe((data) =&gt; {
+      expect(data).toBeTruthy();
+      done();
+    });
+  });
+
+  it('DELETE on /posts/1001 should return false', (done) =&gt; {
+    controller.deletePostById(1001).subscribe((data) =&gt; {
+      expect(data).toBeFalsy();
+      done();
+    });
+  });
+});
+</code></pre>
+<p>Run the tests again and make sure it works.</p>
+<h2 id="run-the-application">Run the application</h2>
+<p>Now let's try to run the application.</p>
+<p>Open a terminal, and go to the root folder of the project, and execute the following command.</p>
+<pre><code class="language-bash">&gt;npm run start
+&gt; nestjs-sample@0.0.1 start D:\hantsylabs\nestjs-sample
+&gt; nest start
+
+[Nest] 9956   - 06/13/2020, 12:04:50 PM   [NestFactory] Starting Nest application...
+[Nest] 9956   - 06/13/2020, 12:04:50 PM   [InstanceLoader] AppModule dependencies initialized +16ms
+[Nest] 9956   - 06/13/2020, 12:04:50 PM   [InstanceLoader] PostModule dependencies initialized +1ms
+[Nest] 9956   - 06/13/2020, 12:04:50 PM   [RoutesResolver] AppController {}: +10ms
+[Nest] 9956   - 06/13/2020, 12:04:50 PM   [RouterExplorer] Mapped {, GET} route +4ms
+[Nest] 9956   - 06/13/2020, 12:04:50 PM   [RoutesResolver] PostController {/posts}: +1ms
+[Nest] 9956   - 06/13/2020, 12:04:50 PM   [RouterExplorer] Mapped {/posts, GET} route +1ms
+[Nest] 9956   - 06/13/2020, 12:04:50 PM   [RouterExplorer] Mapped {/posts/:id, GET} route +2ms
+[Nest] 9956   - 06/13/2020, 12:04:50 PM   [RouterExplorer] Mapped {/posts, POST} route +1ms
+[Nest] 9956   - 06/13/2020, 12:04:50 PM   [RouterExplorer] Mapped {/posts/:id, PUT} route +2ms
+[Nest] 9956   - 06/13/2020, 12:04:50 PM   [RouterExplorer] Mapped {/posts/:id, DELETE} route +2ms
+[Nest] 9956   - 06/13/2020, 12:04:50 PM   [NestApplication] Nest application successfully started +7ms
+</code></pre>
+<p>When it is started up, it serves at http://localhost:3000.</p>
+<p>Let's test the exposed APIs via <code>curl</code>:</p>
+<pre><code class="language-bash">&gt;curl http://localhost:3000/posts
+[{&quot;id&quot;:1,&quot;title&quot;:&quot;Generate a NestJS project&quot;,&quot;content&quot;:&quot;content&quot;,&quot;createdAt&quot;:&quot;2020-06-13T04:20:21.920Z&quot;},{&quot;id&quot;:2,&quot;title&quot;:&quot;Create CRUD RESTful APIs&quot;,&quot;content&quot;:&quot;content&quot;,&quot;createdAt&quot;:&quot;2020-06-13T04:20:21.920Z&quot;},{&quot;id&quot;:3,&quot;title&quot;:&quot;Connect to MongoDB&quot;,&quot;content&quot;:&quot;content&quot;,&quot;createdAt&quot;:&quot;2020-06-13T04:20:21.920Z&quot;}]
+
+&gt;curl http://localhost:3000/posts/1
+{&quot;id&quot;:1,&quot;title&quot;:&quot;Generate a NestJS project&quot;,&quot;content&quot;:&quot;content&quot;,&quot;createdAt&quot;:&quot;2020-06-13T04:20:21.920Z&quot;}
+
+&gt;curl http://localhost:3000/posts -d &quot;{\&quot;title\&quot;:\&quot;new post\&quot;,\&quot;content\&quot;:\&quot;content of my new post\&quot;}&quot; -H &quot;Content-Type:application/json&quot; -X POST
+[{&quot;id&quot;:1,&quot;title&quot;:&quot;Generate a NestJS project&quot;,&quot;content&quot;:&quot;content&quot;,&quot;createdAt&quot;:&quot;2020-06-13T04:20:21.920Z&quot;},{&quot;id&quot;:2,&quot;title&quot;:&quot;Create CRUD RESTful APIs&quot;,&quot;content&quot;:&quot;content&quot;,&quot;createdAt&quot;:&quot;2020-06-13T04:20:21.920Z&quot;},{&quot;id&quot;:3,&quot;title&quot;:&quot;Connect to MongoDB&quot;,&quot;content&quot;:&quot;content&quot;,&quot;createdAt&quot;:&quot;2020-06-13T04:20:21.920Z&quot;},{&quot;title&quot;:&quot;new post&quot;,&quot;content&quot;:&quot;content of my new post&quot;,&quot;id&quot;:4,&quot;createdAt&quot;:&quot;2020-06-13T04:20:52.526Z&quot;}]
+
+&gt;curl http://localhost:3000/posts/1 -d &quot;{\&quot;title\&quot;:\&quot;updated post\&quot;,\&quot;content\&quot;:\&quot;content of my upated post\&quot;}&quot; -H &quot;Content-Type:application/json&quot; -X PUT
+[{&quot;id&quot;:1,&quot;title&quot;:&quot;updated post&quot;,&quot;content&quot;:&quot;content of my upated post&quot;,&quot;createdAt&quot;:&quot;2020-06-13T04:20:21.920Z&quot;,&quot;updatedAt&quot;:&quot;2020-06-13T04:21:08.259Z&quot;},{&quot;id&quot;:2,&quot;title&quot;:&quot;Create CRUD RESTful APIs&quot;,&quot;content&quot;:&quot;content&quot;,&quot;createdAt&quot;:&quot;2020-06-13T04:20:21.920Z&quot;},{&quot;id&quot;:3,&quot;title&quot;:&quot;Connect to MongoDB&quot;,&quot;content&quot;:&quot;content&quot;,&quot;createdAt&quot;:&quot;2020-06-13T04:20:21.920Z&quot;},{&quot;title&quot;:&quot;new post&quot;,&quot;content&quot;:&quot;content of my new post&quot;,&quot;id&quot;:4,&quot;createdAt&quot;:&quot;2020-06-13T04:20:52.526Z&quot;}]
+
+&gt;curl http://localhost:3000/posts/1 -X DELETE
+true
+
+&gt;curl http://localhost:3000/posts
+[{&quot;id&quot;:2,&quot;title&quot;:&quot;Create CRUD RESTful APIs&quot;,&quot;content&quot;:&quot;content&quot;,&quot;createdAt&quot;:&quot;2020-06-13T04:20:21.920Z&quot;},{&quot;id&quot;:3,&quot;title&quot;:&quot;Connect to MongoDB&quot;,&quot;content&quot;:&quot;content&quot;,&quot;createdAt&quot;:&quot;2020-06-13T04:20:21.920Z&quot;},{&quot;title&quot;:&quot;new post&quot;,&quot;content&quot;:&quot;content of my new post&quot;,&quot;id&quot;:4,&quot;createdAt&quot;:&quot;2020-06-13T04:20:52.526Z&quot;}]
+</code></pre>
+<p>In the following post, we will connect to a real database to replace the dummy data service.</p>
+<p>Grab <a href="https://github.com/hantsy/nestjs-sample">the source codes from my GitHub</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
