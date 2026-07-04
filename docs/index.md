@@ -1,9 +1,9 @@
 # Building RESTful APIs with NestJS
 
-- [Getting Started](./docs/first.md)
-- [Connecting to MongoDB](./docs/mongo.md)
-- [Protect your APIs with JWT Token](./docs/auth.md)
-- [Dealing with model relations](./docs/model.md)
-- [Externalizing the configuration](./docs/config.md)
-- [Handling user registration](./docs/user.md)
-- [Testing Nestjs applications](./docs/testing.md)
+- [Getting Started](./first.md)
+- [Connecting to MongoDB](./mongo.md)
+- [Protect your APIs with JWT Token](./auth.md)
+- [Dealing with model relations](./model.md)
+- [Externalizing the configuration](./config.md)
+- [Handling user registration](./user.md)
+- [Testing Nestjs applications](./testing.md)

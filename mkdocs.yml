@@ -1,0 +1,14 @@
+site_name: Building RESTful APIs with NestJS
+site_description: Step-by-step guide of creating RESTful APIs using NestJS and Typescript
+repo_url: https://github.com/hantsy/nestjs-sample
+theme:
+  name: material
+nav:
+  - Home: index.md
+  - Getting Started: first.md
+  - Connecting to MongoDB: mongo.md
+  - Protect your APIs with JWT Token: auth.md
+  - Dealing with model relations: model.md
+  - Externalizing the configuration: config.md
+  - Handling user registration: user.md
+  - Testing Nestjs applications: testing.md
