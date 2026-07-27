@@ -11,7 +11,5 @@ test
 .npm
 .eslintrc.js
 .prettierrc
-nest-cli.json
-tsconfig*.json
 docker-compose*.yml
 Dockerfile
