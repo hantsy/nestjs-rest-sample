@@ -37,3 +37,4 @@ lerna-debug.log*
 .env
 .metals
 .vscode
+tsconfig.build.tsbuildinfo

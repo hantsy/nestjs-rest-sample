@@ -8,6 +8,7 @@ describe('API endpoints testing (e2e)', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
+    process.env.SEED_DATABASE = 'true';
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
