@@ -1,7 +1,15 @@
-import { Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBody,
-  ApiCreatedResponse,
+  ApiOkResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -20,6 +28,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
+  @HttpCode(HttpStatus.OK)
   @ApiBody({
     schema: {
       type: 'object',
@@ -29,10 +38,7 @@ export class AuthController {
       },
     },
   })
-  @ApiCreatedResponse({
-    description: 'Login successful.',
-    type: LoginResponseDto,
-  })
+  @ApiOkResponse({ description: 'Login successful.', type: LoginResponseDto })
   @ApiUnauthorizedResponse({ description: 'Invalid credentials.' })
   login(
     @Req() req: AuthenticatedRequest,

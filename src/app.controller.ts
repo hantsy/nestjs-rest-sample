@@ -5,7 +5,7 @@ import { AppService } from './app.service';
 @ApiTags('root')
 @Controller()
 export class AppController {
-  constructor(private service: AppService) {}
+  constructor(private readonly service: AppService) {}
 
   @Get('')
   @ApiOkResponse({ description: 'Returns hello world greeting.' })

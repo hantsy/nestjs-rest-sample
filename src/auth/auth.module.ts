@@ -13,7 +13,7 @@ import { AuthController } from './auth.controller';
   imports: [
     ConfigModule.forFeature(jwtConfig),
     UserModule,
-    PassportModule.register({ defaultStrategy: 'jwt' }),
+    PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule.forFeature(jwtConfig)],
       useFactory: (config: ConfigType<typeof jwtConfig>) => {

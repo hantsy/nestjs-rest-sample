@@ -57,7 +57,7 @@ export class PostService {
             ...data,
             updatedBy: new Types.ObjectId(this.req.user.id),
           },
-          { new: true },
+          { returnDocument: 'after' },
         )
         .exec(),
     ).pipe(

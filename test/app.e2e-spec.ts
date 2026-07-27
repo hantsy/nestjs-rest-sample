@@ -117,7 +117,7 @@ describe('API endpoints testing (e2e)', () => {
         .post('/api/v1/auth/login')
         .send({ username: 'hantsy', password: 'password' });
 
-      expect(res.status).toBe(201);
+      expect(res.status).toBe(200);
       jwttoken = res.body.access_token;
     });
 
