@@ -1,0 +1,17 @@
+node_modules
+dist
+.git
+.gitignore
+*.md
+.env
+.env.*
+coverage
+test
+*.log
+.npm
+.eslintrc.js
+.prettierrc
+nest-cli.json
+tsconfig*.json
+docker-compose*.yml
+Dockerfile
