@@ -12,10 +12,7 @@ describe('AppService', () => {
         AppService,
         {
           provide: 'LoggerServiceAppService',
-          useValue: {
-            constructor: jest.fn(),
-            log: jest.fn(),
-          },
+          useValue: { log: jest.fn() },
         },
       ],
     }).compile();
@@ -23,14 +20,12 @@ describe('AppService', () => {
     service = app.get<AppService>(AppService);
     logger = app.get<LoggerService>('LoggerServiceAppService');
   });
+
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  it('getHello', async () => {
-    jest.spyOn(logger, 'log').mockImplementation((message: string) => {
-      console.log(message);
-    });
+  it('getHello should return greeting and log it', () => {
     const result = service.getHello();
     expect(result).toEqual('Hello World!');
     expect(logger.log).toHaveBeenCalledWith('Hello World');

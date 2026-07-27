@@ -58,17 +58,16 @@ export class AuthService {
   // a `UserPrincipal` here directly.
   //
   login(user: UserPrincipal): Observable<AccessToken> {
-    //console.log(user);
     const payload: JwtPayload = {
-      upn: user.username, //upn is defined in Microprofile JWT spec, a human readable principal name.
+      upn: user.username,
       sub: user.id,
       email: user.email,
       roles: user.roles,
     };
-    return from(this.jwtService.signAsync(payload)).pipe(
-      map((access_token) => {
-        return { access_token };
-      }),
+    return from(
+      this.jwtService
+        .signAsync(payload)
+        .then((access_token) => ({ access_token })),
     );
   }
 }

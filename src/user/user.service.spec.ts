@@ -70,7 +70,7 @@ describe('UserService', () => {
       } as any),
     );
 
-    const sendSpy = jest.spyOn(sendgrid, 'send').mockImplementation(() => {
+    jest.spyOn(sendgrid, 'send').mockImplementation(() => {
       return of([{} as any, {}] as [any, {}]);
     });
 
