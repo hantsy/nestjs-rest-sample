@@ -33,11 +33,11 @@ export class AuthService {
           map((m) => {
             if (m) {
               return {
-                id: _id,
+                id: _id.toString(),
                 username,
                 email,
-                roles,
-              } as unknown as UserPrincipal;
+                roles: roles ?? [],
+              };
             } else {
               // The same reason above.
               //throw new UnauthorizedException('password was not matched.')

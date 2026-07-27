@@ -1,12 +1,15 @@
 import { Controller, Get } from '@nestjs/common';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AppService } from './app.service';
 
+@ApiTags('root')
 @Controller()
 export class AppController {
-    constructor(private service: AppService) { }
+  constructor(private service: AppService) {}
 
-    @Get('')
-    getHello() {
-        return this.service.getHello();
-    }
+  @Get('')
+  @ApiOkResponse({ description: 'Returns hello world greeting.' })
+  getHello(): string {
+    return this.service.getHello();
+  }
 }

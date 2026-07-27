@@ -10,7 +10,6 @@ import { Post } from '../database/post.model';
 import { CreateCommentDto } from './create-comment.dto';
 import { CreatePostDto } from './create-post.dto';
 import { UpdatePostDto } from './update-post.dto';
-import { User } from 'database/user.model';
 
 @Injectable({ scope: Scope.REQUEST })
 export class PostService {
@@ -37,7 +36,7 @@ export class PostService {
   findById(id: string): Observable<Post> {
     return from(this.postModel.findOne({ _id: id }).exec()).pipe(
       mergeMap((p) => (p ? of(p) : EMPTY)),
-      throwIfEmpty(() => new NotFoundException(`post:$id was not found`)),
+      throwIfEmpty(() => new NotFoundException(`post:${id} was not found`)),
     );
   }
 
@@ -56,21 +55,21 @@ export class PostService {
           { _id: id },
           {
             ...data,
-            updatedBy: { _id: this.req.user.id },
-          } as unknown as Partial<User>,
+            updatedBy: new Types.ObjectId(this.req.user.id),
+          },
           { new: true },
         )
         .exec(),
     ).pipe(
       mergeMap((p) => (p ? of(p) : EMPTY)),
-      throwIfEmpty(() => new NotFoundException(`post:$id was not found`)),
+      throwIfEmpty(() => new NotFoundException(`post:${id} was not found`)),
     );
   }
 
   deleteById(id: string): Observable<Post> {
     return from(this.postModel.findOneAndDelete({ _id: id }).exec()).pipe(
       mergeMap((p) => (p ? of(p) : EMPTY)),
-      throwIfEmpty(() => new NotFoundException(`post:$id was not found`)),
+      throwIfEmpty(() => new NotFoundException(`post:${id} was not found`)),
     );
   }
 

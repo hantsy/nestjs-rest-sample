@@ -1,14 +1,22 @@
 import { Body, ConflictException, Controller, Post, Res } from '@nestjs/common';
+import {
+  ApiConflictResponse,
+  ApiCreatedResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Response } from 'express';
 import { lastValueFrom } from 'rxjs';
 import { RegisterDto } from './register.dto';
 import { UserService } from './user.service';
 
+@ApiTags('auth')
 @Controller('register')
 export class RegisterController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @ApiCreatedResponse({ description: 'User registered successfully.' })
+  @ApiConflictResponse({ description: 'Username or email already exists.' })
   async register(
     @Body() registerDto: RegisterDto,
     @Res() res: Response,

@@ -10,7 +10,7 @@ jest.mock('mongoose', () => ({
     pre: jest.fn(),
     set: jest.fn(),
     methods: { comparePassword: jest.fn() },
-    statics: { staticMethodExample: jest.fn() },
+    statics: {},
     comparePassword: jest.fn(),
   })),
   SchemaTypes: jest.fn().mockImplementation(() => ({
@@ -21,7 +21,6 @@ jest.mock('mongoose', () => ({
 import { anyFunction } from 'jest-mock-extended';
 import {
   UserSchema,
-  UserModel,
   preSaveHook,
   nameGetHook,
   comparePasswordMethod,
@@ -78,15 +77,6 @@ describe('nameGetHook', () => {
     } as any;
     const name = await nameGetHook.call(contextMock);
     expect(name).toBe('Hantsy Bai');
-  });
-});
-
-describe('staticMethodExample', () => {
-  test('should return hello from the static method', () => {
-    // static methods are bound to Model
-    const statics = UserSchema.statics as unknown as UserModel;
-    const result = statics.staticMethodExample();
-    expect(result).toBe('hello');
   });
 });
 

@@ -11,8 +11,19 @@ import {
   Query,
   Res,
   Scope,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiQuery,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { Response } from 'express';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -28,11 +39,26 @@ import { CreatePostDto } from './create-post.dto';
 import { PostService } from './post.service';
 import { UpdatePostDto } from './update-post.dto';
 
+@ApiTags('posts')
 @Controller({ path: 'posts', scope: Scope.REQUEST })
 export class PostController {
-  constructor(private readonly postService: PostService) { }
+  constructor(private readonly postService: PostService) {}
 
   @Get('')
+  @ApiQuery({ name: 'q', required: false, description: 'Search keyword' })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Page size',
+    example: 10,
+  })
+  @ApiQuery({
+    name: 'skip',
+    required: false,
+    description: 'Offset',
+    example: 0,
+  })
+  @ApiOkResponse({ description: 'List of posts.' })
   getAllPosts(
     @Query('q') keyword?: string,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit?: number,
@@ -42,13 +68,21 @@ export class PostController {
   }
 
   @Get(':id')
-  getPostById(@Param('id', ParseObjectIdPipe) id: string): Observable<BlogPost> {
+  @ApiOkResponse({ description: 'Post found.' })
+  @ApiNotFoundResponse({ description: 'Post not found.' })
+  getPostById(
+    @Param('id', ParseObjectIdPipe) id: string,
+  ): Observable<BlogPost> {
     return this.postService.findById(id);
   }
 
   @Post('')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @HasRoles(RoleType.USER, RoleType.ADMIN)
+  @ApiBearerAuth()
+  @ApiCreatedResponse({ description: 'Post created.' })
+  @ApiUnauthorizedResponse({ description: 'Not authenticated.' })
+  @ApiForbiddenResponse({ description: 'Insufficient permissions.' })
   createPost(
     @Body() post: CreatePostDto,
     @Res() res: Response,
@@ -66,13 +100,17 @@ export class PostController {
   @Put(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @HasRoles(RoleType.USER, RoleType.ADMIN)
+  @ApiBearerAuth()
+  @ApiNoContentResponse({ description: 'Post updated.' })
+  @ApiNotFoundResponse({ description: 'Post not found.' })
+  @ApiUnauthorizedResponse({ description: 'Not authenticated.' })
   updatePost(
     @Param('id', ParseObjectIdPipe) id: string,
     @Body() post: UpdatePostDto,
     @Res() res: Response,
   ): Observable<Response> {
     return this.postService.update(id, post).pipe(
-      map((post) => {
+      map(() => {
         return res.status(204).send();
       }),
     );
@@ -81,12 +119,17 @@ export class PostController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @HasRoles(RoleType.ADMIN)
+  @ApiBearerAuth()
+  @ApiNoContentResponse({ description: 'Post deleted.' })
+  @ApiNotFoundResponse({ description: 'Post not found.' })
+  @ApiUnauthorizedResponse({ description: 'Not authenticated.' })
+  @ApiForbiddenResponse({ description: 'Admin role required.' })
   deletePostById(
     @Param('id', ParseObjectIdPipe) id: string,
     @Res() res: Response,
   ): Observable<Response> {
     return this.postService.deleteById(id).pipe(
-      map((post) => {
+      map(() => {
         return res.status(204).send();
       }),
     );
@@ -95,6 +138,9 @@ export class PostController {
   @Post(':id/comments')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @HasRoles(RoleType.USER)
+  @ApiBearerAuth()
+  @ApiCreatedResponse({ description: 'Comment created.' })
+  @ApiUnauthorizedResponse({ description: 'Not authenticated.' })
   createCommentForPost(
     @Param('id', ParseObjectIdPipe) id: string,
     @Body() data: CreateCommentDto,
@@ -111,7 +157,10 @@ export class PostController {
   }
 
   @Get(':id/comments')
-  getAllCommentsOfPost(@Param('id', ParseObjectIdPipe) id: string): Observable<Comment[]> {
+  @ApiOkResponse({ description: 'List of comments for the post.' })
+  getAllCommentsOfPost(
+    @Param('id', ParseObjectIdPipe) id: string,
+  ): Observable<Comment[]> {
     return this.postService.commentsOf(id);
   }
 }

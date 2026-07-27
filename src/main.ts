@@ -1,16 +1,41 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import helmet from 'helmet';
+import compression from 'compression';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // enable shutdown hooks explicitly.
   app.enableShutdownHooks();
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions: { enableImplicitConversion: true },
+    }),
+  );
+
   app.enableCors();
-  //app.useLogger();
-  await app.listen(3000);
+
+  app.setGlobalPrefix('api/v1');
+
+  app.use(helmet());
+  app.use(compression());
+
+  const config = new DocumentBuilder()
+    .setTitle('NestJS Sample API')
+    .setDescription('Blog API with JWT authentication')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
+  await app.listen(process.env.PORT ?? 3000);
 }
+
 bootstrap();

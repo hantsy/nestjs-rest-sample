@@ -70,17 +70,9 @@ describe('UserService', () => {
       } as any),
     );
 
-    const pipeMock = {
-      pipe: jest.fn(),
-    };
-
-    const pipeSpy = jest.spyOn(pipeMock, 'pipe');
-
-    const sendSpy = jest
-      .spyOn(sendgrid, 'send')
-      .mockImplementation((data: any) => {
-        return of(pipeMock);
-      });
+    const sendSpy = jest.spyOn(sendgrid, 'send').mockImplementation(() => {
+      return of([{} as any, {}] as [any, {}]);
+    });
 
     const result = await lastValueFrom(service.register(sampleData));
     expect(saveSpy).toHaveBeenCalledWith({

@@ -9,7 +9,6 @@ import {
 } from 'mongoose';
 import { from, Observable } from 'rxjs';
 import { RoleType } from '../shared/enum/role-type.enum';
-import { stat } from 'node:fs';
 
 interface User {
   _id: Types.ObjectId;
@@ -27,9 +26,7 @@ interface UserMethods {
   comparePassword(password: string): Observable<boolean>;
 }
 
-interface UserModel extends Model<User, object, UserMethods> {
-  staticMethodExample(): string;
-}
+type UserModel = Model<User, object, UserMethods>;
 
 const UserSchema = new Schema<User, UserModel, UserMethods>(
   {
@@ -78,11 +75,6 @@ UserSchema.methods.comparePassword = comparePasswordMethod;
 function nameGetHook(this: HydratedDocument<User, UserMethods>): string {
   return `${this.firstName} ${this.lastName}`;
 }
-
-UserSchema.statics.staticMethodExample = function () {
-  console.log('This is a static method');
-  return 'hello';
-};
 
 UserSchema.virtual('name').get(nameGetHook);
 
