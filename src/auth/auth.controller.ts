@@ -1,10 +1,10 @@
 import {
+  Body,
   Controller,
   HttpCode,
   HttpStatus,
   Post,
   Req,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -13,13 +13,12 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { Response } from 'express';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { AuthenticatedRequest } from './interface/authenticated-request.interface';
 import { LoginResponseDto } from './dto/login-response.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -40,17 +39,19 @@ export class AuthController {
   })
   @ApiOkResponse({ description: 'Login successful.', type: LoginResponseDto })
   @ApiUnauthorizedResponse({ description: 'Invalid credentials.' })
-  login(
-    @Req() req: AuthenticatedRequest,
-    @Res() res: Response,
-  ): Observable<Response> {
-    return this.authService.login(req.user).pipe(
-      map((token) => {
-        return res
-          .header('Authorization', 'Bearer ' + token.access_token)
-          .json(token)
-          .send();
-      }),
-    );
+  login(@Req() req: AuthenticatedRequest): Observable<LoginResponseDto> {
+    return this.authService.login(req.user);
+  }
+
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  @ApiBody({ type: RefreshTokenDto })
+  @ApiOkResponse({
+    description: 'Tokens refreshed successfully.',
+    type: LoginResponseDto,
+  })
+  @ApiUnauthorizedResponse({ description: 'Invalid or expired refresh token.' })
+  refresh(@Body() dto: RefreshTokenDto): Observable<LoginResponseDto> {
+    return this.authService.refreshToken(dto.refresh_token);
   }
 }

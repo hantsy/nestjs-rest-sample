@@ -16,8 +16,12 @@ describe('jwtConfig', () => {
     expect(jwtConfig).toBeDefined();
   });
 
-  it('should contains expiresIn and secret key', async () => {
-    expect(config.expiresIn).toBe('3600s');
+  it('should contain JWT config values', async () => {
     expect(config.secretKey).toBe('rzxlszyykpbgqcflzxsqcysyhljt');
+    expect(config.expiresIn).toBe('3600s');
+    expect(config.refreshSecretKey).toBe(
+      'refresh-rzxlszyykpbgqcflzxsqcysyhljt',
+    );
+    expect(config.refreshExpiresIn).toBe('7d');
   });
 });
