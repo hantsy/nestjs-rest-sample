@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nestjs-sample
+  labels:
+    app: nestjs-sample
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nestjs-sample
+  template:
+    metadata:
+      labels:
+        app: nestjs-sample
+    spec:
+      containers:
+        - name: app
+          image: hantsy/nest-sample:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: MONGODB_URI
+              value: mongodb://mongodb:27017/blog
+            - name: PORT
+              value: '3000'
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: jwt-secret-key
+            - name: JWT_REFRESH_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: jwt-refresh-secret-key
+            - name: SENDGRID_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: sendgrid-api-key
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
