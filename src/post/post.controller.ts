@@ -90,7 +90,7 @@ export class PostController {
     return this.postService.save(post).pipe(
       map((post) => {
         return res
-          .location('/api/v1/posts/' + post._id)
+          .location('/posts/' + post._id)
           .status(201)
           .send();
       }),
@@ -149,7 +149,7 @@ export class PostController {
     return this.postService.createCommentFor(id, data).pipe(
       map((comment) => {
         return res
-          .location('/api/v1/posts/' + id + '/comments/' + comment._id)
+          .location('/posts/' + id + '/comments/' + comment._id)
           .status(201)
           .send();
       }),

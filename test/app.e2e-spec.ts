@@ -15,7 +15,7 @@ describe('API endpoints testing (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     app.enableShutdownHooks();
-    app.setGlobalPrefix('api/v1');
+
     app.useGlobalPipes(new ValidationPipe());
     await app.init();
   });
@@ -26,69 +26,61 @@ describe('API endpoints testing (e2e)', () => {
 
   describe('/register a new user', () => {
     it('if username is existed', async () => {
-      const res = await request(app.getHttpServer())
-        .post('/api/v1/register')
-        .send({
-          username: 'hantsy',
-          password: 'password',
-          email: 'hantsy@test.com',
-          firstName: 'Hantsy',
-          lastName: 'Bai',
-        });
+      const res = await request(app.getHttpServer()).post('/register').send({
+        username: 'hantsy',
+        password: 'password',
+        email: 'hantsy@test.com',
+        firstName: 'Hantsy',
+        lastName: 'Bai',
+      });
       expect(res.status).toBe(409);
     });
 
     it('if email is existed', async () => {
-      const res = await request(app.getHttpServer())
-        .post('/api/v1/register')
-        .send({
-          username: 'hantsy1',
-          password: 'password',
-          email: 'hantsy@example.com',
-          firstName: 'Hantsy',
-          lastName: 'Bai',
-        });
+      const res = await request(app.getHttpServer()).post('/register').send({
+        username: 'hantsy1',
+        password: 'password',
+        email: 'hantsy@example.com',
+        firstName: 'Hantsy',
+        lastName: 'Bai',
+      });
       expect(res.status).toBe(409);
     });
 
     it('successed', async () => {
-      const res = await request(app.getHttpServer())
-        .post('/api/v1/register')
-        .send({
-          username: 'hantsy1',
-          password: 'password',
-          email: 'hantsy@gmail.com',
-          firstName: 'Hantsy',
-          lastName: 'Bai',
-        });
+      const res = await request(app.getHttpServer()).post('/register').send({
+        username: 'hantsy1',
+        password: 'password',
+        email: 'hantsy@gmail.com',
+        firstName: 'Hantsy',
+        lastName: 'Bai',
+      });
       expect(res.status).toBe(201);
     });
   });
 
   describe('if user is not logged in', () => {
     it('/posts (GET)', async () => {
-      const res = await request(app.getHttpServer())
-        .get('/api/v1/posts')
-        .send();
+      const res = await request(app.getHttpServer()).get('/posts').send();
       expect(res.status).toBe(200);
       expect(res.body.length).toEqual(3);
     });
 
     it('/posts (GET) if none existing should return 404', async () => {
       const id = new mongoose.Types.ObjectId();
-      const res = await request(app.getHttpServer()).get('/api/v1/posts/' + id);
+      const res = await request(app.getHttpServer()).get('/posts/' + id);
       expect(res.status).toBe(404);
     });
 
     it('/posts (GET) if invalid id should return 400', async () => {
       const id = 'invalidid';
-      const res = await request(app.getHttpServer()).get('/api/v1/posts/' + id);
+      const res = await request(app.getHttpServer()).get('/posts/' + id);
       expect(res.status).toBe(400);
     });
 
     it('/posts (POST) should return 401', async () => {
       const res = await request(app.getHttpServer())
-        .post('/api/v1/posts')
+        .post('/posts')
         .send({ title: 'test title', content: 'test content' });
       expect(res.status).toBe(401);
     });
@@ -96,7 +88,7 @@ describe('API endpoints testing (e2e)', () => {
     it('/posts (PUT) should return 401', async () => {
       const id = new mongoose.Types.ObjectId();
       const res = await request(app.getHttpServer())
-        .put('/api/v1/posts/' + id)
+        .put('/posts/' + id)
         .send({ title: 'test title', content: 'test content' });
       expect(res.status).toBe(401);
     });
@@ -104,7 +96,7 @@ describe('API endpoints testing (e2e)', () => {
     it('/posts (DELETE) should return 401', async () => {
       const id = new mongoose.Types.ObjectId();
       const res = await request(app.getHttpServer())
-        .delete('/api/v1/posts/' + id)
+        .delete('/posts/' + id)
         .send();
       expect(res.status).toBe(401);
     });
@@ -114,7 +106,7 @@ describe('API endpoints testing (e2e)', () => {
     let jwttoken: any;
     beforeEach(async () => {
       const res = await request(app.getHttpServer())
-        .post('/api/v1/auth/login')
+        .post('/auth/login')
         .send({ username: 'hantsy', password: 'password' });
 
       expect(res.status).toBe(200);
@@ -122,14 +114,14 @@ describe('API endpoints testing (e2e)', () => {
     });
 
     it('/posts (GET)', async () => {
-      const res = await request(app.getHttpServer()).get('/api/v1/posts');
+      const res = await request(app.getHttpServer()).get('/posts');
       expect(res.status).toBe(200);
       expect(res.body.length).toEqual(3);
     });
 
     it('/posts (POST) with empty body should return 400', async () => {
       const res = await request(app.getHttpServer())
-        .post('/api/v1/posts')
+        .post('/posts')
         .set('Authorization', 'Bearer ' + jwttoken)
         .send({});
       console.log(res.status);
@@ -139,7 +131,7 @@ describe('API endpoints testing (e2e)', () => {
     it('/posts (PUT) if none existing should return 404', async () => {
       const id = new mongoose.Types.ObjectId();
       const res = await request(app.getHttpServer())
-        .put('/api/v1/posts/' + id)
+        .put('/posts/' + id)
         .set('Authorization', 'Bearer ' + jwttoken)
         .send({ title: 'test title', content: 'test content' });
       expect(res.status).toBe(404);
@@ -148,7 +140,7 @@ describe('API endpoints testing (e2e)', () => {
     it('/posts (DELETE) if none existing should return 403', async () => {
       const id = new mongoose.Types.ObjectId();
       const res = await request(app.getHttpServer())
-        .delete('/api/v1/posts/' + id)
+        .delete('/posts/' + id)
         .set('Authorization', 'Bearer ' + jwttoken)
         .send();
       expect(res.status).toBe(403);
@@ -157,7 +149,7 @@ describe('API endpoints testing (e2e)', () => {
     it('/posts crud flow', async () => {
       // create a post
       const res = await request(app.getHttpServer())
-        .post('/api/v1/posts')
+        .post('/posts')
         .set('Authorization', 'Bearer ' + jwttoken)
         .send({ title: 'test title', content: 'test content' });
       expect(res.status).toBe(201);
@@ -212,7 +204,7 @@ describe('API endpoints testing (e2e)', () => {
     let jwttoken: any;
     beforeEach(async () => {
       const res = await request(app.getHttpServer())
-        .post('/api/v1/auth/login')
+        .post('/auth/login')
         .send({ username: 'admin', password: 'password' });
       jwttoken = res.body.access_token;
     });
@@ -220,7 +212,7 @@ describe('API endpoints testing (e2e)', () => {
     it('/posts (DELETE) if none existing should return 404', async () => {
       const id = new mongoose.Types.ObjectId();
       const res = await request(app.getHttpServer())
-        .delete('/api/v1/posts/' + id)
+        .delete('/posts/' + id)
         .set('Authorization', 'Bearer ' + jwttoken)
         .send();
       expect(res.status).toBe(404);

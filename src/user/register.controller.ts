@@ -39,7 +39,7 @@ export class RegisterController {
 
     const user = await lastValueFrom(this.userService.register(registerDto));
     return res
-      .location('/api/v1/users/' + user._id)
+      .location('/users/' + user._id)
       .status(201)
       .send();
   }
