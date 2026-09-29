@@ -18,11 +18,20 @@ export class AuthService {
     private jwtConf: ConfigType<typeof jwtConfig>,
   ) {}
 
+  /**
+   * Checks the plaintext password and emits the user's principal on a match.
+   * Errors with UnauthorizedException (INVALID_CREDENTIALS) for a password mismatch
+   * or a lookup that completes without a user. Lookup errors, including
+   * USER_NOT_FOUND, and password comparison errors propagate unchanged.
+   */
   validateUser(username: string, pass: string): Observable<UserPrincipal> {
     return this.userService.findByUsername(username).pipe(
       mergeMap((p) => (p ? of(p) : EMPTY)),
       throwIfEmpty(
-        () => new UnauthorizedException(`username or password is not matched`),
+        () =>
+          new UnauthorizedException(`username or password is not matched`, {
+            errorCode: 'INVALID_CREDENTIALS',
+          }),
       ),
       mergeMap((user) => {
         const { _id, password, username, email, roles } = user;
@@ -38,6 +47,7 @@ export class AuthService {
             } else {
               throw new UnauthorizedException(
                 'username or password is not matched',
+                { errorCode: 'INVALID_CREDENTIALS' },
               );
             }
           }),
@@ -71,6 +81,13 @@ export class AuthService {
     );
   }
 
+  /**
+   * Verifies a refresh token and emits a new access/refresh token pair from its
+   * claims, without reloading the user or invalidating the supplied token.
+   * Verification failures and synchronous errors while preparing the new tokens
+   * become UnauthorizedException (INVALID_REFRESH_TOKEN). Asynchronous signing
+   * failures propagate unchanged through the returned observable.
+   */
   refreshToken(refreshToken: string): Observable<AccessToken> {
     return from(
       this.jwtService
@@ -87,7 +104,9 @@ export class AuthService {
           return this.login(user);
         })
         .catch(() => {
-          throw new UnauthorizedException('Invalid or expired refresh token');
+          throw new UnauthorizedException('Invalid or expired refresh token', {
+            errorCode: 'INVALID_REFRESH_TOKEN',
+          });
         }),
     ).pipe(mergeMap((result) => result));
   }

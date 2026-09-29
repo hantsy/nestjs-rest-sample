@@ -13,10 +13,10 @@ describe('AppController', () => {
         {
           provide: AppService,
           useValue: {
-            constructor: jest.fn(),
-            getHello: jest.fn()
-          }
-        }
+            constructor: vi.fn(),
+            getHello: vi.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -27,8 +27,8 @@ describe('AppController', () => {
     expect(appController).toBeDefined();
   });
 
-    it('getHello',async () => {
-       jest.spyOn(service, "getHello").mockReturnValue("Hello");
-       expect(appController.getHello()).toEqual("Hello");
-    })
+  it('getHello', async () => {
+    vi.spyOn(service, 'getHello').mockReturnValue('Hello');
+    expect(appController.getHello()).toEqual('Hello');
+  });
 });

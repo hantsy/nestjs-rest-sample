@@ -1,8 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { z } from 'zod';
 
-export class CreateCommentDto {
-  @ApiProperty({ example: 'Great post!' })
-  @IsNotEmpty()
-  readonly content: string;
-}
+export const createCommentSchema = z.object({
+  content: z.string().min(1).describe('Great post!'),
+});
+
+export type CreateCommentDto = z.infer<typeof createCommentSchema>;

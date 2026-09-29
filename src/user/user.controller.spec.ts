@@ -12,7 +12,7 @@ describe('UserController', () => {
         {
           provide: UserService,
           useValue: {
-            findById: jest.fn(),
+            findById: vi.fn(),
           },
         },
       ],
@@ -28,9 +28,8 @@ describe('UserController', () => {
   });
 
   it('getUser', async () => {
-    jest
-      .spyOn(service, 'findById')
-      .mockImplementationOnce((id: string, withPosts: boolean = false) =>
+    vi.spyOn(service, 'findById').mockImplementationOnce(
+      (id: string, withPosts: boolean = false) =>
         of({
           username: 'hantsy',
           password: 'mysecret',
@@ -38,7 +37,7 @@ describe('UserController', () => {
           firstName: 'hantsy',
           lastName: 'bai',
         } as any),
-      );
+    );
     const user = await lastValueFrom(controller.getUser('id', false));
     expect(user.firstName).toBe('hantsy');
     expect(user.lastName).toBe('bai');

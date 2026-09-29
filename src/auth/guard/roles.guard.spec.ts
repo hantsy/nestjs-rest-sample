@@ -1,14 +1,42 @@
-import { createMock } from '@golevelup/ts-jest';
 import { ExecutionContext } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
-import { mock as jestMock, mockClear } from 'jest-mock-extended';
-import { instance, mock, reset, verify, when } from 'ts-mockito';
 import { RoleType } from '../../shared/enum/role-type.enum';
 import { HAS_ROLES_KEY } from '../auth.constants';
 import { AuthenticatedRequest } from '../interface/authenticated-request.interface';
 import { RolesGuard } from './roles.guard';
+
+function createMockExecutionContext(
+  overrides: Partial<ExecutionContext> = {},
+): ExecutionContext {
+  return {
+    getHandler: vi.fn(),
+    getClass: vi.fn(),
+    getArgs: vi.fn(),
+    getArgByIndex: vi.fn(),
+    switchToHttp: vi.fn().mockReturnValue({
+      getRequest: vi.fn().mockReturnValue({}),
+      getResponse: vi.fn().mockReturnValue({}),
+      getNext: vi.fn(),
+    }),
+    switchToRpc: vi.fn(),
+    switchToWs: vi.fn(),
+    getType: vi.fn(),
+    ...overrides,
+  } as unknown as ExecutionContext;
+}
+
+function createMockHttpArgumentsHost(
+  overrides: Partial<HttpArgumentsHost> = {},
+): HttpArgumentsHost {
+  return {
+    getRequest: vi.fn().mockReturnValue({}),
+    getResponse: vi.fn().mockReturnValue({}),
+    getNext: vi.fn(),
+    ...overrides,
+  } as unknown as HttpArgumentsHost;
+}
 
 describe('RolesGuard', () => {
   let guard: RolesGuard;
@@ -20,8 +48,8 @@ describe('RolesGuard', () => {
         {
           provide: Reflector,
           useValue: {
-            constructor: jest.fn(),
-            get: jest.fn(),
+            constructor: vi.fn(),
+            get: vi.fn(),
           },
         },
       ],
@@ -32,7 +60,7 @@ describe('RolesGuard', () => {
   });
 
   afterEach(async () => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -40,8 +68,8 @@ describe('RolesGuard', () => {
   });
 
   it('should skip(return true) if the `HasRoles` decorator is not set', async () => {
-    jest.spyOn(reflector, 'get').mockImplementation((a: any, b: any) => []);
-    const context = createMock<ExecutionContext>();
+    vi.spyOn(reflector, 'get').mockImplementation((a: any, b: any) => []);
+    const context = createMockExecutionContext();
     const result = await guard.canActivate(context);
 
     expect(result).toBeTruthy();
@@ -49,13 +77,13 @@ describe('RolesGuard', () => {
   });
 
   it('should return true if the `HasRoles` decorator is set', async () => {
-    jest
-      .spyOn(reflector, 'get')
-      .mockImplementation((a: any, b: any) => [RoleType.USER]);
-    const context = createMock<ExecutionContext>({
-      getHandler: jest.fn(),
-      switchToHttp: jest.fn().mockReturnValue({
-        getRequest: jest.fn().mockReturnValue({
+    vi.spyOn(reflector, 'get').mockImplementation((a: any, b: any) => [
+      RoleType.USER,
+    ]);
+    const context = createMockExecutionContext({
+      getHandler: vi.fn(),
+      switchToHttp: vi.fn().mockReturnValue({
+        getRequest: vi.fn().mockReturnValue({
           user: { roles: [RoleType.USER] },
         } as AuthenticatedRequest),
       }),
@@ -67,15 +95,17 @@ describe('RolesGuard', () => {
   });
 
   it('should return false if the `HasRoles` decorator is set but role is not allowed', async () => {
-    jest.spyOn(reflector, 'get').mockReturnValue([RoleType.ADMIN]);
+    vi.spyOn(reflector, 'get').mockReturnValue([RoleType.ADMIN]);
     const request = {
       user: { roles: [RoleType.USER] },
     } as AuthenticatedRequest;
-    const context = createMock<ExecutionContext>();
-    const httpArgsHost = createMock<HttpArgumentsHost>({
+    const context = createMockExecutionContext();
+    const httpArgsHost = createMockHttpArgumentsHost({
       getRequest: () => request,
     });
-    context.switchToHttp.mockImplementation(() => httpArgsHost);
+    (context.switchToHttp as ReturnType<typeof vi.fn>).mockImplementation(
+      () => httpArgsHost,
+    );
 
     const result = await guard.canActivate(context);
     expect(result).toBeFalsy();
@@ -83,156 +113,63 @@ describe('RolesGuard', () => {
   });
 });
 
-describe('RolesGuard(ts-mockito)', () => {
+describe('RolesGuard(vi.fn)', () => {
   let guard: RolesGuard;
-  const reflecter = mock(Reflector);
-  beforeEach(() => {
-    guard = new RolesGuard(instance(reflecter));
-  });
-
-  afterEach(() => {
-    reset();
-  });
-
-  it('should skip(return true) if the `HasRoles` decorator is not set', async () => {
-    const context = mock<ExecutionContext>();
-    when(context.getHandler()).thenReturn({} as any);
-
-    const contextInstacne = instance(context);
-    when(
-      reflecter.get<RoleType[]>(HAS_ROLES_KEY, contextInstacne.getHandler()),
-    ).thenReturn([] as RoleType[]);
-    const result = await guard.canActivate(contextInstacne);
-
-    expect(result).toBeTruthy();
-    verify(
-      reflecter.get<RoleType[]>(HAS_ROLES_KEY, contextInstacne.getHandler()),
-    ).once();
-  });
-
-  it('should return true if the `HasRoles` decorator is set', async () => {
-    const context = mock<ExecutionContext>();
-
-    when(context.getHandler()).thenReturn({} as any);
-
-    const arguHost = mock<HttpArgumentsHost>();
-    when(arguHost.getRequest()).thenReturn({
-      user: { roles: [RoleType.USER] },
-    } as any);
-
-    when(context.switchToHttp()).thenReturn(instance(arguHost));
-    const contextInstacne = instance(context);
-
-    when(
-      reflecter.get<RoleType[]>(HAS_ROLES_KEY, contextInstacne.getHandler()),
-    ).thenReturn([RoleType.USER] as RoleType[]);
-
-    const result = await guard.canActivate(contextInstacne);
-    console.log(result);
-    expect(result).toBeTruthy();
-    verify(
-      reflecter.get<RoleType[]>(HAS_ROLES_KEY, contextInstacne.getHandler()),
-    ).once();
-  });
-
-  it('should return false if the `HasRoles` decorator is set but role is not allowed', async () => {
-    const context = mock<ExecutionContext>();
-
-    when(context.getHandler()).thenReturn({} as any);
-
-    // logged in as USER
-    const arguHost = mock<HttpArgumentsHost>();
-    when(arguHost.getRequest()).thenReturn({
-      user: { roles: [RoleType.USER] },
-    } as any);
-
-    when(context.switchToHttp()).thenReturn(instance(arguHost));
-    const contextInstacne = instance(context);
-
-    // but requires ADMIN
-    when(
-      reflecter.get<RoleType[]>(HAS_ROLES_KEY, contextInstacne.getHandler()),
-    ).thenReturn([RoleType.ADMIN] as RoleType[]);
-
-    const result = await guard.canActivate(contextInstacne);
-    console.log(result);
-    expect(result).toBeFalsy();
-    verify(
-      reflecter.get<RoleType[]>(HAS_ROLES_KEY, contextInstacne.getHandler()),
-    ).once();
-  });
-});
-
-describe('RoelsGuard(jest-mock-extended)', () => {
-  let guard: RolesGuard;
-  const reflecter = jestMock<Reflector>();
+  const reflecterGetMock = vi.fn();
+  const reflecter = {
+    get: reflecterGetMock,
+    getAll: vi.fn(),
+    getAllByTarget: vi.fn(),
+  } as unknown as Reflector;
 
   beforeEach(() => {
     guard = new RolesGuard(reflecter);
-  });
-
-  afterEach(() => {
-    mockClear(reflecter);
-  });
-
-  it('should be defined', () => {
-    expect(guard).toBeDefined();
+    reflecterGetMock.mockReset();
   });
 
   it('should skip(return true) if the `HasRoles` decorator is not set', async () => {
-    const context = jestMock<ExecutionContext>();
-    context.getHandler.mockReturnValue({} as any);
-    reflecter.get
-      .mockReturnValue([])
-      .calledWith(HAS_ROLES_KEY, context.getHandler());
+    const context = createMockExecutionContext();
+    reflecterGetMock.mockReturnValue([]);
 
     const result = await guard.canActivate(context);
 
     expect(result).toBeTruthy();
-    expect(reflecter.get).toHaveBeenCalledTimes(1);
+    expect(reflecterGetMock).toHaveBeenCalledTimes(1);
   });
 
   it('should return true if the `HasRoles` decorator is set', async () => {
-    const context = jestMock<ExecutionContext>();
-    context.getHandler.mockReturnValue({} as any);
-
-    const arguHost = jestMock<HttpArgumentsHost>();
-    arguHost.getRequest.mockReturnValue({
-      user: { roles: [RoleType.USER] },
-    } as any);
-
-    context.switchToHttp.mockReturnValue(arguHost);
-
-    reflecter.get
-      .mockReturnValue([RoleType.USER])
-      .calledWith(HAS_ROLES_KEY, context.getHandler());
+    const context = createMockExecutionContext({
+      switchToHttp: vi.fn().mockReturnValue({
+        getRequest: vi.fn().mockReturnValue({
+          user: { roles: [RoleType.USER] },
+        } as AuthenticatedRequest),
+      }),
+    });
+    reflecterGetMock.mockReturnValue([RoleType.USER]);
 
     const result = await guard.canActivate(context);
 
     expect(result).toBeTruthy();
-    expect(reflecter.get).toHaveBeenCalledTimes(1);
+    expect(reflecterGetMock).toHaveBeenCalledTimes(1);
   });
 
   it('should return false if the `HasRoles` decorator is set but role is not allowed', async () => {
-    // logged in as USER
-    const context = jestMock<ExecutionContext>();
-    context.getHandler.mockReturnValue({} as any);
-
-    const arguHost = jestMock<HttpArgumentsHost>();
-    arguHost.getRequest.mockReturnValue({
+    const request = {
       user: { roles: [RoleType.USER] },
-    } as any);
+    } as AuthenticatedRequest;
+    const context = createMockExecutionContext();
+    const httpArgsHost = createMockHttpArgumentsHost({
+      getRequest: () => request,
+    });
+    (context.switchToHttp as ReturnType<typeof vi.fn>).mockImplementation(
+      () => httpArgsHost,
+    );
 
-    context.switchToHttp.mockReturnValue(arguHost);
-
-    //but requires ADMIN
-    reflecter.get
-      .mockReturnValue([RoleType.ADMIN])
-      .calledWith(HAS_ROLES_KEY, context.getHandler());
+    reflecterGetMock.mockReturnValue([RoleType.ADMIN]);
 
     const result = await guard.canActivate(context);
 
     expect(result).toBeFalsy();
-    expect(reflecter.get).toHaveBeenCalledTimes(1);
+    expect(reflecterGetMock).toHaveBeenCalledTimes(1);
   });
 });

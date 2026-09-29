@@ -1,23 +1,21 @@
-import { ValidationPipe } from '@nestjs/common';
+import { StandardSchemaValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
 import compression from 'compression';
 import { AppModule } from './app.module';
 
+/**
+ * Starts the API with schema validation, CORS, security headers, compression,
+ * shutdown hooks, and Swagger at /api. Listens on PORT, defaulting to 3000.
+ * Resolves once listening; listener startup errors reject the returned promise.
+ */
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableShutdownHooks();
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-      transformOptions: { enableImplicitConversion: true },
-    }),
-  );
+  app.useGlobalPipes(new StandardSchemaValidationPipe());
 
   app.enableCors();
 

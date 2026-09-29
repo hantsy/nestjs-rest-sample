@@ -15,7 +15,7 @@ describe('SendgridService', () => {
         {
           provide: SENDGRID_MAIL,
           useValue: {
-            send: jest.fn(),
+            send: vi.fn(),
           },
         },
       ],
@@ -42,9 +42,7 @@ describe('SendgridService', () => {
       html: '<strong>and easy to do anywhere, even with Node.js</strong>',
     };
 
-    const sendSpy = jest
-      .spyOn(mailService, 'send')
-      .mockResolvedValue({} as any);
+    const sendSpy = vi.spyOn(mailService, 'send').mockResolvedValue({} as any);
 
     await lastValueFrom(service.send(msg));
     expect(sendSpy).toHaveBeenCalledTimes(1);

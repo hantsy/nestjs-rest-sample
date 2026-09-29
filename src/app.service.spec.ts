@@ -12,7 +12,7 @@ describe('AppService', () => {
         AppService,
         {
           provide: 'LoggerServiceAppService',
-          useValue: { log: jest.fn() },
+          useValue: { log: vi.fn() },
         },
       ],
     }).compile();

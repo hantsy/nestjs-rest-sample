@@ -41,7 +41,7 @@ jobs:
 
       - run: npm install --registry=https://registry.npmjs.org
 
-      - name: Running mongodb service
+      - name: Running MongoDB service
         run: |
           docker compose up -d mongodb
           docker ps -a

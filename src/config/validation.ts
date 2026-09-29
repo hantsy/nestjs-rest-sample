@@ -1,14 +1,14 @@
-import * as Joi from 'joi';
+import { z } from 'zod';
 
-export const validationSchema = Joi.object({
-  NODE_ENV: Joi.string()
-    .valid('development', 'production', 'test')
+export const validationSchema = z.object({
+  NODE_ENV: z
+    .enum(['development', 'production', 'test'])
     .default('development'),
-  PORT: Joi.number().default(3000),
-  MONGODB_URI: Joi.string().uri(),
-  JWT_SECRET_KEY: Joi.string().min(16),
-  JWT_EXPIRES_IN: Joi.string().default('3600s'),
-  JWT_REFRESH_SECRET_KEY: Joi.string().min(16),
-  JWT_REFRESH_EXPIRES_IN: Joi.string().default('7d'),
-  SENDGRID_API_KEY: Joi.string(),
+  PORT: z.coerce.number().default(3000),
+  MONGODB_URI: z.url(),
+  JWT_SECRET_KEY: z.string().min(16),
+  JWT_EXPIRES_IN: z.string().default('3600s'),
+  JWT_REFRESH_SECRET_KEY: z.string().min(16),
+  JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
+  SENDGRID_API_KEY: z.string(),
 });

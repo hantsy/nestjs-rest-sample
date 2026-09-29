@@ -1,24 +1,36 @@
-const getMock = jest.fn().mockImplementationOnce((cb) => cb);
-const virtualMock = jest.fn().mockImplementationOnce((name: string) => ({
-  get: getMock,
-}));
+vi.mock('mongoose', () => {
+  const virtualCalls: any[][] = [];
+  const getCalls: any[][] = [];
 
-jest.mock('mongoose', () => ({
-  Schema: jest.fn().mockImplementation((def: any, options: any) => ({
-    constructor: jest.fn(),
-    virtual: virtualMock,
-    pre: jest.fn(),
-    set: jest.fn(),
-    methods: { comparePassword: jest.fn() },
-    statics: {},
-    comparePassword: jest.fn(),
-  })),
-  SchemaTypes: jest.fn().mockImplementation(() => ({
-    String: jest.fn(),
-  })),
-}));
+  const getMock = function (...args: any[]) {
+    getCalls.push(args);
+  };
 
-import { anyFunction } from 'jest-mock-extended';
+  const virtualMock = function (...args: any[]) {
+    virtualCalls.push(args);
+    return { get: getMock };
+  };
+
+  (globalThis as any).__virtualCalls = virtualCalls;
+  (globalThis as any).__getCalls = getCalls;
+
+  function MockSchema(this: any, def: any, options: any) {
+    this.virtual = virtualMock;
+    this.pre = vi.fn();
+    this.set = vi.fn();
+    this.methods = { comparePassword: vi.fn() };
+    this.statics = {};
+    this.comparePassword = vi.fn();
+  }
+
+  return {
+    Schema: MockSchema as any,
+    SchemaTypes: {
+      String: vi.fn(),
+    },
+  };
+});
+
 import {
   UserSchema,
   preSaveHook,
@@ -28,20 +40,25 @@ import {
 import { hash } from 'bcrypt';
 import { lastValueFrom } from 'rxjs';
 
+const virtualCalls = (globalThis as any).__virtualCalls as any[][];
+const getCalls = (globalThis as any).__getCalls as any[][];
+
 describe('UserSchema', () => {
-  it('should called Schame.virtual ', () => {
+  it('should called Schema.virtual', () => {
     expect(UserSchema).toBeDefined();
 
-    expect(getMock).toHaveBeenCalled();
-    expect(getMock).toHaveBeenCalledWith(anyFunction());
-    expect(virtualMock).toHaveBeenCalled();
-    expect(virtualMock).toHaveBeenNthCalledWith(1, 'name');
-    expect(virtualMock).toHaveBeenNthCalledWith(2, 'posts', {
-      foreignField: 'createdBy',
-      localField: '_id',
-      ref: 'Post',
-    });
-    expect(virtualMock).toHaveBeenCalledTimes(2);
+    expect(virtualCalls.length).toBe(2);
+    expect(virtualCalls[0]).toEqual(['name']);
+    expect(virtualCalls[1]).toEqual([
+      'posts',
+      {
+        foreignField: 'createdBy',
+        localField: '_id',
+        ref: 'Post',
+      },
+    ]);
+    expect(getCalls.length).toBe(1);
+    expect(getCalls[0][0]).toEqual(expect.any(Function));
   });
 });
 
@@ -49,7 +66,7 @@ describe('UserSchema', () => {
 describe('preSaveHook', () => {
   test('should execute next middleware when password is not modified', async () => {
     const contextMock = {
-      isModified: jest.fn(),
+      isModified: vi.fn(),
     } as any;
     contextMock.isModified.mockReturnValueOnce(false);
     await preSaveHook.call(contextMock);
@@ -58,8 +75,8 @@ describe('preSaveHook', () => {
 
   test('should set password when password is modified', async () => {
     const contextMock = {
-      isModified: jest.fn(),
-      set: jest.fn(),
+      isModified: vi.fn(),
+      set: vi.fn(),
       password: '123456',
     } as any;
     contextMock.isModified.mockReturnValueOnce(true);

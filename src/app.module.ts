@@ -16,7 +16,6 @@ import { validationSchema } from './config/validation';
   imports: [
     ConfigModule.forRoot({
       validationSchema,
-      validationOptions: { allowUnknown: true, abortEarly: false },
     }),
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 10 }]),
     DatabaseModule,

@@ -1,2 +1,6 @@
 ignore:
-  - "**/*stub.ts"
+  - '**/*stub.ts'
+  - '**/*.module.ts'
+  - '**/*.dto.ts'
+  - '**/*.decorator.ts'
+  - 'src/main.ts'

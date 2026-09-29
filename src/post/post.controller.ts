@@ -34,10 +34,13 @@ import { RolesGuard } from '../auth/guard/roles.guard';
 import { ParseObjectIdPipe } from '../shared/pipe/parse-object-id.pipe';
 import { Comment } from '../database/comment.model';
 import { Post as BlogPost } from '../database/post.model';
-import { CreateCommentDto } from './create-comment.dto';
-import { CreatePostDto } from './create-post.dto';
+import { createCommentSchema } from './create-comment.dto';
+import type { CreateCommentDto } from './create-comment.dto';
+import { createPostSchema } from './create-post.dto';
+import type { CreatePostDto } from './create-post.dto';
 import { PostService } from './post.service';
-import { UpdatePostDto } from './update-post.dto';
+import { updatePostSchema } from './update-post.dto';
+import type { UpdatePostDto } from './update-post.dto';
 
 @ApiTags('posts')
 @Controller({ path: 'posts', scope: Scope.REQUEST })
@@ -76,6 +79,10 @@ export class PostController {
     return this.postService.findById(id);
   }
 
+  /**
+   * Creates a post attributed to the current user and emits the response after
+   * sending an empty 201 with the post's URL in Location. Save errors propagate.
+   */
   @Post('')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @HasRoles(RoleType.USER, RoleType.ADMIN)
@@ -84,7 +91,7 @@ export class PostController {
   @ApiUnauthorizedResponse({ description: 'Not authenticated.' })
   @ApiForbiddenResponse({ description: 'Insufficient permissions.' })
   createPost(
-    @Body() post: CreatePostDto,
+    @Body({ schema: createPostSchema }) post: CreatePostDto,
     @Res() res: Response,
   ): Observable<Response> {
     return this.postService.save(post).pipe(
@@ -97,6 +104,10 @@ export class PostController {
     );
   }
 
+  /**
+   * Updates the post and emits the response after sending an empty 204.
+   * Propagates NotFoundException (POST_NOT_FOUND) and other update errors.
+   */
   @Put(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @HasRoles(RoleType.USER, RoleType.ADMIN)
@@ -106,7 +117,7 @@ export class PostController {
   @ApiUnauthorizedResponse({ description: 'Not authenticated.' })
   updatePost(
     @Param('id', ParseObjectIdPipe) id: string,
-    @Body() post: UpdatePostDto,
+    @Body({ schema: updatePostSchema }) post: UpdatePostDto,
     @Res() res: Response,
   ): Observable<Response> {
     return this.postService.update(id, post).pipe(
@@ -135,6 +146,11 @@ export class PostController {
     );
   }
 
+  /**
+   * Creates a comment attributed to the current user for the supplied post ID,
+   * without checking that the post exists. Emits the response after sending an
+   * empty 201 with the comment's URL in Location. Creation errors propagate.
+   */
   @Post(':id/comments')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @HasRoles(RoleType.USER)
@@ -143,7 +159,7 @@ export class PostController {
   @ApiUnauthorizedResponse({ description: 'Not authenticated.' })
   createCommentForPost(
     @Param('id', ParseObjectIdPipe) id: string,
-    @Body() data: CreateCommentDto,
+    @Body({ schema: createCommentSchema }) data: CreateCommentDto,
     @Res() res: Response,
   ): Observable<Response> {
     return this.postService.createCommentFor(id, data).pipe(

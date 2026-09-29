@@ -1,6 +1,6 @@
-jest.mock('mongoose', () => ({
-  createConnection: jest.fn().mockImplementation((uri: any) => ({}) as any),
-  Connection: jest.fn(),
+vi.mock('mongoose', () => ({
+  createConnection: vi.fn().mockImplementation((uri: any) => ({}) as any),
+  Connection: vi.fn(),
 }));
 
 import { ConfigModule } from '@nestjs/config';

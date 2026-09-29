@@ -1,20 +1,18 @@
 {
   "compilerOptions": {
-    "types": ["jest", "node"],
-    "module": "commonjs",
+    "types": ["node"],
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "esModuleInterop": true,
     "declaration": true,
     "removeComments": true,
-    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "allowSyntheticDefaultImports": true,
     "strictPropertyInitialization": false,
     "target": "es2025",
     "sourceMap": true,
     "outDir": "./dist",
-    "paths": {
-      "*": ["./src/*", "./types/*"]
-    },
     "incremental": true
   }
 }

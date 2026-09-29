@@ -1,12 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { z } from 'zod';
 
-export class RefreshTokenDto {
-  @ApiProperty({
-    example: 'eyJhbGciOiJIUzI1NiIs...',
-    description: 'The refresh token obtained at login',
-  })
-  @IsNotEmpty()
-  @IsString()
-  readonly refresh_token: string;
-}
+export const refreshTokenSchema = z.object({
+  refresh_token: z.string().min(1).describe('eyJhbGciOiJIUzI1NiIs...'),
+});
+
+export type RefreshTokenDto = z.infer<typeof refreshTokenSchema>;

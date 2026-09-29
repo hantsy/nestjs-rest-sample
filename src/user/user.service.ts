@@ -3,7 +3,8 @@ import { EMPTY, from, Observable, of, throwError } from 'rxjs';
 import { mergeMap, tap, throwIfEmpty, catchError, map } from 'rxjs/operators';
 import { RoleType } from '../shared/enum/role-type.enum';
 import { USER_MODEL } from '../database/database.constants';
-import { User, UserMethods, UserModel } from '../database/user.model';
+import { User, UserMethods } from '../database/user.model';
+import type { UserModel } from '../database/user.model';
 import { SendgridService } from '../sendgrid/sendgrid.service';
 import { RegisterDto } from './register.dto';
 
@@ -14,11 +15,19 @@ export class UserService {
     private readonly sendgridService: SendgridService,
   ) {}
 
+  /**
+   * Emits the matching user with password comparison methods, or errors with
+   * NotFoundException (USER_NOT_FOUND) if absent. Database query errors
+   * propagate through the observable unchanged.
+   */
   findByUsername(username: string): Observable<User & UserMethods> {
     return from(this.userModel.findOne({ username }).exec()).pipe(
       mergeMap((p) => (p ? of(p) : EMPTY)),
       throwIfEmpty(
-        () => new NotFoundException(`user:${username} was not found`),
+        () =>
+          new NotFoundException(`user:${username} was not found`, {
+            errorCode: 'USER_NOT_FOUND',
+          }),
       ),
     );
   }
@@ -95,6 +104,11 @@ export class UserService {
     // );
   }
 
+  /**
+   * Emits the matching user, populating authored posts when withPosts is true.
+   * Errors with NotFoundException (USER_NOT_FOUND) if absent; database query errors
+   * propagate through the observable unchanged.
+   */
   findById(id: string, withPosts: boolean = false): Observable<User> {
     const userQuery = this.userModel.findOne({ _id: id });
     if (withPosts) {
@@ -102,7 +116,12 @@ export class UserService {
     }
     return from(userQuery.exec()).pipe(
       mergeMap((p) => (p ? of(p) : EMPTY)),
-      throwIfEmpty(() => new NotFoundException(`user:${id} was not found`)),
+      throwIfEmpty(
+        () =>
+          new NotFoundException(`user:${id} was not found`, {
+            errorCode: 'USER_NOT_FOUND',
+          }),
+      ),
     );
   }
 }
