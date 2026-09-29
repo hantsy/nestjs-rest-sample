@@ -3,3 +3,4 @@ ignore:
   - '**/*.module.ts'
   - '**/*.dto.ts'
   - '**/*.decorator.ts'
+  - 'src/main.ts'
