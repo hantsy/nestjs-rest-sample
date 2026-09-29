@@ -47,4 +47,4 @@ jobs:
           docker ps -a
 
       - name: Running e2e testing
-        run: npm run test:e2e -- --runInBand --forceExit --testTimeout 30000
+        run: npm run test:e2e -- --testTimeout 30000
