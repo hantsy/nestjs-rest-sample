@@ -19,15 +19,15 @@ describe('UserService', () => {
         {
           provide: USER_MODEL,
           useValue: {
-            findOne: jest.fn(),
-            exists: jest.fn(),
-            create: jest.fn(),
+            findOne: vi.fn(),
+            exists: vi.fn(),
+            create: vi.fn(),
           },
         },
         {
           provide: SendgridService,
           useValue: {
-            send: jest.fn(),
+            send: vi.fn(),
           },
         },
       ],
@@ -63,14 +63,14 @@ describe('UserService', () => {
       ],
     };
 
-    const saveSpy = jest.spyOn(model, 'create').mockImplementation(() =>
+    const saveSpy = vi.spyOn(model, 'create').mockImplementation(() =>
       Promise.resolve({
         _id: '123',
         ...sampleData,
       } as any),
     );
 
-    jest.spyOn(sendgrid, 'send').mockImplementation(() => {
+    vi.spyOn(sendgrid, 'send').mockImplementation(() => {
       return of([{} as any, {}] as [any, {}]);
     });
 
@@ -85,10 +85,10 @@ describe('UserService', () => {
   });
 
   it('findByUsername should return user', async () => {
-    jest.spyOn(model, 'findOne').mockImplementation(
+    vi.spyOn(model, 'findOne').mockImplementation(
       (filter?: any, projection?: any, options?: any) =>
         ({
-          exec: jest.fn().mockResolvedValue({
+          exec: vi.fn().mockResolvedValue({
             username: 'hantsy',
             email: 'hantsy@example.com',
           } as User),
@@ -105,10 +105,10 @@ describe('UserService', () => {
   });
 
   it('findByUsername should return null if not found', async () => {
-    jest.spyOn(model, 'findOne').mockImplementation(
+    vi.spyOn(model, 'findOne').mockImplementation(
       (filter?: any, projection?: any, options?: any) =>
         ({
-          exec: jest.fn().mockResolvedValue(null) as any,
+          exec: vi.fn().mockResolvedValue(null) as any,
         }) as any,
     );
     try {
@@ -120,10 +120,10 @@ describe('UserService', () => {
 
   describe('findById', () => {
     it('return one result', async () => {
-      jest.spyOn(model, 'findOne').mockImplementation(
+      vi.spyOn(model, 'findOne').mockImplementation(
         (filter?: any, projection?: any, options?: any) =>
           ({
-            exec: jest.fn().mockResolvedValue({
+            exec: vi.fn().mockResolvedValue({
               username: 'hantsy',
               email: 'hantsy@example.com',
             } as User),
@@ -140,10 +140,10 @@ describe('UserService', () => {
     });
 
     it('return a null result', async () => {
-      jest.spyOn(model, 'findOne').mockImplementation(
+      vi.spyOn(model, 'findOne').mockImplementation(
         (filter?: any, projection?: any, options?: any) =>
           ({
-            exec: jest.fn().mockResolvedValue(null) as any,
+            exec: vi.fn().mockResolvedValue(null) as any,
           }) as any,
       );
 
@@ -155,11 +155,11 @@ describe('UserService', () => {
     });
 
     it('parameter withPosts=true', async () => {
-      jest.spyOn(model, 'findOne').mockImplementation(
+      vi.spyOn(model, 'findOne').mockImplementation(
         (filter?: any, projection?: any, options?: any) =>
           ({
-            populate: jest.fn().mockReturnThis(),
-            exec: jest.fn().mockResolvedValue({
+            populate: vi.fn().mockReturnThis(),
+            exec: vi.fn().mockResolvedValue({
               username: 'hantsy',
               email: 'hantsy@example.com',
             } as User),
@@ -178,11 +178,11 @@ describe('UserService', () => {
 
   describe('existsByUsername', () => {
     it('should return true if exists ', async () => {
-      const existsSpy = jest
+      const existsSpy = vi
         .spyOn(model, 'exists')
         .mockImplementation((filter: any) => {
           return {
-            exec: jest.fn().mockResolvedValue({
+            exec: vi.fn().mockResolvedValue({
               _id: 'test',
             } as any),
           } as any;
@@ -195,11 +195,11 @@ describe('UserService', () => {
     });
 
     it('should return false if not exists ', async () => {
-      const existsSpy = jest
+      const existsSpy = vi
         .spyOn(model, 'exists')
         .mockImplementation((filter: any) => {
           return {
-            exec: jest.fn().mockResolvedValue(null),
+            exec: vi.fn().mockResolvedValue(null),
           } as any;
         });
       const result = await lastValueFrom(service.existsByUsername('hantsy'));
@@ -212,11 +212,11 @@ describe('UserService', () => {
 
   describe('existsByEmail', () => {
     it('should return true if exists ', async () => {
-      const existsSpy = jest
+      const existsSpy = vi
         .spyOn(model, 'exists')
         .mockImplementation((filter: any) => {
           return {
-            exec: jest.fn().mockResolvedValue({
+            exec: vi.fn().mockResolvedValue({
               _id: 'test',
             } as any),
           } as any;
@@ -231,11 +231,11 @@ describe('UserService', () => {
     });
 
     it('should return false if not exists ', async () => {
-      const existsSpy = jest
+      const existsSpy = vi
         .spyOn(model, 'exists')
         .mockImplementation((filter: any) => {
           return {
-            exec: jest.fn().mockResolvedValue(null),
+            exec: vi.fn().mockResolvedValue(null),
           } as any;
         });
       const result = await lastValueFrom(

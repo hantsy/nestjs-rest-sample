@@ -11,11 +11,10 @@ describe('LocalAuthGuard', () => {
     expect(guard).toBeDefined();
   });
   it('should return true for `canActivate`', async () => {
-    AuthGuard('local').prototype.canActivate = jest.fn(() =>
+    AuthGuard('local').prototype.canActivate = vi.fn(() =>
       Promise.resolve(true),
     );
-    AuthGuard('local').prototype.logIn = jest.fn(() => Promise.resolve());
+    AuthGuard('local').prototype.logIn = vi.fn(() => Promise.resolve());
     expect(await guard.canActivate({} as ExecutionContext)).toBe(true);
   });
-
 });

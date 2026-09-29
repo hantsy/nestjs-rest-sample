@@ -3,7 +3,8 @@ import { EMPTY, from, Observable, of, throwError } from 'rxjs';
 import { mergeMap, tap, throwIfEmpty, catchError, map } from 'rxjs/operators';
 import { RoleType } from '../shared/enum/role-type.enum';
 import { USER_MODEL } from '../database/database.constants';
-import { User, UserMethods, UserModel } from '../database/user.model';
+import { User, UserMethods } from '../database/user.model';
+import type { UserModel } from '../database/user.model';
 import { SendgridService } from '../sendgrid/sendgrid.service';
 import { RegisterDto } from './register.dto';
 
@@ -18,7 +19,10 @@ export class UserService {
     return from(this.userModel.findOne({ username }).exec()).pipe(
       mergeMap((p) => (p ? of(p) : EMPTY)),
       throwIfEmpty(
-        () => new NotFoundException(`user:${username} was not found`),
+        () =>
+          new NotFoundException(`user:${username} was not found`, {
+            errorCode: 'USER_NOT_FOUND',
+          }),
       ),
     );
   }
@@ -102,7 +106,12 @@ export class UserService {
     }
     return from(userQuery.exec()).pipe(
       mergeMap((p) => (p ? of(p) : EMPTY)),
-      throwIfEmpty(() => new NotFoundException(`user:${id} was not found`)),
+      throwIfEmpty(
+        () =>
+          new NotFoundException(`user:${id} was not found`, {
+            errorCode: 'USER_NOT_FOUND',
+          }),
+      ),
     );
   }
 }

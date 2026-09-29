@@ -1,12 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { z } from 'zod';
 
-export class UpdatePostDto {
-  @ApiProperty({ example: 'Updated Post Title' })
-  @IsNotEmpty()
-  readonly title: string;
+export const updatePostSchema = z.object({
+  title: z.string().min(1).describe('Updated Post Title'),
+  content: z.string().min(1).describe('Updated content.'),
+});
 
-  @ApiProperty({ example: 'Updated content.' })
-  @IsNotEmpty()
-  readonly content: string;
-}
+export type UpdatePostDto = z.infer<typeof updatePostSchema>;

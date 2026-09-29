@@ -1,35 +1,15 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsString,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { z } from 'zod';
 
-export class RegisterDto {
-  @ApiProperty({ example: 'john_doe' })
-  @IsNotEmpty()
-  readonly username!: string;
+export const registerSchema = z.object({
+  username: z.string().min(1).describe('john_doe'),
+  email: z.string().email().describe('john@example.com'),
+  password: z
+    .string()
+    .min(8, ' The min length of password is 8 ')
+    .max(20, " The password can't accept more than 20 characters ")
+    .describe('P@ssword123'),
+  firstName: z.string().optional().describe('John'),
+  lastName: z.string().optional().describe('Doe'),
+});
 
-  @ApiProperty({ example: 'john@example.com' })
-  @IsNotEmpty()
-  @IsEmail()
-  readonly email!: string;
-
-  @ApiProperty({ example: 'P@ssword123', minLength: 8, maxLength: 20 })
-  @IsNotEmpty()
-  @MinLength(8, { message: ' The min length of password is 8 ' })
-  @MaxLength(20, {
-    message: " The password can't accept more than 20 characters ",
-  })
-  readonly password!: string;
-
-  @ApiPropertyOptional({ example: 'John' })
-  @IsString()
-  readonly firstName?: string;
-
-  @ApiPropertyOptional({ example: 'Doe' })
-  @IsString()
-  readonly lastName?: string;
-}
+export type RegisterDto = z.infer<typeof registerSchema>;

@@ -23,34 +23,34 @@ describe('PostService', () => {
         {
           provide: POST_MODEL,
           useValue: {
-            new: jest.fn(),
-            constructor: jest.fn(),
-            find: jest.fn(),
-            findOne: jest.fn(),
-            update: jest.fn(),
-            create: jest.fn(),
-            remove: jest.fn(),
-            exec: jest.fn(),
-            deleteMany: jest.fn(),
-            deleteOne: jest.fn(),
-            updateOne: jest.fn(),
-            findOneAndUpdate: jest.fn(),
-            findOneAndDelete: jest.fn(),
+            new: vi.fn(),
+            constructor: vi.fn(),
+            find: vi.fn(),
+            findOne: vi.fn(),
+            update: vi.fn(),
+            create: vi.fn(),
+            remove: vi.fn(),
+            exec: vi.fn(),
+            deleteMany: vi.fn(),
+            deleteOne: vi.fn(),
+            updateOne: vi.fn(),
+            findOneAndUpdate: vi.fn(),
+            findOneAndDelete: vi.fn(),
           },
         },
         {
           provide: COMMENT_MODEL,
           useValue: {
-            new: jest.fn(),
-            constructor: jest.fn(),
-            find: jest.fn(),
-            findOne: jest.fn(),
-            updateOne: jest.fn(),
-            deleteOne: jest.fn(),
-            update: jest.fn(),
-            create: jest.fn(),
-            remove: jest.fn(),
-            exec: jest.fn(),
+            new: vi.fn(),
+            constructor: vi.fn(),
+            find: vi.fn(),
+            findOne: vi.fn(),
+            updateOne: vi.fn(),
+            deleteOne: vi.fn(),
+            update: vi.fn(),
+            create: vi.fn(),
+            remove: vi.fn(),
+            exec: vi.fn(),
           },
         },
         {
@@ -91,10 +91,10 @@ describe('PostService', () => {
         content: 'content',
       },
     ];
-    jest.spyOn(model, 'find').mockReturnValue({
-      skip: jest.fn().mockReturnValue({
-        limit: jest.fn().mockReturnValue({
-          exec: jest.fn().mockResolvedValueOnce(posts) as any,
+    vi.spyOn(model, 'find').mockReturnValue({
+      skip: vi.fn().mockReturnValue({
+        limit: vi.fn().mockReturnValue({
+          exec: vi.fn().mockResolvedValueOnce(posts) as any,
         }),
       }),
     } as any);
@@ -103,11 +103,11 @@ describe('PostService', () => {
     expect(data.length).toBe(3);
     expect(model.find).toHaveBeenCalled();
 
-    jest.spyOn(model, 'find').mockImplementation(() => {
+    vi.spyOn(model, 'find').mockImplementation(() => {
       return {
-        skip: jest.fn().mockReturnValue({
-          limit: jest.fn().mockReturnValue({
-            exec: jest.fn().mockResolvedValueOnce([posts[0]]),
+        skip: vi.fn().mockReturnValue({
+          limit: vi.fn().mockReturnValue({
+            exec: vi.fn().mockResolvedValueOnce([posts[0]]),
           }),
         }),
       } as any;
@@ -121,41 +121,32 @@ describe('PostService', () => {
   });
 
   describe('findByid', () => {
-    it('if exists return one post', (done) => {
+    it('if exists return one post', async () => {
       const found = {
         _id: '5ee49c3115a4e75254bb732e',
         title: 'Generate a NestJS project',
         content: 'content',
       };
 
-      jest.spyOn(model, 'findOne').mockReturnValue({
-        exec: jest.fn().mockResolvedValueOnce(found) as any,
+      vi.spyOn(model, 'findOne').mockReturnValue({
+        exec: vi.fn().mockResolvedValueOnce(found) as any,
       } as any);
 
-      service.findById('1').subscribe({
-        next: (data) => {
-          expect(data._id).toBe('5ee49c3115a4e75254bb732e');
-          expect(data.title).toEqual('Generate a NestJS project');
-        },
-        error: (error) => console.log(error),
-        complete: done(),
-      });
+      const data = await lastValueFrom(service.findById('1'));
+      expect(data._id).toBe('5ee49c3115a4e75254bb732e');
+      expect(data.title).toEqual('Generate a NestJS project');
     });
 
-    it('if not found throw an NotFoundException', (done) => {
-      jest.spyOn(model, 'findOne').mockReturnValue({
-        exec: jest.fn().mockResolvedValueOnce(null) as any,
+    it('if not found throw an NotFoundException', async () => {
+      vi.spyOn(model, 'findOne').mockReturnValue({
+        exec: vi.fn().mockResolvedValueOnce(null) as any,
       } as any);
 
-      service.findById('1').subscribe({
-        next: (data) => {
-          console.log(data);
-        },
-        error: (error) => {
-          expect(error).toBeDefined();
-        },
-        complete: done(),
-      });
+      try {
+        await lastValueFrom(service.findById('1'));
+      } catch (error) {
+        expect(error).toBeDefined();
+      }
     });
   });
 
@@ -170,9 +161,9 @@ describe('PostService', () => {
       ...toCreated,
     } as any;
 
-    jest
-      .spyOn(model, 'create')
-      .mockImplementation(() => Promise.resolve(toReturned));
+    vi.spyOn(model, 'create').mockImplementation(() =>
+      Promise.resolve(toReturned),
+    );
 
     const data = await lastValueFrom(service.save(toCreated));
     expect(data._id).toBe('5ee49c3115a4e75254bb732e');
@@ -184,94 +175,83 @@ describe('PostService', () => {
   });
 
   describe('update', () => {
-    it('perform update if post exists', (done) => {
+    it('perform update if post exists', async () => {
       const toUpdated = {
         _id: '5ee49c3115a4e75254bb732e',
         title: 'test title',
         content: 'test content',
       };
 
-      jest.spyOn(model, 'findOneAndUpdate').mockReturnValue({
-        exec: jest.fn().mockResolvedValue(toUpdated) as any,
+      vi.spyOn(model, 'findOneAndUpdate').mockReturnValue({
+        exec: vi.fn().mockResolvedValue(toUpdated) as any,
       } as any);
 
-      service.update('5ee49c3115a4e75254bb732e', toUpdated).subscribe({
-        next: (data) => {
-          expect(data).toBeTruthy();
-          expect(model.findOneAndUpdate).toHaveBeenCalled();
-        },
-        error: (error) => console.log(error),
-        complete: done(),
-      });
+      const data = await lastValueFrom(
+        service.update('5ee49c3115a4e75254bb732e', toUpdated),
+      );
+      expect(data).toBeTruthy();
+      expect(model.findOneAndUpdate).toHaveBeenCalled();
     });
 
-    it('throw an NotFoundException if post not exists', (done) => {
+    it('throw an NotFoundException if post not exists', async () => {
       const toUpdated = {
         _id: '5ee49c3115a4e75254bb732e',
         title: 'test title',
         content: 'test content',
       };
-      jest.spyOn(model, 'findOneAndUpdate').mockReturnValue({
-        exec: jest.fn().mockResolvedValue(null) as any,
+      vi.spyOn(model, 'findOneAndUpdate').mockReturnValue({
+        exec: vi.fn().mockResolvedValue(null) as any,
       } as any);
 
-      service.update('5ee49c3115a4e75254bb732e', toUpdated).subscribe({
-        error: (error) => {
-          expect(error).toBeDefined();
-          expect(model.findOneAndUpdate).toHaveBeenCalledTimes(1);
-        },
-        complete: done(),
-      });
+      try {
+        await lastValueFrom(
+          service.update('5ee49c3115a4e75254bb732e', toUpdated),
+        );
+      } catch (error) {
+        expect(error).toBeDefined();
+        expect(model.findOneAndUpdate).toHaveBeenCalledTimes(1);
+      }
     });
   });
 
   describe('delete', () => {
-    it('perform delete if post exists', (done) => {
+    it('perform delete if post exists', async () => {
       const toDeleted = {
         _id: '5ee49c3115a4e75254bb732e',
         title: 'test title',
         content: 'test content',
       };
-      jest.spyOn(model, 'findOneAndDelete').mockReturnValue({
-        exec: jest.fn().mockResolvedValueOnce(toDeleted),
+      vi.spyOn(model, 'findOneAndDelete').mockReturnValue({
+        exec: vi.fn().mockResolvedValueOnce(toDeleted),
       } as any);
 
-      service.deleteById('anystring').subscribe({
-        next: (data) => {
-          expect(data).toBeTruthy();
-          expect(model.findOneAndDelete).toHaveBeenCalled();
-        },
-        error: (error) => console.log(error),
-        complete: done(),
-      });
+      const data = await lastValueFrom(service.deleteById('anystring'));
+      expect(data).toBeTruthy();
+      expect(model.findOneAndDelete).toHaveBeenCalled();
     });
 
-    it('throw an NotFoundException if post not exists', (done) => {
-      jest.spyOn(model, 'findOneAndDelete').mockReturnValue({
-        exec: jest.fn().mockResolvedValue(null),
+    it('throw an NotFoundException if post not exists', async () => {
+      vi.spyOn(model, 'findOneAndDelete').mockReturnValue({
+        exec: vi.fn().mockResolvedValue(null),
       } as any);
-      service.deleteById('anystring').subscribe({
-        error: (error) => {
-          expect(error).toBeDefined();
-          expect(model.findOneAndDelete).toHaveBeenCalledTimes(1);
-        },
-        complete: done(),
-      });
+      try {
+        await lastValueFrom(service.deleteById('anystring'));
+      } catch (error) {
+        expect(error).toBeDefined();
+        expect(model.findOneAndDelete).toHaveBeenCalledTimes(1);
+      }
     });
   });
 
-  it('should delete all post', (done) => {
-    jest.spyOn(model, 'deleteMany').mockReturnValue({
-      exec: jest.fn().mockResolvedValueOnce({
+  it('should delete all post', async () => {
+    vi.spyOn(model, 'deleteMany').mockReturnValue({
+      exec: vi.fn().mockResolvedValueOnce({
         deletedCount: 1,
       }),
     } as any);
 
-    service.deleteAll().subscribe({
-      next: (data) => expect(data).toBeTruthy,
-      error: (error) => console.log(error),
-      complete: done(),
-    });
+    const data = await lastValueFrom(service.deleteAll());
+    expect(data).toBeTruthy;
   });
 
   it('should create comment ', async () => {
@@ -282,9 +262,9 @@ describe('PostService', () => {
       ...comment,
       post: TEST_OBJ_ID,
     } as any;
-    jest
-      .spyOn(commentModel, 'create')
-      .mockImplementation((any) => Promise.resolve(mockedCreateResult));
+    vi.spyOn(commentModel, 'create').mockImplementation((any) =>
+      Promise.resolve(mockedCreateResult),
+    );
 
     const result = await lastValueFrom(
       service.createCommentFor(TEST_ID, comment),
@@ -300,10 +280,10 @@ describe('PostService', () => {
   it('should get comments of post ', async () => {
     const TEST_ID = '605c39f4bcf86cd799439011';
     const TEST_OBJ_ID = new Types.ObjectId(TEST_ID);
-    jest.spyOn(commentModel, 'find').mockImplementation(() => {
+    vi.spyOn(commentModel, 'find').mockImplementation(() => {
       return {
-        select: jest.fn().mockReturnValue({
-          exec: jest.fn().mockResolvedValue([
+        select: vi.fn().mockReturnValue({
+          exec: vi.fn().mockResolvedValue([
             {
               _id: '605c3a2ebcf86cd799439012',
               content: 'content',

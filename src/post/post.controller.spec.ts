@@ -1,14 +1,30 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { lastValueFrom, Observable, of } from 'rxjs';
-import { anyNumber, anyString, instance, mock, verify, when } from 'ts-mockito';
+import { Response } from 'express';
 import { Post } from '../database/post.model';
 import { CreatePostDto } from './create-post.dto';
 import { PostController } from './post.controller';
 import { PostService } from './post.service';
 import { PostServiceStub } from './post.service.stub';
 import { UpdatePostDto } from './update-post.dto';
-import { createMock } from '@golevelup/ts-jest';
-import { Response } from 'express';
+
+function createMockResponse(overrides: Record<string, any> = {}): Response {
+  const res: any = {
+    location: vi.fn().mockReturnThis(),
+    status: vi.fn().mockReturnThis(),
+    send: vi.fn().mockReturnThis(),
+    json: vi.fn().mockReturnThis(),
+    headers: {},
+    ...overrides,
+  };
+  if (overrides.location) {
+    res.location = overrides.location;
+  }
+  if (overrides.status) {
+    res.status = overrides.status;
+  }
+  return res as Response;
+}
 
 describe('Post Controller', () => {
   describe('Replace PostService in provider(useClass: PostServiceStub)', () => {
@@ -37,11 +53,9 @@ describe('Post Controller', () => {
       expect(posts.length).toBe(3);
     });
 
-    it('GET on /posts/:id should return one post ', (done) => {
-      controller.getPostById('1').subscribe((data) => {
-        expect(data._id).toEqual('1');
-        done();
-      });
+    it('GET on /posts/:id should return one post ', async () => {
+      const data = await lastValueFrom(controller.getPostById('1'));
+      expect(data._id).toEqual('1');
     });
 
     it('POST on /posts should save post', async () => {
@@ -52,10 +66,10 @@ describe('Post Controller', () => {
       const saved = await lastValueFrom(
         controller.createPost(
           post,
-          createMock<Response>({
-            location: jest.fn().mockReturnValue({
-              status: jest.fn().mockReturnValue({
-                send: jest.fn().mockReturnValue({
+          createMockResponse({
+            location: vi.fn().mockReturnValue({
+              status: vi.fn().mockReturnValue({
+                send: vi.fn().mockReturnValue({
                   headers: { location: '/posts/post_id' },
                   status: 201,
                 }),
@@ -64,49 +78,44 @@ describe('Post Controller', () => {
           }),
         ),
       );
-      // console.log(saved);
       expect(saved.status).toBe(201);
     });
 
-    it('PUT on /posts/:id should update the existing post', (done) => {
+    it('PUT on /posts/:id should update the existing post', async () => {
       const post: UpdatePostDto = {
         title: 'test title',
         content: 'test content',
       };
-      controller
-        .updatePost(
+      const data = await lastValueFrom(
+        controller.updatePost(
           '1',
           post,
-          createMock<Response>({
-            status: jest.fn().mockReturnValue({
-              send: jest.fn().mockReturnValue({
+          createMockResponse({
+            status: vi.fn().mockReturnValue({
+              send: vi.fn().mockReturnValue({
                 status: 204,
               }),
             }),
           }),
-        )
-        .subscribe((data) => {
-          expect(data.status).toBe(204);
-          done();
-        });
+        ),
+      );
+      expect(data.status).toBe(204);
     });
 
-    it('DELETE on /posts/:id should delete post', (done) => {
-      controller
-        .deletePostById(
+    it('DELETE on /posts/:id should delete post', async () => {
+      const data = await lastValueFrom(
+        controller.deletePostById(
           '1',
-          createMock<Response>({
-            status: jest.fn().mockReturnValue({
-              send: jest.fn().mockReturnValue({
+          createMockResponse({
+            status: vi.fn().mockReturnValue({
+              send: vi.fn().mockReturnValue({
                 status: 204,
               }),
             }),
           }),
-        )
-        .subscribe((data) => {
-          expect(data).toBeTruthy();
-          done();
-        });
+        ),
+      );
+      expect(data).toBeTruthy();
     });
 
     it('POST on /posts/:id/comments', async () => {
@@ -114,10 +123,10 @@ describe('Post Controller', () => {
         controller.createCommentForPost(
           'testpost',
           { content: 'testcomment' },
-          createMock<Response>({
-            location: jest.fn().mockReturnValue({
-              status: jest.fn().mockReturnValue({
-                send: jest.fn().mockReturnValue({
+          createMockResponse({
+            location: vi.fn().mockReturnValue({
+              status: vi.fn().mockReturnValue({
+                send: vi.fn().mockReturnValue({
                   headers: { location: '/posts/post_id/comments/comment_id' },
                   status: 201,
                 }),
@@ -172,7 +181,7 @@ describe('Post Controller', () => {
     });
   });
 
-  describe('Replace PostService in provider(useValue: jest mocked object)', () => {
+  describe('Replace PostService in provider(useValue: vi mocked object)', () => {
     let controller: PostController;
     let postService: PostService;
     const id = '5ee49c3115a4e75254bb732e';
@@ -183,8 +192,8 @@ describe('Post Controller', () => {
           {
             provide: PostService,
             useValue: {
-              constructor: jest.fn(),
-              findAll: jest
+              constructor: vi.fn(),
+              findAll: vi
                 .fn()
                 .mockImplementation(
                   (_keyword?: string, _skip?: number, _limit?: number) =>
@@ -206,7 +215,7 @@ describe('Post Controller', () => {
       postService = module.get<PostService>(PostService);
     });
 
-    it('should get all posts(useValue: jest mocking)', async () => {
+    it('should get all posts(useValue: vi mocking)', async () => {
       const keyword = 'test';
       const result = await lastValueFrom(
         controller.getAllPosts(keyword, 10, 0),
@@ -217,18 +226,20 @@ describe('Post Controller', () => {
     });
   });
 
-  describe('Mocking PostService using ts-mockito', () => {
+  describe('Mocking PostService using vi.fn()', () => {
     let controller: PostController;
-    const mockedPostService: PostService = mock(PostService);
+    const findAllMock = vi.fn();
+    const mockedPostService = {
+      findAll: findAllMock,
+    } as unknown as PostService;
 
-    beforeEach(async () => {
-      controller = new PostController(instance(mockedPostService));
+    beforeEach(() => {
+      controller = new PostController(mockedPostService);
+      findAllMock.mockReset();
     });
 
-    it('should get all posts(ts-mockito)', async () => {
-      when(
-        mockedPostService.findAll(anyString(), anyNumber(), anyNumber()),
-      ).thenReturn(
+    it('should get all posts(vi.fn)', async () => {
+      findAllMock.mockReturnValue(
         of([
           {
             _id: '5ee49c3115a4e75254bb732e',
@@ -240,9 +251,7 @@ describe('Post Controller', () => {
       const result = await lastValueFrom(controller.getAllPosts('', 10, 0));
       expect(result.length).toEqual(1);
       expect(result[0].title).toBe('test title');
-      verify(
-        mockedPostService.findAll(anyString(), anyNumber(), anyNumber()),
-      ).once();
+      expect(findAllMock).toHaveBeenCalledTimes(1);
     });
   });
 });

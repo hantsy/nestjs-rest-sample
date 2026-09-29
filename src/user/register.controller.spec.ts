@@ -16,9 +16,9 @@ describe('Register Controller', () => {
         {
           provide: UserService,
           useValue: {
-            register: jest.fn(),
-            existsByUsername: jest.fn(),
-            existsByEmail: jest.fn(),
+            register: vi.fn(),
+            existsByUsername: vi.fn(),
+            existsByEmail: vi.fn(),
           },
         },
       ],
@@ -34,20 +34,20 @@ describe('Register Controller', () => {
 
   describe('register', () => {
     it('should throw ConflictException when username is existed ', async () => {
-      const existsByUsernameSpy = jest
+      const existsByUsernameSpy = vi
         .spyOn(service, 'existsByUsername')
         .mockReturnValue(of(true));
-      const existsByEmailSpy = jest
+      const existsByEmailSpy = vi
         .spyOn(service, 'existsByEmail')
         .mockReturnValue(of(true));
-      const saveSpy = jest
+      const saveSpy = vi
         .spyOn(service, 'register')
         .mockReturnValue(of({} as User));
 
       const responseMock = {
-        location: jest.fn().mockReturnThis(),
-        json: jest.fn().mockReturnThis(),
-        send: jest.fn().mockReturnThis(),
+        location: vi.fn().mockReturnThis(),
+        json: vi.fn().mockReturnThis(),
+        send: vi.fn().mockReturnThis(),
       } as any;
       try {
         await controller.register(
@@ -63,20 +63,20 @@ describe('Register Controller', () => {
     });
 
     it('should throw ConflictException when email is existed ', async () => {
-      const existsByUsernameSpy = jest
+      const existsByUsernameSpy = vi
         .spyOn(service, 'existsByUsername')
         .mockReturnValue(of(false));
-      const existsByEmailSpy = jest
+      const existsByEmailSpy = vi
         .spyOn(service, 'existsByEmail')
         .mockReturnValue(of(true));
-      const saveSpy = jest
+      const saveSpy = vi
         .spyOn(service, 'register')
         .mockReturnValue(of({} as User));
 
       const responseMock = {
-        location: jest.fn().mockReturnThis(),
-        json: jest.fn().mockReturnThis(),
-        send: jest.fn().mockReturnThis(),
+        location: vi.fn().mockReturnThis(),
+        json: vi.fn().mockReturnThis(),
+        send: vi.fn().mockReturnThis(),
       } as any;
       try {
         await controller.register(
@@ -92,25 +92,25 @@ describe('Register Controller', () => {
     });
 
     it('should save when username and email are available ', async () => {
-      const existsByUsernameSpy = jest
+      const existsByUsernameSpy = vi
         .spyOn(service, 'existsByUsername')
         .mockReturnValue(of(false));
-      const existsByEmailSpy = jest
+      const existsByEmailSpy = vi
         .spyOn(service, 'existsByEmail')
         .mockReturnValue(of(false));
-      const saveSpy = jest
+      const saveSpy = vi
         .spyOn(service, 'register')
         .mockReturnValue(of({ _id: '123' } as unknown as User));
 
       const responseMock = {
-        location: jest.fn().mockReturnThis(),
-        status: jest.fn().mockReturnThis(),
-        send: jest.fn().mockReturnThis(),
+        location: vi.fn().mockReturnThis(),
+        status: vi.fn().mockReturnThis(),
+        send: vi.fn().mockReturnThis(),
       } as any;
 
-      const locationSpy = jest.spyOn(responseMock, 'location');
-      const statusSpy = jest.spyOn(responseMock, 'status');
-      const sendSpy = jest.spyOn(responseMock, 'send');
+      const locationSpy = vi.spyOn(responseMock, 'location');
+      const statusSpy = vi.spyOn(responseMock, 'status');
+      const sendSpy = vi.spyOn(responseMock, 'send');
 
       await controller.register(
         { username: 'hantsy', email: 'hantsy@example.com' } as RegisterDto,

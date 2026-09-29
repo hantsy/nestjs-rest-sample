@@ -25,9 +25,7 @@ describe('DatabaseModelsProviders', () => {
         {
           provide: DATABASE_CONNECTION,
           useValue: {
-            model: jest
-              .fn()
-              .mockReturnValue({} as Model<User | Post | Comment>),
+            model: vi.fn().mockReturnValue({} as Model<User | Post | Comment>),
           },
         },
       ],

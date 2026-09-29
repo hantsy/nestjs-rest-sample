@@ -1,4 +1,4 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication, StandardSchemaValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import mongoose from 'mongoose';
 import request from 'supertest';
@@ -8,7 +8,6 @@ describe('API endpoints testing (e2e)', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
-    process.env.SEED_DATABASE = 'true';
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -16,7 +15,7 @@ describe('API endpoints testing (e2e)', () => {
     app = moduleFixture.createNestApplication();
     app.enableShutdownHooks();
 
-    app.useGlobalPipes(new ValidationPipe());
+    app.useGlobalPipes(new StandardSchemaValidationPipe());
     await app.init();
   });
 

@@ -14,9 +14,9 @@ describe('AuthController', () => {
         {
           provide: AuthService,
           useValue: {
-            constructor: jest.fn(),
-            login: jest.fn(),
-            refreshToken: jest.fn(),
+            constructor: vi.fn(),
+            login: vi.fn(),
+            refreshToken: vi.fn(),
           },
         },
       ],
@@ -28,11 +28,9 @@ describe('AuthController', () => {
 
   describe('login', () => {
     it('should return tokens', async () => {
-      jest
-        .spyOn(authService, 'login')
-        .mockImplementation((user: any) =>
-          of({ access_token: 'jwttoken', refresh_token: 'refreshtoken' }),
-        );
+      vi.spyOn(authService, 'login').mockImplementation((user: any) =>
+        of({ access_token: 'jwttoken', refresh_token: 'refreshtoken' }),
+      );
 
       const token = await lastValueFrom(
         controller.login({ user: { id: '1', username: 'test' } } as any),
@@ -45,11 +43,10 @@ describe('AuthController', () => {
 
   describe('refresh', () => {
     it('should return new tokens', async () => {
-      jest
-        .spyOn(authService, 'refreshToken')
-        .mockImplementation((token: string) =>
+      vi.spyOn(authService, 'refreshToken').mockImplementation(
+        (token: string) =>
           of({ access_token: 'newtoken', refresh_token: 'newrefresh' }),
-        );
+      );
 
       const result = await lastValueFrom(
         controller.refresh({ refresh_token: 'oldrefreshtoken' }),

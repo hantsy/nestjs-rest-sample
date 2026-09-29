@@ -1,6 +1,5 @@
 import { ConfigType } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { mock } from 'jest-mock-extended';
 import jwtConfig from '../../config/jwt.config';
 import { RoleType } from '../../shared/enum/role-type.enum';
 import { JwtStrategy } from './jwt.strategy';
@@ -48,7 +47,7 @@ describe('JwtStrategy(call supper)', () => {
 
   beforeEach(() => {
     local = Object.getPrototypeOf(JwtStrategy);
-    parentMock = jest.fn();
+    parentMock = vi.fn();
     Object.setPrototypeOf(JwtStrategy, parentMock);
   });
 
@@ -57,8 +56,9 @@ describe('JwtStrategy(call supper)', () => {
   });
 
   it('call super', () => {
-    const config = mock<ConfigType<typeof jwtConfig>>();
-    config.secretKey = 'test';
+    const config = { secretKey: 'test', expiresIn: '100s' } as ConfigType<
+      typeof jwtConfig
+    >;
     new JwtStrategy(config);
     expect(parentMock.mock.calls.length).toBe(1);
 

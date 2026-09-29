@@ -1,15 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { z } from 'zod';
 
-export class LoginResponseDto {
-  @ApiProperty({
-    example: 'eyJhbGciOiJIUzI1NiIs...',
-    description: 'JWT access token (short-lived)',
-  })
-  readonly access_token: string;
+export const loginResponseSchema = z.object({
+  access_token: z.string().describe('eyJhbGciOiJIUzI1NiIs...'),
+  refresh_token: z.string().describe('eyJhbGciOiJIUzI1NiIs...'),
+});
 
-  @ApiProperty({
-    example: 'eyJhbGciOiJIUzI1NiIs...',
-    description: 'JWT refresh token (long-lived)',
-  })
-  readonly refresh_token: string;
-}
+export type LoginResponseDto = z.infer<typeof loginResponseSchema>;

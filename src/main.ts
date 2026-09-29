@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { StandardSchemaValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
@@ -10,14 +10,7 @@ async function bootstrap() {
 
   app.enableShutdownHooks();
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-      transformOptions: { enableImplicitConversion: true },
-    }),
-  );
+  app.useGlobalPipes(new StandardSchemaValidationPipe());
 
   app.enableCors();
 

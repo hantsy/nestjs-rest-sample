@@ -16,9 +16,11 @@ import {
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guard/local-auth.guard';
-import { AuthenticatedRequest } from './interface/authenticated-request.interface';
-import { LoginResponseDto } from './dto/login-response.dto';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
+import type { AuthenticatedRequest } from './interface/authenticated-request.interface';
+import { loginResponseSchema } from './dto/login-response.dto';
+import { refreshTokenSchema } from './dto/refresh-token.dto';
+import type { LoginResponseDto } from './dto/login-response.dto';
+import type { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -37,7 +39,7 @@ export class AuthController {
       },
     },
   })
-  @ApiOkResponse({ description: 'Login successful.', type: LoginResponseDto })
+  @ApiOkResponse({ description: 'Login successful.' })
   @ApiUnauthorizedResponse({ description: 'Invalid credentials.' })
   login(@Req() req: AuthenticatedRequest): Observable<LoginResponseDto> {
     return this.authService.login(req.user);
@@ -45,13 +47,14 @@ export class AuthController {
 
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  @ApiBody({ type: RefreshTokenDto })
+  @ApiBody({ schema: refreshTokenSchema })
   @ApiOkResponse({
     description: 'Tokens refreshed successfully.',
-    type: LoginResponseDto,
   })
   @ApiUnauthorizedResponse({ description: 'Invalid or expired refresh token.' })
-  refresh(@Body() dto: RefreshTokenDto): Observable<LoginResponseDto> {
+  refresh(
+    @Body({ schema: refreshTokenSchema }) dto: RefreshTokenDto,
+  ): Observable<LoginResponseDto> {
     return this.authService.refreshToken(dto.refresh_token);
   }
 }

@@ -3,7 +3,7 @@ import { REQUEST } from '@nestjs/core';
 import { Model, Types } from 'mongoose';
 import { EMPTY, from, Observable, of } from 'rxjs';
 import { mergeMap, throwIfEmpty } from 'rxjs/operators';
-import { AuthenticatedRequest } from '../auth/interface/authenticated-request.interface';
+import type { AuthenticatedRequest } from '../auth/interface/authenticated-request.interface';
 import { Comment } from '../database/comment.model';
 import { COMMENT_MODEL, POST_MODEL } from '../database/database.constants';
 import { Post } from '../database/post.model';
@@ -36,7 +36,12 @@ export class PostService {
   findById(id: string): Observable<Post> {
     return from(this.postModel.findOne({ _id: id }).exec()).pipe(
       mergeMap((p) => (p ? of(p) : EMPTY)),
-      throwIfEmpty(() => new NotFoundException(`post:${id} was not found`)),
+      throwIfEmpty(
+        () =>
+          new NotFoundException(`post:${id} was not found`, {
+            errorCode: 'POST_NOT_FOUND',
+          }),
+      ),
     );
   }
 
@@ -62,14 +67,24 @@ export class PostService {
         .exec(),
     ).pipe(
       mergeMap((p) => (p ? of(p) : EMPTY)),
-      throwIfEmpty(() => new NotFoundException(`post:${id} was not found`)),
+      throwIfEmpty(
+        () =>
+          new NotFoundException(`post:${id} was not found`, {
+            errorCode: 'POST_NOT_FOUND',
+          }),
+      ),
     );
   }
 
   deleteById(id: string): Observable<Post> {
     return from(this.postModel.findOneAndDelete({ _id: id }).exec()).pipe(
       mergeMap((p) => (p ? of(p) : EMPTY)),
-      throwIfEmpty(() => new NotFoundException(`post:${id} was not found`)),
+      throwIfEmpty(
+        () =>
+          new NotFoundException(`post:${id} was not found`, {
+            errorCode: 'POST_NOT_FOUND',
+          }),
+      ),
     );
   }
 

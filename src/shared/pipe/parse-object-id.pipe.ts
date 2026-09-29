@@ -2,7 +2,7 @@ import {
   ArgumentMetadata,
   BadRequestException,
   Injectable,
-  PipeTransform
+  PipeTransform,
 } from '@nestjs/common';
 import * as mongoose from 'mongoose';
 
@@ -10,7 +10,10 @@ import * as mongoose from 'mongoose';
 export class ParseObjectIdPipe implements PipeTransform<string, string> {
   transform(value: string, metadata: ArgumentMetadata) {
     if (!mongoose.isValidObjectId(value)) {
-      throw new BadRequestException(`$value is not a valid mongoose object id`);
+      throw new BadRequestException(
+        `$value is not a valid mongoose object id`,
+        { errorCode: 'INVALID_OBJECT_ID' },
+      );
     }
     return value;
   }
