@@ -251,7 +251,7 @@ describe('PostService', () => {
     } as any);
 
     const data = await lastValueFrom(service.deleteAll());
-    expect(data).toBeTruthy;
+    expect(data).toBeTruthy();
   });
 
   it('should create comment ', async () => {
