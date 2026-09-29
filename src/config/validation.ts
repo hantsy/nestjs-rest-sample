@@ -5,7 +5,7 @@ export const validationSchema = z.object({
     .enum(['development', 'production', 'test'])
     .default('development'),
   PORT: z.coerce.number().default(3000),
-  MONGODB_URI: z.string().url(),
+  MONGODB_URI: z.url(),
   JWT_SECRET_KEY: z.string().min(16),
   JWT_EXPIRES_IN: z.string().default('3600s'),
   JWT_REFRESH_SECRET_KEY: z.string().min(16),
