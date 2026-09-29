@@ -34,14 +34,14 @@ jobs:
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
 
-      # install dependencies and build the project
+      # Install dependencies and build the project
       - run: npm install --registry=https://registry.npmjs.org
       - run: npm run test:cov
-      - name: Upload testing reports
-        run: |
-          bash <(curl -s https://codecov.io/bash)
-        env:
-          CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
   # see: https://www.edwardthomson.com/blog/github_actions_22_automerge_security_updates.html
   # https://localheinz.com/blog/2020/06/15/merging-pull-requests-with-github-actions/
 #   automerge:
