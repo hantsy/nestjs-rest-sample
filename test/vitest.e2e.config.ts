@@ -11,6 +11,7 @@ export default defineConfig({
       MONGODB_URI: 'mongodb://localhost:27017/test',
       JWT_SECRET_KEY: 'test-jwt-secret-key-for-e2e-tests',
       JWT_REFRESH_SECRET_KEY: 'test-jwt-refresh-secret-key-for-e2e',
+      SENDGRID_API_KEY: 'SG.test-key-for-e2e-tests',
     },
   },
 });
