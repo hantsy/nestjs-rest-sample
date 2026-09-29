@@ -92,11 +92,9 @@ describe('AuthService', () => {
         },
       );
 
-      try {
-        await lastValueFrom(service.validateUser('test', 'password001'));
-      } catch (error) {
-        expect(error).toBeDefined();
-      }
+      await expect(
+        lastValueFrom(service.validateUser('test', 'password001')),
+      ).rejects.toThrow(UnauthorizedException);
     });
 
     it('if user is not found', async () => {
