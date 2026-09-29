@@ -15,6 +15,12 @@ import { UserService } from './user.service';
 export class RegisterController {
   constructor(private readonly userService: UserService) {}
 
+  /**
+   * Checks username and email availability, then creates a user and sends an
+   * empty 201 with the user's URL in Location. Resolves to the sent response.
+   * Rejects with ConflictException (USERNAME_EXISTS or EMAIL_EXISTS) when a
+   * check finds a match. Lookup and user creation errors propagate unchanged.
+   */
   @Post()
   @ApiCreatedResponse({ description: 'User registered successfully.' })
   @ApiConflictResponse({ description: 'Username or email already exists.' })

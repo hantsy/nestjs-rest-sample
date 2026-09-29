@@ -33,6 +33,11 @@ export class PostService {
     }
   }
 
+  /**
+   * Emits the matching post, or errors with NotFoundException (POST_NOT_FOUND)
+   * if absent.
+   * Database query errors propagate through the observable unchanged.
+   */
   findById(id: string): Observable<Post> {
     return from(this.postModel.findOne({ _id: id }).exec()).pipe(
       mergeMap((p) => (p ? of(p) : EMPTY)),
@@ -53,6 +58,12 @@ export class PostService {
     return from(createPost);
   }
 
+  /**
+   * Updates the post's supplied fields, records the current user as updatedBy,
+   * and emits the updated document. Errors with NotFoundException (POST_NOT_FOUND)
+   * if absent; database errors propagate unchanged. An invalid current user ID
+   * throws during ObjectId conversion before an observable is returned.
+   */
   update(id: string, data: UpdatePostDto): Observable<Post> {
     return from(
       this.postModel
@@ -76,6 +87,11 @@ export class PostService {
     );
   }
 
+  /**
+   * Deletes and emits the matching post, leaving its comments intact.
+   * Errors with NotFoundException (POST_NOT_FOUND) if absent; database errors
+   * propagate through the observable unchanged.
+   */
   deleteById(id: string): Observable<Post> {
     return from(this.postModel.findOneAndDelete({ _id: id }).exec()).pipe(
       mergeMap((p) => (p ? of(p) : EMPTY)),

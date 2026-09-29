@@ -45,6 +45,10 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
+  /**
+   * Emits a new access/refresh token pair using the supplied refresh token.
+   * Propagates INVALID_REFRESH_TOKEN authorization errors and signing failures.
+   */
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @ApiBody({ schema: refreshTokenSchema })

@@ -79,6 +79,10 @@ export class PostController {
     return this.postService.findById(id);
   }
 
+  /**
+   * Creates a post attributed to the current user and emits the response after
+   * sending an empty 201 with the post's URL in Location. Save errors propagate.
+   */
   @Post('')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @HasRoles(RoleType.USER, RoleType.ADMIN)
@@ -100,6 +104,10 @@ export class PostController {
     );
   }
 
+  /**
+   * Updates the post and emits the response after sending an empty 204.
+   * Propagates NotFoundException (POST_NOT_FOUND) and other update errors.
+   */
   @Put(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @HasRoles(RoleType.USER, RoleType.ADMIN)
@@ -138,6 +146,11 @@ export class PostController {
     );
   }
 
+  /**
+   * Creates a comment attributed to the current user for the supplied post ID,
+   * without checking that the post exists. Emits the response after sending an
+   * empty 201 with the comment's URL in Location. Creation errors propagate.
+   */
   @Post(':id/comments')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @HasRoles(RoleType.USER)

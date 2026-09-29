@@ -15,6 +15,11 @@ export class UserService {
     private readonly sendgridService: SendgridService,
   ) {}
 
+  /**
+   * Emits the matching user with password comparison methods, or errors with
+   * NotFoundException (USER_NOT_FOUND) if absent. Database query errors
+   * propagate through the observable unchanged.
+   */
   findByUsername(username: string): Observable<User & UserMethods> {
     return from(this.userModel.findOne({ username }).exec()).pipe(
       mergeMap((p) => (p ? of(p) : EMPTY)),
@@ -99,6 +104,11 @@ export class UserService {
     // );
   }
 
+  /**
+   * Emits the matching user, populating authored posts when withPosts is true.
+   * Errors with NotFoundException (USER_NOT_FOUND) if absent; database query errors
+   * propagate through the observable unchanged.
+   */
   findById(id: string, withPosts: boolean = false): Observable<User> {
     const userQuery = this.userModel.findOne({ _id: id });
     if (withPosts) {

@@ -5,6 +5,11 @@ import helmet from 'helmet';
 import compression from 'compression';
 import { AppModule } from './app.module';
 
+/**
+ * Starts the API with schema validation, CORS, security headers, compression,
+ * shutdown hooks, and Swagger at /api. Listens on PORT, defaulting to 3000.
+ * Resolves once listening; listener startup errors reject the returned promise.
+ */
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
