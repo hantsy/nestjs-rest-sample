@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RegisterController } from './register.controller';
 import { UserService } from './user.service';
 import { of } from 'rxjs';
-import { User } from 'database/user.model';
+import type { User } from '../database/user.model.js';
 import { RegisterDto } from './register.dto';
 
 describe('Register Controller', () => {
